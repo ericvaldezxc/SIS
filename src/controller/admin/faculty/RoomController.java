@@ -1,6 +1,7 @@
 package controller.admin.faculty;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,6 +47,7 @@ public class RoomController extends HttpServlet {
 
 		String code = request.getParameter("codeTxt");
 		String desc = request.getParameter("descTxt");
+		String campus = request.getParameter("campus");
 
 		String latcode = request.getParameter("latcode");
 		String type = request.getParameter("type");
@@ -61,7 +63,7 @@ public class RoomController extends HttpServlet {
 		}
 		String sql = "";
 		if(type.equals("Insert"))
-			sql = "Insert into r_room (Room_Code,Room_Description) values ('"+ec.encrypt(ec.key, ec.initVector, code)+"','"+ec.encrypt(ec.key, ec.initVector, desc)+"')";
+			sql = "Insert into r_room (Room_Code,Room_Description,Room_CampusID) values ('"+ec.encrypt(ec.key, ec.initVector, code)+"','"+ec.encrypt(ec.key, ec.initVector, desc)+"',(SELECT Campus_ID FROM r_campus WHERE Campus_Code = '"+ec.encrypt(ec.key, ec.initVector, campus)+"' ))";
 //		else if(type.equals("Update"))
 //			sql = "Update r_subject set Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"',Subject_Description = '"+ec.encrypt(ec.key, ec.initVector, desc)+"',Subject_Units = '"+amount+"' where Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"'";
 //		else if(type.equals("Delete"))
@@ -70,6 +72,8 @@ public class RoomController extends HttpServlet {
 //			sql = "Update r_subject set Subject_Display_Stat = 'Active'  where Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"'";
 //		
 		try {
+			PrintWriter out = response.getWriter();	
+			out.print(sql);
 			stmnt.execute(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -13,7 +13,22 @@
 	
 	EncryptandDecrypt ec = new EncryptandDecrypt();
 	
+	String acadyear = "";
+	String sem = "";
 
+	Statement stmnt = conn.createStatement();
+	ResultSet rs = stmnt.executeQuery("SELECT Academic_Year_Description FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'");
+	while(rs.next()){
+		acadyear = ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Description"));
+		
+	}
+	rs = stmnt.executeQuery("SELECT Semester_Description FROM `r_semester` where Semester_Active_Flag = 'Active'");
+	while(rs.next()){
+		sem = ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Description"));
+		
+	}
+	pageContext.setAttribute("acadyear", acadyear);
+	pageContext.setAttribute("sem", sem);
 
 
 %>    
@@ -26,6 +41,25 @@
     </jsp:attribute>    
     
     <jsp:body>
+    
+    	<div class="col-md-6">
+	        <div class="mini-stat clearfix">
+	            <span class="mini-stat-icon orange"></span>	        
+	            <div class="mini-stat-info">
+	                <span id="academicyear">${acadyear}</span>
+	                Active Academic Year
+	            </div>
+	        </div>
+    	</div>
+    	<div class="col-md-6">
+	        <div class="mini-stat clearfix">
+		        <span class="mini-stat-icon tar"></span>
+	            <div class="mini-stat-info">
+	                <span id="semester">${sem}</span>
+	                Active Semester
+	            </div>
+	        </div>
+    	</div>
 
     </jsp:body>
 

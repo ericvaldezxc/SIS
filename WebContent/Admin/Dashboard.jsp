@@ -16,19 +16,17 @@
 	String acadyear = "";
 	String sem = "";
 
-//	Statement stmnt = conn.createStatement();
-//	ResultSet rs = stmnt.executeQuery("SELECT Academic_Year_Description,Academic_Year_Description FROM `r_active_academic_year` inner join r_academic_year on Academic_Year_ID = Active_Academic_Year_AcademicYearID where Active_Academic_Year_Flag = 'Active'");
-//	while(rs.next()){
-//		acadyear = ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Description"));
+	Statement stmnt = conn.createStatement();
+	ResultSet rs = stmnt.executeQuery("SELECT Academic_Year_Description FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'");
+	while(rs.next()){
+		acadyear = ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Description"));
 		
-//	}
-//	rs = stmnt.executeQuery("SELECT Semester_Code,Semester_Description FROM `r_active_semester` inner join  r_semester on Semester_ID = Active_Semester_SemesterID where Active_Semester_Flag = 'Active'");
-//	while(rs.next()){
-//		sem = ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Code"));
+	}
+	rs = stmnt.executeQuery("SELECT Semester_Description FROM `r_semester` where Semester_Active_Flag = 'Active'");
+	while(rs.next()){
+		sem = ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Description"));
 		
-//	}
-		
-		
+	}
 	pageContext.setAttribute("acadyear", acadyear);
 	pageContext.setAttribute("sem", sem);
 
@@ -46,7 +44,7 @@
 			<div class="row">
 			    <div class="col-md-6">
 			        <div class="mini-stat clearfix">
-			            <span class="mini-stat-icon orange"><i class="fa fa-gavel"></i></span>
+			            <span class="mini-stat-icon orange"></span>
 			            <div class="mini-stat-info">
 			                <span id="yearTxt">${acadyear }</span>
 			                Active Academic Year
@@ -55,7 +53,7 @@
 			    </div>
 			    <div class="col-md-6">
 			        <div class="mini-stat clearfix">
-			            <span class="mini-stat-icon tar"><i class="fa fa-tag"></i></span>
+			            <span class="mini-stat-icon tar"></span>
 			            <div class="mini-stat-info">
 			                <span id="semesterTxt">${sem }</span>
 			                Active Semester

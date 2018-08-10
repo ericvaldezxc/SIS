@@ -52,7 +52,7 @@
 	
 	pageContext.setAttribute("tablebody", tablebody);
 	pageContext.setAttribute("curDrp", curDrp);
-	pageContext.setAttribute("courseDrp", courseDrp);	
+	pageContext.setAttribute("courseDrp", "");	
 	pageContext.setAttribute("campusDrp", campusDrp);	
 
 %>    
@@ -66,7 +66,31 @@
 //				$('#yearhidden').hide()
 				EditableTable.init();
 				$("select.fee").select2();
-				
+				$('#campusDrp').on('change',function(){
+					var camp = $(this).val()
+					$.ajax({
+    					type:'POST',
+    					data:{Campus: camp},
+    					url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'FillCourse',
+    					success: function(result){
+    						var item = $.parseJSON(result)
+			        		$("#courseDrp").select2("val","default");
+
+    						$('#courseDrp').val('')
+
+    						$('#courseDrp').html('<option value="default" selected="selected" disabled="disabled" >Select a Course</option>');
+    						$.each(item, function (key, val) {
+    							$('#courseDrp').append('<option value="'+val.code+'" >'+val.code + ' - ' +val.desc+'</option>');
+                    			
+                    			
+                    		})
+                             
+    					},
+                        error: function (response) {
+                            swal("Error encountered while accessing the data", "Please try again", "error");
+                        }
+    				});
+				})
 			
 				
 			});
@@ -116,7 +140,7 @@
          </div>
 
          <!-- Modal -->
-         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="CurriculumAdd" class="modal fade">
+         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="CurriculumAdd" class="modal fade">
 	        <div class="modal-dialog" style="width:700px">
 	            <div class="modal-content">
 	                <div class="modal-header">
@@ -186,7 +210,7 @@
 	            </div>
 	        </div>
 	    </div>	
-	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="SectionEdit" class="modal fade">
+	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="SectionEdit" class="modal fade">
 	        <div class="modal-dialog" style="width:700px">
 	            <div class="modal-content">
 	                <div class="modal-header">
@@ -236,7 +260,7 @@
 	            </div>
 	       </div>
 	    </div>
-	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="Admission" class="modal fade">
+	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="Admission" class="modal fade">
 	        <div class="modal-dialog" style="width:700px">
 	            <div class="modal-content">
 	                <div class="modal-header">
@@ -259,13 +283,6 @@
                         		
                        		</div>
                         	<div class="row">
-	                        	<div class="col-lg-6" style="padding-top:10px">
-                        			Course
-                        			<select id="courseDrp" class="populate " style="width: 290px">
-                        				<option value="default" selected="selected" disabled="disabled" >Select a Course</option>
-                                     	  ${courseDrp} 
-                                   	</select>          
-	                            </div>	
 	                            <div class="col-lg-6" style="padding-top:10px">
                         			Campus
                         			<select id="campusDrp" class="populate fee" style="width: 290px">
@@ -273,6 +290,13 @@
                                      	  ${campusDrp} 
                                    	</select>          
 	                            </div>	                              	                            
+	                        	<div class="col-lg-6" style="padding-top:10px">
+                        			Course
+                        			<select id="courseDrp" class="populate " style="width: 290px">
+                        				<option value="default" selected="selected" disabled="disabled" >Select a Course</option>
+                                     	  ${courseDrp} 
+                                   	</select>          
+	                            </div>	
                         	</div> 
                         	<div class="row">
 	                        	<div class="col-lg-6" style="padding-top:10px">

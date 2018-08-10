@@ -130,6 +130,7 @@
                     	<li class="" id="CourseBtn"><a href="CourseFee.jsp">Course Fee</a></li>
                     	<li class="" id="SubjectBtn"><a href="SubjectFee.jsp">Subject Fee</a></li>
                     	<li class="" id="MandatoryBtn"><a href="MandatoryFee.jsp">Mandatory Fee</a></li>
+                    	<li class="" id="SectionOfferingBtn"><a href="SectionOffering.jsp">Section Offering</a></li>
                     </ul>
                 </li>
                 <li>
@@ -293,18 +294,20 @@
 	<script >
 	$(document).ready(function (){
 		var title = document.title;
-		if(title == 'Tuition Fee') 
+		if(title == "Tuition Fee") 
 			$("#TuitionBtn").addClass("active");
- 		else if(title == 'Mandatory Fee') 
+ 		else if(title == "Mandatory Fee") 
 			$("#MandatoryBtn").addClass("active");
- 		else if(title == 'Subject Fee') 
+ 		else if(title == "Subject Fee") 
 			$("#SubjectBtn").addClass("active");
- 		else if(title == 'Course Fee') 
+ 		else if(title == "Course Fee") 
 			$("#CourseBtn").addClass("active");
- 		else if(title == 'Admission') 
+ 		else if(title == "Admission") 
 			$("#AdmissionBtn").addClass("active");
+ 		else if(title == "Section Offering") 
+			$("#SectionOfferingBtn").addClass("active");
 		
-		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee') 
+		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering') 
 			$('#Pre-Enrollment').click();
 		
 		

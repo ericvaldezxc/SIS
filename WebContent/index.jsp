@@ -98,6 +98,8 @@
 										window.location =  "http://"+window.location.hostname+":"+window.location.port+"/SIS/Admin/" +"Dashboard.jsp"
 									else if(val.type == "Registrar")
 										window.location =  "http://"+window.location.hostname+":"+window.location.port+"/SIS/Registrar/" +"Dashboard.jsp"
+									else if(val.type == "Cashier")
+										window.location =  "http://"+window.location.hostname+":"+window.location.port+"/SIS/Cashier/" +"Dashboard.jsp"
 									
 								}
                             });				

@@ -19,14 +19,10 @@
 
 
 	Statement stmnt = conn.createStatement();
-	ResultSet rs = stmnt.executeQuery("Select Academic_Year_Description,Course_Description,FORMAT(Tuition_Fee_Amount,2) AS AMOU,CASE WHEN Tuition_Fee_Year_Level = 1 THEN 'First Year' WHEN Tuition_Fee_Year_Level = 2 THEN 'Second Year' WHEN Tuition_Fee_Year_Level = 3 THEN 'Third Year' ELSE 'Fourth Year' END as yearlvl,Tuition_Fee_Display_Status from r_tuition_fee inner join r_academic_year on Tuition_Fee_AcademicYearID = Academic_Year_ID inner join r_course on Tuition_Fee_CourseID = Course_ID where Course_Display_Status = 'Active' and  Academic_Year_Display_Status = 'Active' ");
+	ResultSet rs = stmnt.executeQuery("Select Unit_Fee_Description,FORMAT(Unit_Fee_Amount,2) AS AMOU from r_unit_fee ");
 		while(rs.next()){
-			tablebody += "<tr><td>" + ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Description"))+ "</td><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Description"))+"</td><td>"+rs.getString("yearlvl")+"</td><td>"+rs.getString("AMOU")+"</td><td>"; 
-			if(rs.getString("Tuition_Fee_Display_Status").equals("Active"))
-//				tablebody += "<center> <a class='btn btn-info view' href='javascript:;'><i class='fa fa-eye'></i></a> <a class='btn btn-success edit' data-toggle='modal' href='#CurriculumEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
-				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
-			else
-				tablebody += "<center><a class='btn btn-info retrieve' href='javascript:;'><i class='fa fa-rotate-left'></i></a><center></td></tr>";
+			tablebody += "<tr><td>" + ec.decrypt(ec.key, ec.initVector, rs.getString("Unit_Fee_Description"))+ "</td><td>"+rs.getString("AMOU")+"</td><td>"; 
+			tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a><center></td></tr>";
 			
 		}
 
@@ -80,11 +76,9 @@
                                     <table class="table table-striped table-hover table-bordered" id="editable-sample">
 	                                    <thead>
 	                                        <tr>
-	                                            <th style="width: 200px">Academic Year</th>
-	                                            <th style="width: 100px">Course</th>
-	                                            <th style="width: 100px">Year Level</th>
-	                                            <th style="width: 150px">Amount</th>
-	                                            <th style="width: 120px">Action</th>  
+	                                            <th style="width: 50%">Description</th>
+	                                            <th style="width: 45%">Amount</th>
+	                                            <th style="width: 5%">Action</th>  
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>    

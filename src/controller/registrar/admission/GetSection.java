@@ -68,7 +68,7 @@ public class GetSection extends HttpServlet {
 		}
 		String sql = "";
 		
-		sql = "SELECT * FROM `r_section` where Section_CourseID = (SELECT Course_ID FROM r_course WHERE Course_Code = '"+ec.encrypt(ec.key, ec.initVector, course)+"') and Section_CampusID = (SELECT Campus_ID FROM r_campus WHERE Campus_Code = '"+ec.encrypt(ec.key, ec.initVector, campus)+"') and Section_Display_Status = 'Active' ";
+		sql = "SELECT * FROM `r_section` where Section_CourseID = (SELECT Course_ID FROM r_course WHERE Course_Code = '"+ec.encrypt(ec.key, ec.initVector, course)+"') and Section_CampusID = (SELECT Campus_ID FROM r_campus WHERE Campus_Code = '"+ec.encrypt(ec.key, ec.initVector, campus)+"') and Section_Display_Status = 'Active' and Section_Year = 'First Year' ";
 		
 		JSONArray arr = new JSONArray();
 		PrintWriter out = response.getWriter();	

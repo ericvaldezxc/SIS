@@ -2,6 +2,7 @@ var getcode = '';
 var getname = '';
 var codeTxt = '';
 var descTxt = '';
+var campus = '';
 var unitTxt = '';
 var latcode = '';
 
@@ -88,7 +89,8 @@ var EditableTable = function () {
             	e.preventDefault();
 				 codeTxt = $('#codeTxt').val();
 				 descTxt = $('#descTxt').val();
-
+				 campus =  $('#campusDrp').val();
+			
 				
                 swal({
                     title: "Are you sure?",
@@ -105,11 +107,11 @@ var EditableTable = function () {
                     if (isConfirm) {
                 		$.ajax({
         					type:'POST',
-        					data:{codeTxt: codeTxt, descTxt: descTxt,type:"Insert",latcode:latcode},
+        					data:{codeTxt: codeTxt, descTxt: descTxt,campus:campus,type:"Insert",latcode:latcode},
         					url:'Controller/Admin/Faculty/RoomController',
         					success: function(result){
 	    						 swal("Record Added!", "The data is successfully added!", "success");
-	                             var aiNew = oTable.fnAddData([codeTxt, descTxt, "<center><a class='btn btn-success edit' data-toggle='modal' href='#Edit' ><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a></center>", '']);
+	                             var aiNew = oTable.fnAddData([codeTxt, descTxt,campus, "<center><a class='btn btn-success edit' data-toggle='modal' href='#Edit' ><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a></center>", '']);
 	                             var nRow = oTable.fnGetNodes(aiNew[0]);
 	                             document.getElementById("form-data").reset();
 	                             $("#addcloseBtn").click();

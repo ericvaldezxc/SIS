@@ -112,8 +112,25 @@ var EditableTable = function () {
         					success: function(result){
         						 $('#codeTxt').val('') ;
         						 $('#descTxt').val('');
+        						 $('#e9 option:selected').each(function(){
+        							 var camp = $(this).val()
+        							 $.ajax({
+        		        					type:'POST',
+        		        					data:{campus:camp,type:"Insert",latcode:latcode},
+        		        					url:'Controller/Admin/Student/CourseCampus',
+        		        					success: function(result2){
+        		        						
+        			                             
+        		        					},
+        		                            error: function (response2) {
+        		                                swal("Error encountered while adding data", "Please try again", "error");
+        		                                $("#editable-sample_new").click();
+        		                            }
+        		        				});
+        						 })
+        						 
 	    						 swal("Record Added!", "The data is successfully added!", "success");
-	                             var aiNew = oTable.fnAddData([codeTxt, descTxt, "<center><a class='btn btn-success edit' data-toggle='modal' href='#CourseEdit' ><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a></center>"]);
+	                             var aiNew = oTable.fnAddData([codeTxt, descTxt,yeartxt, "<center><a class='btn btn-success edit' data-toggle='modal' href='#CourseEdit' ><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a></center>"]);
 	                             var nRow = oTable.fnGetNodes(aiNew[0]);
 	                             document.getElementById("form-data").reset();
 	                             $("#addcloseBtn").click();

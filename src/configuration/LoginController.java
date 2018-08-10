@@ -159,6 +159,30 @@ public class LoginController extends HttpServlet {
 				
 				
 			}
+			else if(type.equals("Cashier")) {
+				sql = "SELECT * from r_cashier where Cashier_ID = '"+refid+"' ";
+				try {
+					ResultSet rs = stmnt.executeQuery(sql);
+					while(rs.next()){
+						fname = rs.getString("Cashier_First_Name");
+						mname = rs.getString("Cashier_Middle_Name");
+						lname = rs.getString("Cashier_Last_Name");
+						if(mname.equals("")){
+							Fullname = ec.decrypt(ec.key, ec.initVector, lname)  + ", " + ec.decrypt(ec.key, ec.initVector, fname);
+							
+						}
+						else {
+							Fullname = ec.decrypt(ec.key, ec.initVector, lname) + ", " + ec.decrypt(ec.key, ec.initVector, fname) + " " + ec.decrypt(ec.key, ec.initVector, mname);
+							
+						}
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
 			
 			
 		}

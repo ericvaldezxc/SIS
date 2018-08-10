@@ -1,6 +1,6 @@
 <%@page import="java.sql.*"%>
 <%@page import="connection.DBConfiguration" %>
-<%@page import="configuration.EncryptandDecrypt" %>
+<%@page import="configuration.*" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags/Admin" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -12,13 +12,14 @@
 		out.print("failasded");
 	
 	EncryptandDecrypt ec = new EncryptandDecrypt();
-	
+	Dropdowns drp = new Dropdowns();
+	String campusDrp = drp.fillcampusDrp();
 	String tablebody = "";
 
 	Statement stmnt = conn.createStatement();
-	ResultSet rs = stmnt.executeQuery("Select * from r_room");
+	ResultSet rs = stmnt.executeQuery("Select * from r_room inner join r_campus on Room_CampusID = Campus_ID ");
 		while(rs.next()){
-			tablebody += "<tr><td>" + ec.decrypt(ec.key, ec.initVector, rs.getString("Room_Code"))+ "</td><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Room_Description"))+"</td><td>"; 
+			tablebody += "<tr><td>" + ec.decrypt(ec.key, ec.initVector, rs.getString("Room_Code"))+ "</td><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Room_Description"))+"</td><td>" + ec.decrypt(ec.key, ec.initVector, rs.getString("Campus_Code"))+ "</td><td>"; 
 			if(rs.getString("Room_Display_Status").equals("Active"))
 //				tablebody += "<center> <a class='btn btn-info view' href='javascript:;'><i class='fa fa-eye'></i></a> <a class='btn btn-success edit' data-toggle='modal' href='#CurriculumEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
@@ -27,7 +28,7 @@
 			
 		}
 	pageContext.setAttribute("tablebody", tablebody);
-
+	pageContext.setAttribute("campusDrp", campusDrp);
 
 %>    
 
@@ -37,7 +38,7 @@
       	<script>
 			$(document).ready(function (){
 				EditableTable.init();
-				
+				$("#campusDrp").select2( {width: '100%' });
 				
 				
 			});
@@ -70,9 +71,10 @@
                                     <table class="table table-striped table-hover table-bordered" id="editable-sample">
 	                                    <thead>
 	                                        <tr>
-	                                            <th style="width: 200px">Room Code</th>
-	                                            <th style="width: 100px">Description</th>
-	                                            <th style="width: 120px">Action</th>  
+	                                            <th style="width: ">Room Code</th>
+	                                            <th style="width: ">Description</th>
+	                                            <th style="width: ">Campus</th>
+	                                            <th style="width: 10%">Action</th>  
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>    
@@ -98,8 +100,15 @@
 	                    <form method="post" id="form-data">
 	                        <div class="row" style="padding-left:15px;padding-top:10px">
 	                        	<div class="col-lg-12">
-	                        		<div class="col-lg-6">
-		                                Room Code <input type="text" class="form-control" placeholder="ex. Acad 202" id="codeTxt" >
+	                        		<div class="col-lg-4">
+		                                 Code <input type="text" class="form-control" placeholder="ex. Acad 202" id="codeTxt" >
+		                            </div>
+	                        		<div class="col-lg-8">
+		                        		Campus
+			                            <select class="populate " id="campusDrp">
+					                  	    <option value="default" selected="selected" disabled="disabled" >Select a Campus</option>                            	       	
+				                  			${campusDrp}      	
+				                		</select>
 		                            </div>
 		                        	<div class="col-lg-12" style="padding-top:10px">
 		                                Description<textarea class="form-control" placeholder="ex.  Academic Building 202" rows="3" style="margin: 0px 202.5px 0px 0px;resize:none" id="descTxt"></textarea>

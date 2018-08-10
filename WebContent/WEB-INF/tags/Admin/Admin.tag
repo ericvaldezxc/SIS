@@ -111,7 +111,9 @@
                     </a>
                     <ul class="sub">
                     	<li class="" id="SubjectBtn"><a href="Subject.jsp">Subject</a></li>
+                    	<li class="" id="DocumentBtn"><a href="Document.jsp">Document</a></li>
                     	<li class="" id="CurriculumBtn"><a href="Curriculum.jsp">Curriculum</a></li>						   
+                    	<li class="" id="CurriculumYearBtn"><a href="CurriculumYear.jsp">Curriculum Year</a></li>						   
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -121,8 +123,6 @@
                     </a>
                     <ul class="sub">
                     	<li class="" id="FeeBtn"><a href="Fee.jsp">Fee</a></li>
-                    	<li class="" id="FeeBtn"><a href="TuitionFee.jsp">Tuition Fee</a></li>
-                    	<li class="" id="FeeBtn"><a href="MandatoryFee.jsp">Mandatory Fee</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -303,6 +303,10 @@
 			$("#SubjectBtn").addClass("active");
 		else if(title == 'Curriculum') 
 			$("#CurriculumBtn").addClass("active");
+		else if(title == 'Curriculum Year') 
+			$("#CurriculumYearBtn").addClass("active");
+		else if(title == 'Document') 
+			$("#DocumentBtn").addClass("active");
 		else if(title == 'Fee') 
 			$("#FeeBtn").addClass("active");
 		else if(title == 'Section') 
@@ -322,12 +326,12 @@
 		else if(title == 'Academic Year') 
 			$("#AcademicYearBtn").addClass("active");
 		
-		if(title == 'Subject' || title == 'Curriculum') 
-			$('#CurriculumSetup').click();
+		if(title == 'Subject' || title == 'Curriculum' || title == 'Curriculum Year' || title == 'Document' ) 
+			$('#CurriculumSetup').click(); 
 		else if(title == 'Fee' ) 
 			$('#FeeSetup').click();
 		else if(title == 'Section' || title == 'Course' || title == 'Admission' ) 
-			$('#StudentSetup').click();
+			$('#StudentSetup').click(); 
 		else if(title == 'Professor' || title == 'Room' || title == 'Academic Year' || title == 'Semester' ) 
 			$('#FacultySetup').click();
 		

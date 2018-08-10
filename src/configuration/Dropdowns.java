@@ -12,6 +12,7 @@ public class Dropdowns {
 	DBConfiguration db = new DBConfiguration();
 	Connection conn = db.getConnection();
 	EncryptandDecrypt ec = new EncryptandDecrypt();
+	Fullname fn = new Fullname();
 
 
 	ResultSet rs;
@@ -149,7 +150,7 @@ public class Dropdowns {
 				Drp += "<optgroup label='Academic'>";				
 				
 			}
-			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
 
 			i++;
 			
@@ -159,13 +160,13 @@ public class Dropdowns {
 			
 		}
 		i = 0;
-		rs = stmnt.executeQuery("Select Subject_Code,Subject_Description from r_subject WHERE Subject_Display_Stat = 'Active' and Subject_Type = 'Non-Academic'");
+		rs = stmnt.executeQuery("Select Subject_Code,Subject_Description,Subject_Credited_Units from r_subject WHERE Subject_Display_Stat = 'Active' and Subject_Type = 'Non-Academic'");
 		while(rs.next()){
 			if(i == 0){
 				Drp += "<optgroup label='Non-Academic'>";				
 				
 			}
-			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
 
 			i++;
 			
@@ -185,7 +186,7 @@ public class Dropdowns {
 		rs = stmnt.executeQuery("Select distinct t1.Subject_Code,t1.Subject_Description,t1.Subject_Credited_Units from r_subject as t1 inner join r_subject as t2 on t1.Subject_ID = t2.Subject_Group WHERE t1.Subject_Display_Stat = 'Active' and t2.Subject_Display_Stat = 'Active'");
 		while(rs.next()){
 
-			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
 
 		}
 
@@ -223,6 +224,7 @@ public class Dropdowns {
 		
 		return Drp;
 	}
+
 	public String fillsemesterDrp() throws SQLException {
 		String Drp = "";
 		Statement stmnt = conn.createStatement();
@@ -301,6 +303,25 @@ public class Dropdowns {
 		
 		return Drp;
 	}
+	
+	public String fillprofessor() throws SQLException {
+		String Drp = "";
+		Statement stmnt = conn.createStatement();
+		rs = stmnt.executeQuery("Select * from r_professor WHERE Professor_Display_Status = 'Active'  ");
+		
+		while(rs.next()){
+			String fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Professor_FirstName"));
+			String mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Professor_MiddleName"));
+			String lname = ec.decrypt(ec.key, ec.initVector, rs.getString("Professor_LastName"));
+			
+			Drp += "<option value='"+rs.getString("Professor_Code")+"'>"+fn.fullname(fname,mname,lname)+"</option>";
+
+		}
+		
+		
+		return Drp;
+	}
+	
 	public String fillyearlvl() throws SQLException {
 		String Drp = "";
 		Drp += "<option value='1'>First Year</option>";
@@ -308,6 +329,18 @@ public class Dropdowns {
 		Drp += "<option value='3'>Third Year</option>";
 		Drp += "<option value='4'>Fourth Year</option>";
 		Drp += "<option value='5'>Fifth Year</option>";
+
+		return Drp;
+	}
+	public String filldayDrp() throws SQLException {
+		String Drp = "";
+		Drp += "<option value='M'>Monday</option>";
+		Drp += "<option value='T'>Tuesday</option>";
+		Drp += "<option value='W'>Wednesday</option>";
+		Drp += "<option value='TH'>Thursday</option>";
+		Drp += "<option value='F'>Friday</option>";
+		Drp += "<option value='S'>Saturday</option>";
+		Drp += "<option value='SU'>Sunday</option>";
 
 		return Drp;
 	}

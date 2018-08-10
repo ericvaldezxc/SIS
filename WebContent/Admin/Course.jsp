@@ -1,21 +1,34 @@
 <%@page import="java.sql.*"%>
 <%@page import="connection.DBConfiguration" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags/Admin" %>
-<%@page import="configuration.EncryptandDecrypt" %>
+<%@page import="configuration.*" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 
 <% 
 	EncryptandDecrypt ec = new EncryptandDecrypt();
+	Dropdowns drp = new Dropdowns();
 	DBConfiguration db = new DBConfiguration();
 	Connection conn = db.getConnection();
+	String campus = "";
 	if(conn == null)
 		out.print("failasded");
 	String tablebody = "";
 	Statement stmnt = conn.createStatement();
-	ResultSet rs = stmnt.executeQuery("Select * from r_course");
+	Statement stmnt2 = conn.createStatement();
+	ResultSet rs = stmnt.executeQuery("Select * from r_course ");
 		while(rs.next()){
-			tablebody += "<tr><td>" + ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Code")) + "</td><td>"+ ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Description")) +"</td><td>"; 
+			campus = "";
+
+			ResultSet rs2 = stmnt2.executeQuery("select * from r_campus_course inner join r_campus on Campus_Course_CampusID = Campus_ID where Campus_Course_CourseID = '"+rs.getString("Course_ID")+"'");
+			while(rs2.next()){
+				campus += "<span class='label label-success' >"+ec.decrypt(ec.key, ec.initVector, rs2.getString("Campus_Code"))+"</span> ";
+				
+			}
+			
+			
+			
+			tablebody += "<tr><td>" + ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Code")) + "</td><td>"+ ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Description")) +"</td><td>"+ campus +"</td><td style='margin-top:10px'>"+rs.getString("Course_Years")+"</td><td>"; 
 			if(rs.getString("Course_Display_Status").equals("Active"))
 				tablebody += "<center><a class='btn btn-success edit' data-toggle='modal' href='#CourseEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 			else
@@ -24,6 +37,7 @@
 		}
 	
 	pageContext.setAttribute("tablebody", tablebody);
+	pageContext.setAttribute("campus", drp.fillcampusDrp());
 
 %>    
 
@@ -64,9 +78,11 @@
                                     <table class="table table-striped table-hover table-bordered" id="editable-sample">
 	                                    <thead>
 	                                        <tr>
-	                                            <th style="width: 200px">Course Code</th>
-	                                            <th style="width: 350px">Course Description</th>
-	                                            <th style="width: 120px">Action</th>  
+	                                            <th style="width: 20%">Code</th>
+	                                            <th style="width: 25%">Description</th>
+	                                            <th style="width: 25%">Campus</th>
+	                                            <th style="width: 15%">No. of Years</th>
+	                                            <th style="width: 15%">Action</th>  
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>    
@@ -95,6 +111,13 @@
 	                            </div>
 	                            <div class="col-lg-4">
 	                                No. of Years <input type="number" class="form-control" placeholder="ex. 4" min="1" max="5" value="4" id="yeartxt" >
+	                            </div>
+                               <div class="col-lg-12" style="padding-top:10px" >
+	                            	Campus
+	                            	</br>
+	                            	<select multiple name="e9" id="e9" style="width:100%" class="populate ">
+                                        ${campus}
+                                    </select>
 	                            </div>
 	                            <div class="col-lg-12" style="padding-top:10px">
 	                                Description<textarea class="form-control" placeholder="ex. Bachelord of Information Technology" rows="6" style="margin: 0px 202.5px 0px 0px;resize:none" id="descTxt"></textarea>
