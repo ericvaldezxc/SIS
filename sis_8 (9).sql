@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 02, 2018 at 01:13 AM
+-- Generation Time: Aug 11, 2018 at 11:41 AM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.4
 
@@ -110,7 +110,57 @@ CREATE TABLE `r_campus` (
 
 INSERT INTO `r_campus` (`Campus_ID`, `Campus_Code`, `Campus_Name`, `Campus_Address`, `Campus_Display_Status`, `Campus_Date_Added`, `Campus_Date_Updated`) VALUES
 (1, '9MzEpGHDLzrTqfuU7IGSoQ==', 'Rq1HODXTbrTHi3O5M0Pf9PF2Jidi9EscWAdJ2tArgQXBP/bXvFhfseMpkqSmg8xdxABv+agNpwHbt4SmjaeeXA==', 'AfY3B9zwzpSx50hezTLNr/ObnVzqoXvhr0nBC5+5iCI=', 'Active', '2018-08-02 04:31:50', '2018-08-02 04:31:50'),
-(2, 'J6kQ1Mh0VQAq2tI+gxodew==', 'Rq1HODXTbrTHi3O5M0Pf9PF2Jidi9EscWAdJ2tArgQVonvLTaDrlZ2j8dtSqtNc0', 'LsNsz0O8wBf6lZVbYb4q3w==', 'Active', '2018-08-02 04:32:24', '2018-08-02 04:32:24');
+(2, 'J6kQ1Mh0VQAq2tI+gxodew==', 'Rq1HODXTbrTHi3O5M0Pf9PF2Jidi9EscWAdJ2tArgQVonvLTaDrlZ2j8dtSqtNc0', 'LsNsz0O8wBf6lZVbYb4q3w==', 'Active', '2018-08-02 04:32:24', '2018-08-02 04:32:24'),
+(3, '8JRTHRIfr3As583KCwhXZA==', '8JRTHRIfr3As583KCwhXZA==', '8JRTHRIfr3As583KCwhXZA==', 'Active', '2018-08-02 23:43:14', '2018-08-02 23:43:14');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `r_campus_course`
+--
+
+CREATE TABLE `r_campus_course` (
+  `Campus_Course_ID` int(11) NOT NULL,
+  `Campus_Course_CourseID` int(11) NOT NULL,
+  `Campus_Course_CampusID` int(11) NOT NULL,
+  `Campus_Course_Display_Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `Campus_Course_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Campus_Course_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `r_campus_course`
+--
+
+INSERT INTO `r_campus_course` (`Campus_Course_ID`, `Campus_Course_CourseID`, `Campus_Course_CampusID`, `Campus_Course_Display_Status`, `Campus_Course_Date_Added`, `Campus_Course_Date_Updated`) VALUES
+(1, 16, 1, 'Active', '2018-08-02 22:38:32', '2018-08-02 22:38:32'),
+(2, 15, 1, 'Active', '2018-08-02 23:12:43', '2018-08-02 23:12:43'),
+(3, 15, 2, 'Active', '2018-08-02 23:12:43', '2018-08-02 23:12:43'),
+(4, 14, 1, 'Active', '2018-08-02 23:12:54', '2018-08-02 23:12:54'),
+(5, 14, 2, 'Active', '2018-08-02 23:12:54', '2018-08-02 23:12:54');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `r_cashier`
+--
+
+CREATE TABLE `r_cashier` (
+  `Cashier_ID` int(11) NOT NULL,
+  `Cashier_First_Name` varchar(200) NOT NULL,
+  `Cashier_Middle_Name` varchar(200) NOT NULL,
+  `Cashier_Last_Name` varchar(200) NOT NULL,
+  `Cashier_Display_Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `Cashier_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Cashier_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `r_cashier`
+--
+
+INSERT INTO `r_cashier` (`Cashier_ID`, `Cashier_First_Name`, `Cashier_Middle_Name`, `Cashier_Last_Name`, `Cashier_Display_Status`, `Cashier_Date_Added`, `Cashier_Date_Updated`) VALUES
+(1, 'YEtxmhwpaUX5E9xNcmL0YA==', 'Plm+4blDu99iSdAlQ6HDOw==', 'CK1ST42XWtXYwKep6B039Q==', 'Active', '2018-08-02 14:12:09', '2018-08-02 14:12:09');
 
 -- --------------------------------------------------------
 
@@ -134,7 +184,8 @@ CREATE TABLE `r_course` (
 
 INSERT INTO `r_course` (`Course_ID`, `Course_Code`, `Course_Description`, `Course_Years`, `Course_Display_Status`, `Course_Date_Added`, `Course_Date_Updated`) VALUES
 (14, 'sFm1jYcG/rhj1tYVu0THFQ==', 'mI7uBb9KoW17jXbrQ1a4l2ZVBh9cL/atx8avm8zx3G4/TsN3i6rNm+vEN8qb7DVds3YgweAq00pHO6hgzin06A==', 4, 'Active', '2018-07-30 20:09:10', '2018-07-30 20:09:10'),
-(15, 'lcppOKK5pTkV/cBXHxenhQ==', '1CNHUgnZQ/hU5noCCEAWT5AQaHSZE+y9drSFNbE0OF3F8SqiY1Lb+bbAIoB5L/sdJY925qDulfakKT/U6qaFxA==', 4, 'Active', '2018-07-30 20:09:35', '2018-07-30 20:09:35');
+(15, 'lcppOKK5pTkV/cBXHxenhQ==', '1CNHUgnZQ/hU5noCCEAWT5AQaHSZE+y9drSFNbE0OF3F8SqiY1Lb+bbAIoB5L/sdJY925qDulfakKT/U6qaFxA==', 4, 'Active', '2018-07-30 20:09:35', '2018-07-30 20:09:35'),
+(16, 'Fhnc0G5fgAN4Xx99LiZW+g==', 'y9UpwZH2EdSLJdKMurw8iQwpttrHRd0ZK0FiluUhMJEBcMJbGMWrx5eUQwpJj27F', 3, 'Active', '2018-08-02 22:38:32', '2018-08-02 22:38:32');
 
 -- --------------------------------------------------------
 
@@ -195,8 +246,8 @@ CREATE TABLE `r_curriculum` (
   `Curriculum_Code` varchar(100) NOT NULL,
   `Curriculum_SemesterID` int(11) NOT NULL,
   `Curriculum_CourseID` int(11) NOT NULL,
+  `Curriculum_CurriculumYearID` int(11) NOT NULL,
   `Curriculum_YearLevel` enum('First Year','Second Year','Third Year','Fourth Year','Fifth Year') NOT NULL,
-  `Curriculum_Active_Flag` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
   `Curriculum_Display_Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
   `Curriculum_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Curriculum_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -206,9 +257,12 @@ CREATE TABLE `r_curriculum` (
 -- Dumping data for table `r_curriculum`
 --
 
-INSERT INTO `r_curriculum` (`Curriculum_ID`, `Curriculum_Code`, `Curriculum_SemesterID`, `Curriculum_CourseID`, `Curriculum_YearLevel`, `Curriculum_Active_Flag`, `Curriculum_Display_Status`, `Curriculum_Date_Added`, `Curriculum_Date_Updated`) VALUES
-(51, 'Nls9Fxtg3xXjBh1CD8Lblg==', 8, 15, 'First Year', 'Active', 'Active', '2018-07-30 20:15:00', '2018-08-01 17:21:07'),
-(52, 'y3nr8zTapSoNS89L2tWLUg==', 8, 14, 'First Year', 'Active', 'Active', '2018-08-01 17:24:00', '2018-08-01 17:24:00');
+INSERT INTO `r_curriculum` (`Curriculum_ID`, `Curriculum_Code`, `Curriculum_SemesterID`, `Curriculum_CourseID`, `Curriculum_CurriculumYearID`, `Curriculum_YearLevel`, `Curriculum_Display_Status`, `Curriculum_Date_Added`, `Curriculum_Date_Updated`) VALUES
+(51, 'Nls9Fxtg3xXjBh1CD8Lblg==', 8, 15, 1, 'First Year', 'Active', '2018-07-30 20:15:00', '2018-08-02 07:27:28'),
+(52, 'y3nr8zTapSoNS89L2tWLUg==', 8, 14, 1, 'First Year', 'Active', '2018-08-01 17:24:00', '2018-08-02 07:27:32'),
+(53, 'lLWRBMFTy99+qbJ5tIOnRg==', 8, 14, 1, 'Second Year', 'Active', '2018-08-02 07:40:34', '2018-08-02 07:40:34'),
+(54, 'bdf7+NqYS4vyXQhKn+h7aQ==', 8, 16, 1, 'First Year', 'Active', '2018-08-08 20:06:35', '2018-08-08 20:06:35'),
+(55, 'LtIAyXvIorDCteOIFZ2gUw==', 8, 15, 1, 'Third Year', 'Active', '2018-08-09 15:14:48', '2018-08-09 15:14:48');
 
 -- --------------------------------------------------------
 
@@ -237,10 +291,19 @@ INSERT INTO `r_curriculumitem` (`CurriculumItem_ID`, `CurriculumItem_CurriculumI
 (60, 51, 71, 'Active', '2018-07-30 20:15:01', '2018-07-30 20:15:01'),
 (61, 51, 77, 'Active', '2018-07-30 20:15:01', '2018-07-30 20:15:01'),
 (62, 51, 80, 'Active', '2018-07-30 20:15:01', '2018-07-30 20:15:01'),
-(63, 52, 65, 'Active', '2018-08-01 17:24:00', '2018-08-01 17:24:00'),
-(64, 52, 66, 'Active', '2018-08-01 17:24:00', '2018-08-01 17:24:00'),
-(65, 52, 68, 'Active', '2018-08-01 17:24:00', '2018-08-01 17:24:00'),
-(66, 52, 80, 'Active', '2018-08-01 17:24:00', '2018-08-01 17:24:00');
+(63, 52, 65, 'Active', '2018-08-01 17:24:00', '2018-08-07 23:11:41'),
+(64, 52, 66, 'Inactive', '2018-08-01 17:24:00', '2018-08-02 07:41:03'),
+(65, 52, 68, 'Inactive', '2018-08-01 17:24:00', '2018-08-02 07:41:03'),
+(66, 52, 80, 'Active', '2018-08-01 17:24:00', '2018-08-07 23:11:41'),
+(67, 52, 66, 'Inactive', '2018-08-02 07:32:21', '2018-08-02 07:41:03'),
+(68, 52, 68, 'Inactive', '2018-08-02 07:32:21', '2018-08-02 07:41:03'),
+(69, 52, 68, 'Active', '2018-08-02 07:37:40', '2018-08-07 23:11:41'),
+(70, 53, 66, 'Active', '2018-08-02 07:40:34', '2018-08-02 07:40:34'),
+(71, 54, 65, 'Active', '2018-08-08 20:06:35', '2018-08-08 20:06:35'),
+(72, 54, 80, 'Active', '2018-08-08 20:06:35', '2018-08-08 20:06:35'),
+(73, 55, 65, 'Active', '2018-08-09 15:14:49', '2018-08-09 15:14:49'),
+(74, 55, 67, 'Active', '2018-08-09 15:14:49', '2018-08-09 15:14:49'),
+(75, 55, 66, 'Active', '2018-08-09 15:14:49', '2018-08-09 15:14:49');
 
 -- --------------------------------------------------------
 
@@ -251,11 +314,41 @@ INSERT INTO `r_curriculumitem` (`CurriculumItem_ID`, `CurriculumItem_CurriculumI
 CREATE TABLE `r_curriculumyear` (
   `CurriculumYear_ID` int(11) NOT NULL,
   `CurriculumYear_Code` varchar(200) NOT NULL,
-  `CurriculumYear_Ative_Flag` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `CurriculumYear_Description` varchar(200) NOT NULL,
+  `CurriculumYear_Ative_Flag` enum('Active','Inactive') NOT NULL DEFAULT 'Inactive',
   `CurriculumYear_Display_Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
   `CurriculumYear_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `CurriculumYear_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `r_curriculumyear`
+--
+
+INSERT INTO `r_curriculumyear` (`CurriculumYear_ID`, `CurriculumYear_Code`, `CurriculumYear_Description`, `CurriculumYear_Ative_Flag`, `CurriculumYear_Display_Status`, `CurriculumYear_Date_Added`, `CurriculumYear_Date_Updated`) VALUES
+(1, 'qEmiI5/0XZY1EFyZ3Pnk6w==', 'mcctP57D/WKwY5t8ETo/jg==', 'Active', 'Active', '2018-08-02 07:14:09', '2018-08-02 07:25:06'),
+(2, 'JYAxs5DNonwjmZquAxcc/A==', '2nlX+AOfrgX4Eh4PuvjsUg==', 'Inactive', 'Active', '2018-08-09 12:10:32', '2018-08-09 12:10:32');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `r_documents`
+--
+
+CREATE TABLE `r_documents` (
+  `Documents_ID` int(11) NOT NULL,
+  `Documents_Description` varchar(200) NOT NULL,
+  `Documents_Display_Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `Documents_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Documents_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `r_documents`
+--
+
+INSERT INTO `r_documents` (`Documents_ID`, `Documents_Description`, `Documents_Display_Status`, `Documents_Date_Added`, `Documents_Date_Updated`) VALUES
+(1, 'CGGHScsAWoVVbd9g4j72pg==', 'Active', '2018-08-09 22:36:20', '2018-08-09 22:36:20');
 
 -- --------------------------------------------------------
 
@@ -358,6 +451,15 @@ CREATE TABLE `r_professor` (
   `Professor_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `r_professor`
+--
+
+INSERT INTO `r_professor` (`Professor_ID`, `Professor_Code`, `Professor_FirstName`, `Professor_MiddleName`, `Professor_LastName`, `Professor_Description`, `Professor_Display_Status`, `Professor_Date_Added`, `Professor_Date_Updated`) VALUES
+(1, '2018-00001-CM', 'IyHA5934Cat+oyTi4Alz5Q==', 'uyRCromTlt0mM0JPmZSLCw==', 'jntF34oWQ6bpEHmTbinYSQ==', 'BMXl72aaFYuZksuLkWQP4A==', 'Active', '2018-08-05 15:14:00', '2018-08-05 15:14:00'),
+(2, '2018-00002-CM', 'rttmvxqCxYnR4hOYMqItKw==', 'uyRCromTlt0mM0JPmZSLCw==', 'eAuM56FP3vgIitoOdDz0cw==', 'uyRCromTlt0mM0JPmZSLCw==', 'Active', '2018-08-05 15:14:19', '2018-08-05 15:14:19'),
+(3, '2018-00003-CM', 'CdfnDk9W+bVcXlw1DAZZaA==', 'ko/Z6WxCJoE5bDx3gCeXUQ==', 'gq4Fgnt6Z83pR28+U/sPYg==', 'uyRCromTlt0mM0JPmZSLCw==', 'Active', '2018-08-05 15:14:38', '2018-08-05 15:14:38');
+
 -- --------------------------------------------------------
 
 --
@@ -390,11 +492,20 @@ INSERT INTO `r_registrar` (`Registrar_ID`, `Registrar_First_Name`, `Registrar_Mi
 CREATE TABLE `r_room` (
   `Room_ID` int(11) NOT NULL,
   `Room_Code` varchar(100) NOT NULL,
+  `Room_CampusID` int(11) NOT NULL,
   `Room_Description` varchar(100) NOT NULL,
   `Room_Display_Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
   `Room_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Room_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `r_room`
+--
+
+INSERT INTO `r_room` (`Room_ID`, `Room_Code`, `Room_CampusID`, `Room_Description`, `Room_Display_Status`, `Room_Date_Added`, `Room_Date_Updated`) VALUES
+(1, 'edcmYZ6p60DmloUEjfaG/A==', 1, 'hMdMPkmW/+oEJdW8w4fqDw==', 'Active', '2018-08-05 15:53:11', '2018-08-05 15:53:11'),
+(2, 'aTvCPjV+EyFfmG97T7yAFA==', 1, 'aTvCPjV+EyFfmG97T7yAFA==', 'Active', '2018-08-05 15:55:43', '2018-08-05 15:55:43');
 
 -- --------------------------------------------------------
 
@@ -420,7 +531,9 @@ CREATE TABLE `r_section` (
 
 INSERT INTO `r_section` (`Section_ID`, `Section_Code`, `Section_Section`, `Section_Year`, `Section_CampusID`, `Section_CourseID`, `Section_Display_Status`, `Section_Date_Added`, `Section_Date_Updated`) VALUES
 (2, 'BBTE-NOVA 1-1', '1', 'First Year', 1, 14, 'Active', '2018-08-02 04:36:23', '2018-08-02 04:37:35'),
-(3, 'BSIT-NOVA 1-1', '1', 'First Year', 1, 15, 'Active', '2018-08-02 04:37:47', '2018-08-02 04:37:47');
+(3, 'BSIT-NOVA 1-1', '1', 'First Year', 1, 15, 'Active', '2018-08-02 04:37:47', '2018-08-02 04:37:47'),
+(4, 'BSIT-NOVA 1-2', '2', 'First Year', 1, 15, 'Active', '2018-08-05 21:10:38', '2018-08-05 21:10:38'),
+(5, 'DICT-NOVA 1-1', '1', 'First Year', 1, 16, 'Active', '2018-08-08 14:21:28', '2018-08-08 14:21:28');
 
 -- --------------------------------------------------------
 
@@ -475,7 +588,12 @@ CREATE TABLE `r_student_profile` (
 --
 
 INSERT INTO `r_student_profile` (`Student_Profile_ID`, `Student_Profile_First_Name`, `Student_Profile_Middle_Name`, `Student_Profile_Last_Name`, `Student_Profile_Date_Of_Birth`, `Student_Profile_Place_Of_Birth`, `Student_Profile_Gender`, `Student_Profile_Civil_Status`, `Student_Profile_Address`, `Student_Profile_Contact_Number`, `Student_Profile_Email_Address`, `Student_Profile_Display_Status`, `Student_Profile_Date_Added`, `Student_Profile_Date_Updated`) VALUES
-(5, '7uMs7QCme3AEz7+c549lrw==', 'uyRCromTlt0mM0JPmZSLCw==', 'Qn0vTZzB43GerTx3wO6ZSw==', '2000-12-12', 'Dyil7ixLUdpHXZWqUJB0AQ==', 'Male', 'Single', 'LsNsz0O8wBf6lZVbYb4q3w==', 'W716bCIMVbeTdX+VGjsySA==', 'N6YpGoxF1+nn9aXKfl+dgg==', 'Active', '2018-08-01 17:24:40', '2018-08-01 17:24:40');
+(5, '7uMs7QCme3AEz7+c549lrw==', 'uyRCromTlt0mM0JPmZSLCw==', 'Qn0vTZzB43GerTx3wO6ZSw==', '2000-12-12', 'Dyil7ixLUdpHXZWqUJB0AQ==', 'Male', 'Single', 'LsNsz0O8wBf6lZVbYb4q3w==', 'W716bCIMVbeTdX+VGjsySA==', 'N6YpGoxF1+nn9aXKfl+dgg==', 'Active', '2018-08-01 17:24:40', '2018-08-01 17:24:40'),
+(6, 'YEtxmhwpaUX5E9xNcmL0YA==', 'uyRCromTlt0mM0JPmZSLCw==', 'CK1ST42XWtXYwKep6B039Q==', '2000-12-12', 'LsNsz0O8wBf6lZVbYb4q3w==', 'Male', 'Single', 'LsNsz0O8wBf6lZVbYb4q3w==', 'ER6shEAgAt5EZ3ti3kIJrw==', 'z6vlQmQombznmocm13+g4+a9JFZfV+aEugZq+jIlZS0=', 'Active', '2018-08-02 08:50:35', '2018-08-02 08:50:35'),
+(7, 'CmQUM544qewgkJKcqJHGlQ==', 'uyRCromTlt0mM0JPmZSLCw==', 'HrJhAf3vSKTmMmGisXMCJA==', '2012-12-12', 'Dyil7ixLUdpHXZWqUJB0AQ==', 'Male', 'Single', 'AVUpopW4iuVP/oE1dA2Zag==', 'GNONF2gszWQg6feB+EDudA==', 'Xk5N2KWfEKIMyM4RiNOrjxmXWFtF22HavIojScRoUvs=', 'Active', '2018-08-02 09:26:05', '2018-08-02 09:26:05'),
+(8, '29e2NfjG5CwlQsFLxfk76w==', 'uyRCromTlt0mM0JPmZSLCw==', 'gNeiWcucqVMj7dnVtS+FYg==', '1999-03-12', 'LsNsz0O8wBf6lZVbYb4q3w==', 'Male', 'Single', 'LsNsz0O8wBf6lZVbYb4q3w==', 'D4GjavqtTbpcLNizs5ed6g==', 'f1AOXzGrTQVRZEq1XFhYOOW7Nh12c5SxpYEaeCv4SbM=', 'Active', '2018-08-02 21:14:37', '2018-08-02 21:14:37'),
+(9, '2eGUKEjyyp8x9uAGzbn+Bg==', 'uyRCromTlt0mM0JPmZSLCw==', 'Blf0xM9tfsExd3StAYxeUg==', '2001-04-12', 'pY1W34jwsnkL83NPPAfETg==', 'Female', 'Single', 'LsNsz0O8wBf6lZVbYb4q3w==', 'm98OUXoadWGug1qMZ+asfQ==', 'ryotAU36IFfdCOezOVzg2w==', 'Active', '2018-08-04 18:05:02', '2018-08-04 18:05:02'),
+(10, 'W03BpCboKVpCgt+De54fJA==', 'uyRCromTlt0mM0JPmZSLCw==', 'pPYRS2ohXhf63ASC/YR86A==', '2000-02-12', 'LsNsz0O8wBf6lZVbYb4q3w==', 'Male', 'Single', 'Dyil7ixLUdpHXZWqUJB0AQ==', 'qwqt5XvxDD4JVKqkWzv0wA==', 'wPyXk7V2WPNKqR4gV2RhLyknAvR34Dv30OWz//cj0Eg=', 'Active', '2018-08-08 20:10:23', '2018-08-08 20:10:23');
 
 -- --------------------------------------------------------
 
@@ -620,7 +738,7 @@ INSERT INTO `r_unit_fee` (`Unit_Fee_ID`, `Unit_Fee_Description`, `Unit_Fee_Amoun
 CREATE TABLE `r_user_account` (
   `User_Account_ID` int(11) NOT NULL,
   `User_Account_Reference` int(11) NOT NULL,
-  `User_Account_Type` enum('Registrar','Student','Proffesor','Admin') NOT NULL,
+  `User_Account_Type` enum('Registrar','Student','Proffesor','Admin','Cashier') NOT NULL,
   `User_Account_Username` varchar(100) NOT NULL,
   `User_Account_Password` varchar(100) NOT NULL,
   `User_Account_Display_Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
@@ -634,7 +752,8 @@ CREATE TABLE `r_user_account` (
 
 INSERT INTO `r_user_account` (`User_Account_ID`, `User_Account_Reference`, `User_Account_Type`, `User_Account_Username`, `User_Account_Password`, `User_Account_Display_Status`, `User_Account_Date_Added`, `User_Account_Date_Updated`) VALUES
 (2, 2, 'Admin', 'y+mVyG5T+ATd37oOK30C5A==', 'y+mVyG5T+ATd37oOK30C5A==', 'Active', '2018-07-27 16:28:55', '2018-07-27 19:02:39'),
-(3, 1, 'Registrar', 'dmncaAX9FRAIBHjb4acBeg==', 'dmncaAX9FRAIBHjb4acBeg==', 'Active', '2018-07-29 09:30:51', '2018-07-29 09:30:51');
+(3, 1, 'Registrar', 'dmncaAX9FRAIBHjb4acBeg==', 'dmncaAX9FRAIBHjb4acBeg==', 'Active', '2018-07-29 09:30:51', '2018-07-29 09:30:51'),
+(4, 1, 'Cashier', 'mN4YjK/gxTX+IIx+gIBsFA==', 'mN4YjK/gxTX+IIx+gIBsFA==', 'Active', '2018-08-02 14:14:50', '2018-08-02 14:14:50');
 
 -- --------------------------------------------------------
 
@@ -693,11 +812,21 @@ CREATE TABLE `t_enrollment_status` (
 CREATE TABLE `t_payment` (
   `Payment_ID` int(11) NOT NULL,
   `Payment_Student_Account_ID` int(11) NOT NULL,
-  `Payment_Balance` decimal(10,0) NOT NULL,
+  `Payment_Balance` decimal(10,2) NOT NULL,
   `Payment_Display_Status` enum('Active','Inactive') NOT NULL,
   `Payment_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Payment_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `t_payment`
+--
+
+INSERT INTO `t_payment` (`Payment_ID`, `Payment_Student_Account_ID`, `Payment_Balance`, `Payment_Display_Status`, `Payment_Date_Added`, `Payment_Date_Updated`) VALUES
+(1, 5, '0.00', 'Active', '2018-08-02 09:25:30', '2018-08-02 09:25:30'),
+(2, 6, '2900.00', 'Active', '2018-08-02 09:26:25', '2018-08-02 21:08:14'),
+(3, 7, '7670.00', 'Active', '2018-08-04 16:44:15', '2018-08-04 16:44:15'),
+(4, 8, '1520.00', 'Active', '2018-08-08 20:14:07', '2018-08-08 20:14:37');
 
 -- --------------------------------------------------------
 
@@ -718,6 +847,98 @@ CREATE TABLE `t_payment_history` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `t_schedule`
+--
+
+CREATE TABLE `t_schedule` (
+  `Schedule_ID` int(11) NOT NULL,
+  `Schedule_ProfessorID` int(11) DEFAULT NULL,
+  `Schedule_CurriculumItemID` int(11) NOT NULL,
+  `Schedule_SectionID` int(11) NOT NULL,
+  `Schedule_ChildrenID` int(11) DEFAULT NULL,
+  `Schedule_AcademicYearID` int(11) NOT NULL,
+  `Schedule_Display_Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `Schedule_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Schedule_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `t_schedule`
+--
+
+INSERT INTO `t_schedule` (`Schedule_ID`, `Schedule_ProfessorID`, `Schedule_CurriculumItemID`, `Schedule_SectionID`, `Schedule_ChildrenID`, `Schedule_AcademicYearID`, `Schedule_Display_Status`, `Schedule_Date_Added`, `Schedule_Date_Updated`) VALUES
+(2, 1, 58, 3, NULL, 1, 'Active', '2018-08-05 16:21:39', '2018-08-11 01:11:39'),
+(3, 2, 56, 3, NULL, 1, 'Active', '2018-08-05 20:29:59', '2018-08-11 01:11:39'),
+(4, 2, 62, 3, 82, 1, 'Active', '2018-08-05 22:00:56', '2018-08-11 01:11:39'),
+(5, 3, 57, 4, NULL, 1, 'Active', '2018-08-05 23:11:21', '2018-08-11 01:11:39'),
+(6, 1, 59, 3, NULL, 1, 'Active', '2018-08-06 15:41:55', '2018-08-11 01:11:39'),
+(7, 2, 61, 3, NULL, 1, 'Active', '2018-08-06 16:24:10', '2018-08-11 01:11:39'),
+(8, NULL, 62, 3, 83, 1, 'Active', '2018-08-06 16:40:12', '2018-08-11 01:11:39'),
+(9, 1, 56, 4, NULL, 1, 'Active', '2018-08-07 02:52:29', '2018-08-11 01:11:39'),
+(10, 1, 57, 3, NULL, 1, 'Active', '2018-08-07 13:08:33', '2018-08-11 01:11:39'),
+(11, 1, 63, 2, NULL, 1, 'Active', '2018-08-07 23:03:55', '2018-08-11 01:11:39'),
+(12, 3, 66, 2, 82, 1, 'Active', '2018-08-08 01:18:02', '2018-08-11 01:11:39'),
+(13, 1, 60, 3, NULL, 1, 'Active', '2018-08-08 20:18:11', '2018-08-11 01:11:39'),
+(14, 1, 71, 5, NULL, 1, 'Active', '2018-08-10 22:37:42', '2018-08-11 01:11:39'),
+(15, 2, 72, 5, 82, 1, 'Active', '2018-08-10 22:47:49', '2018-08-11 01:11:39'),
+(16, 1, 61, 3, NULL, 2, 'Active', '2018-08-11 01:25:38', '2018-08-11 01:25:38');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `t_schedule_items`
+--
+
+CREATE TABLE `t_schedule_items` (
+  `Schedule_Items_ID` int(11) NOT NULL,
+  `Schedule_Items_ScheduleID` int(11) NOT NULL,
+  `Schedule_Items_RoomID` int(11) DEFAULT NULL,
+  `Schedule_Items_Date` enum('M','T','W','TH','F','S','SU') NOT NULL,
+  `Schedule_Items_Time_Start` time NOT NULL DEFAULT '00:00:00',
+  `Schedule_Items_Time_End` time NOT NULL DEFAULT '00:00:00',
+  `Schedule_Items_Display_Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `Schedule_Items_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Schedule_Items_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `t_schedule_items`
+--
+
+INSERT INTO `t_schedule_items` (`Schedule_Items_ID`, `Schedule_Items_ScheduleID`, `Schedule_Items_RoomID`, `Schedule_Items_Date`, `Schedule_Items_Time_Start`, `Schedule_Items_Time_End`, `Schedule_Items_Display_Status`, `Schedule_Items_Date_Added`, `Schedule_Items_Date_Updated`) VALUES
+(5, 2, 1, 'M', '16:31:44', '00:00:00', 'Inactive', '2018-08-05 16:26:35', '2018-08-11 00:21:57'),
+(6, 2, NULL, 'M', '00:00:00', '00:00:00', 'Inactive', '2018-08-05 16:33:49', '2018-08-11 00:21:57'),
+(7, 2, NULL, 'M', '07:30:00', '19:30:00', 'Inactive', '2018-08-06 15:34:00', '2018-08-11 00:21:57'),
+(8, 6, NULL, 'M', '07:30:00', '10:30:00', 'Active', '2018-08-06 15:41:55', '2018-08-06 15:41:55'),
+(9, 3, NULL, 'M', '07:30:00', '07:30:00', 'Active', '2018-08-06 17:53:12', '2018-08-06 17:53:12'),
+(10, 7, NULL, 'F', '14:00:00', '17:00:00', 'Inactive', '2018-08-06 19:06:27', '2018-08-11 00:22:07'),
+(11, 8, NULL, 'M', '08:30:00', '09:30:00', 'Inactive', '2018-08-06 19:22:12', '2018-08-11 00:36:51'),
+(12, 8, 1, 'T', '07:30:00', '10:30:00', 'Inactive', '2018-08-06 19:23:09', '2018-08-11 00:36:51'),
+(13, 4, NULL, 'W', '07:30:00', '10:30:00', 'Active', '2018-08-06 19:23:38', '2018-08-06 21:11:26'),
+(14, 9, 1, 'M', '07:30:00', '10:30:00', 'Inactive', '2018-08-07 02:52:30', '2018-08-11 00:15:42'),
+(15, 10, NULL, 'M', '07:30:00', '09:30:00', 'Active', '2018-08-07 13:08:33', '2018-08-07 13:08:33'),
+(16, 11, NULL, 'M', '07:30:00', '10:30:00', 'Active', '2018-08-07 23:03:55', '2018-08-07 23:03:55'),
+(17, 11, 1, 'T', '10:30:00', '13:30:00', 'Active', '2018-08-08 01:11:12', '2018-08-08 01:11:12'),
+(18, 12, NULL, 'SU', '10:30:00', '13:30:00', 'Active', '2018-08-08 01:18:02', '2018-08-08 01:18:02'),
+(19, 13, 1, 'M', '07:30:00', '10:30:00', 'Inactive', '2018-08-08 20:18:11', '2018-08-11 00:33:38'),
+(20, 13, NULL, 'M', '13:30:00', '16:30:00', 'Inactive', '2018-08-08 20:18:11', '2018-08-11 00:33:38'),
+(21, 14, NULL, 'M', '07:30:00', '10:30:00', 'Active', '2018-08-10 22:37:42', '2018-08-10 22:37:42'),
+(22, 15, 1, 'T', '07:30:00', '07:30:00', 'Active', '2018-08-10 22:47:49', '2018-08-10 22:47:49'),
+(23, 2, NULL, 'M', '07:30:00', '19:30:00', 'Inactive', '2018-08-11 00:21:57', '2018-08-11 00:37:54'),
+(24, 13, 1, 'M', '07:30:00', '10:30:00', 'Inactive', '2018-08-11 00:33:38', '2018-08-11 00:34:26'),
+(25, 8, 1, 'T', '07:30:00', '10:30:00', 'Inactive', '2018-08-11 00:33:48', '2018-08-11 00:36:51'),
+(26, 8, 1, 'T', '07:30:00', '10:30:00', 'Inactive', '2018-08-11 00:34:10', '2018-08-11 00:36:51'),
+(27, 8, NULL, 'M', '08:30:00', '09:30:00', 'Active', '2018-08-11 00:36:51', '2018-08-11 00:36:51'),
+(28, 2, 1, 'M', '07:30:00', '22:30:00', 'Inactive', '2018-08-11 00:37:54', '2018-08-11 00:38:08'),
+(29, 2, 2, 'M', '07:30:00', '22:30:00', 'Active', '2018-08-11 00:38:08', '2018-08-11 00:38:08'),
+(30, 7, 2, 'T', '07:30:00', '10:30:00', 'Inactive', '2018-08-11 00:38:37', '2018-08-11 00:39:35'),
+(31, 7, 1, 'T', '07:30:00', '10:30:00', 'Inactive', '2018-08-11 00:39:35', '2018-08-11 00:39:43'),
+(32, 7, 2, 'T', '07:30:00', '10:30:00', 'Active', '2018-08-11 00:39:43', '2018-08-11 00:39:43'),
+(33, 16, 1, 'M', '07:30:00', '10:30:00', 'Active', '2018-08-11 01:25:38', '2018-08-11 01:25:38');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `t_student_account`
 --
 
@@ -726,13 +947,27 @@ CREATE TABLE `t_student_account` (
   `Student_Account_Student_Profile_ID` int(11) NOT NULL,
   `Student_Account_Student_Number` varchar(100) NOT NULL,
   `Student_Account_Scholastic_Status` enum('Regular','Regular(Warning)','Irregular') NOT NULL,
-  `Student_Account_Year` enum('1','2','3','4') NOT NULL,
+  `Student_Account_Year` enum('First Year','Second Year','Third Year','Fourth Year','Fifth Year') NOT NULL,
   `Student_Account_CourseID` int(11) NOT NULL,
   `Student_Account_SectionID` int(11) NOT NULL,
+  `Student_Account_CampusID` int(11) NOT NULL,
+  `Student_Account_CurriculumYearID` int(11) NOT NULL,
+  `Student_Account_Type` enum('New Enrollee','Transferee') NOT NULL,
   `Student_Account_Display_Status` enum('Active','Inactive') DEFAULT 'Active',
   `Student_Account_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Student_Account_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `t_student_account`
+--
+
+INSERT INTO `t_student_account` (`Student_Account_ID`, `Student_Account_Student_Profile_ID`, `Student_Account_Student_Number`, `Student_Account_Scholastic_Status`, `Student_Account_Year`, `Student_Account_CourseID`, `Student_Account_SectionID`, `Student_Account_CampusID`, `Student_Account_CurriculumYearID`, `Student_Account_Type`, `Student_Account_Display_Status`, `Student_Account_Date_Added`, `Student_Account_Date_Updated`) VALUES
+(4, 5, '2018-00001-NOVA-0', 'Regular', 'First Year', 14, 2, 1, 1, 'New Enrollee', 'Active', '2018-08-02 08:31:04', '2018-08-02 08:31:22'),
+(5, 6, '2018-00002-NOVA-0', 'Regular', 'First Year', 15, 3, 1, 1, 'New Enrollee', 'Active', '2018-08-02 09:24:29', '2018-08-02 09:24:29'),
+(6, 7, '2018-00003-NOVA-0', 'Regular', 'First Year', 14, 2, 1, 1, 'Transferee', 'Active', '2018-08-02 09:26:25', '2018-08-02 09:26:25'),
+(7, 8, '2018-00004-NOVA-0', 'Regular', 'First Year', 15, 3, 1, 1, 'New Enrollee', 'Active', '2018-08-04 16:44:15', '2018-08-04 16:44:15'),
+(8, 10, '2018-00005-NOVA-0', 'Regular', 'First Year', 16, 5, 1, 1, 'New Enrollee', 'Active', '2018-08-08 20:14:07', '2018-08-08 20:14:07');
 
 -- --------------------------------------------------------
 
@@ -747,6 +982,7 @@ CREATE TABLE `t_student_taken_curriculum_subject` (
   `Student_Taken_Curriculum_Subject_Taken_Status` enum('true','false') NOT NULL,
   `Student_Taken_Curriculum_Subject_SemesterID` int(11) NOT NULL,
   `Student_Taken_Curriculum_Subject_AcademicIYearID` int(11) NOT NULL,
+  `Student_Taken_Curriculum_Subject_SectionID` int(11) NOT NULL,
   `Student_Taken_Curriculum_Subject_Display_Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
   `Student_Taken_Curriculum_Subject_Date_Added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Student_Taken_Curriculum_Subject_Date_Updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -781,6 +1017,20 @@ ALTER TABLE `r_campus`
   ADD PRIMARY KEY (`Campus_ID`);
 
 --
+-- Indexes for table `r_campus_course`
+--
+ALTER TABLE `r_campus_course`
+  ADD PRIMARY KEY (`Campus_Course_ID`),
+  ADD KEY `Campus_Course_CourseID` (`Campus_Course_CourseID`),
+  ADD KEY `Campus_Course_CampusID` (`Campus_Course_CampusID`);
+
+--
+-- Indexes for table `r_cashier`
+--
+ALTER TABLE `r_cashier`
+  ADD PRIMARY KEY (`Cashier_ID`);
+
+--
 -- Indexes for table `r_course`
 --
 ALTER TABLE `r_course`
@@ -808,7 +1058,8 @@ ALTER TABLE `r_course_fee_items`
 ALTER TABLE `r_curriculum`
   ADD PRIMARY KEY (`Curriculum_ID`),
   ADD KEY `Curriculum_SemesterID` (`Curriculum_SemesterID`),
-  ADD KEY `Curriculum_CourseID` (`Curriculum_CourseID`);
+  ADD KEY `Curriculum_CourseID` (`Curriculum_CourseID`),
+  ADD KEY `Curriculum_CurriculumYearID` (`Curriculum_CurriculumYearID`);
 
 --
 -- Indexes for table `r_curriculumitem`
@@ -823,6 +1074,12 @@ ALTER TABLE `r_curriculumitem`
 --
 ALTER TABLE `r_curriculumyear`
   ADD PRIMARY KEY (`CurriculumYear_ID`);
+
+--
+-- Indexes for table `r_documents`
+--
+ALTER TABLE `r_documents`
+  ADD PRIMARY KEY (`Documents_ID`);
 
 --
 -- Indexes for table `r_fee`
@@ -862,7 +1119,8 @@ ALTER TABLE `r_registrar`
 -- Indexes for table `r_room`
 --
 ALTER TABLE `r_room`
-  ADD PRIMARY KEY (`Room_ID`);
+  ADD PRIMARY KEY (`Room_ID`),
+  ADD KEY `Room_CampusID` (`Room_CampusID`);
 
 --
 -- Indexes for table `r_section`
@@ -966,13 +1224,34 @@ ALTER TABLE `t_payment_history`
   ADD KEY `Payment_History_Payment_ID` (`Payment_History_Payment_ID`);
 
 --
+-- Indexes for table `t_schedule`
+--
+ALTER TABLE `t_schedule`
+  ADD PRIMARY KEY (`Schedule_ID`),
+  ADD KEY `Schedule_CurriculumItemID` (`Schedule_CurriculumItemID`),
+  ADD KEY `Schedule_ProfessorID` (`Schedule_ProfessorID`),
+  ADD KEY `Schedule_SectionID` (`Schedule_SectionID`),
+  ADD KEY `Schedule_ChildrenID` (`Schedule_ChildrenID`),
+  ADD KEY `Schedule_AcademicYearID` (`Schedule_AcademicYearID`);
+
+--
+-- Indexes for table `t_schedule_items`
+--
+ALTER TABLE `t_schedule_items`
+  ADD PRIMARY KEY (`Schedule_Items_ID`),
+  ADD KEY `Schedule_Items_ScheduleID` (`Schedule_Items_ScheduleID`),
+  ADD KEY `Schedule_Items_RoomID` (`Schedule_Items_RoomID`);
+
+--
 -- Indexes for table `t_student_account`
 --
 ALTER TABLE `t_student_account`
   ADD PRIMARY KEY (`Student_Account_ID`),
   ADD KEY `Student_Account_Student_Profile_ID` (`Student_Account_Student_Profile_ID`),
   ADD KEY `Student_Account_CourseID` (`Student_Account_CourseID`),
-  ADD KEY `Student_Account_SectionID` (`Student_Account_SectionID`);
+  ADD KEY `Student_Account_SectionID` (`Student_Account_SectionID`),
+  ADD KEY `Student_Account_CampusID` (`Student_Account_CampusID`),
+  ADD KEY `t_student_account_ibfk_4` (`Student_Account_CurriculumYearID`);
 
 --
 -- Indexes for table `t_student_taken_curriculum_subject`
@@ -982,7 +1261,8 @@ ALTER TABLE `t_student_taken_curriculum_subject`
   ADD KEY `Student_Taken_Curriculum_Subject_SemesterID` (`Student_Taken_Curriculum_Subject_SemesterID`),
   ADD KEY `Student_Taken_Curriculum_Subject_AcademicIYearID` (`Student_Taken_Curriculum_Subject_AcademicIYearID`),
   ADD KEY `Student_Taken_Curriculum_Subject_SubjectID` (`Student_Taken_Curriculum_Subject_SubjectID`),
-  ADD KEY `Student_Taken_Curriculum_Subject_StudentAccountID` (`Student_Taken_Curriculum_Subject_StudentAccountID`);
+  ADD KEY `Student_Taken_Curriculum_Subject_StudentAccountID` (`Student_Taken_Curriculum_Subject_StudentAccountID`),
+  ADD KEY `Student_Taken_Curriculum_Subject_SectionID` (`Student_Taken_Curriculum_Subject_SectionID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -1010,13 +1290,25 @@ ALTER TABLE `r_awards`
 -- AUTO_INCREMENT for table `r_campus`
 --
 ALTER TABLE `r_campus`
-  MODIFY `Campus_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Campus_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `r_campus_course`
+--
+ALTER TABLE `r_campus_course`
+  MODIFY `Campus_Course_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `r_cashier`
+--
+ALTER TABLE `r_cashier`
+  MODIFY `Cashier_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `r_course`
 --
 ALTER TABLE `r_course`
-  MODIFY `Course_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `Course_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `r_course_fee`
@@ -1034,19 +1326,25 @@ ALTER TABLE `r_course_fee_items`
 -- AUTO_INCREMENT for table `r_curriculum`
 --
 ALTER TABLE `r_curriculum`
-  MODIFY `Curriculum_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `Curriculum_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `r_curriculumitem`
 --
 ALTER TABLE `r_curriculumitem`
-  MODIFY `CurriculumItem_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `CurriculumItem_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT for table `r_curriculumyear`
 --
 ALTER TABLE `r_curriculumyear`
-  MODIFY `CurriculumYear_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `CurriculumYear_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `r_documents`
+--
+ALTER TABLE `r_documents`
+  MODIFY `Documents_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `r_fee`
@@ -1070,7 +1368,7 @@ ALTER TABLE `r_prerequisite`
 -- AUTO_INCREMENT for table `r_professor`
 --
 ALTER TABLE `r_professor`
-  MODIFY `Professor_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Professor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `r_registrar`
@@ -1082,13 +1380,13 @@ ALTER TABLE `r_registrar`
 -- AUTO_INCREMENT for table `r_room`
 --
 ALTER TABLE `r_room`
-  MODIFY `Room_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Room_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `r_section`
 --
 ALTER TABLE `r_section`
-  MODIFY `Section_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Section_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `r_semester`
@@ -1100,7 +1398,7 @@ ALTER TABLE `r_semester`
 -- AUTO_INCREMENT for table `r_student_profile`
 --
 ALTER TABLE `r_student_profile`
-  MODIFY `Student_Profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Student_Profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `r_subject`
@@ -1136,7 +1434,7 @@ ALTER TABLE `r_unit_fee`
 -- AUTO_INCREMENT for table `r_user_account`
 --
 ALTER TABLE `r_user_account`
-  MODIFY `User_Account_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `User_Account_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `t_assign_section_fee_item`
@@ -1160,7 +1458,7 @@ ALTER TABLE `t_enrollment_status`
 -- AUTO_INCREMENT for table `t_payment`
 --
 ALTER TABLE `t_payment`
-  MODIFY `Payment_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `t_payment_history`
@@ -1169,10 +1467,22 @@ ALTER TABLE `t_payment_history`
   MODIFY `Payment_History_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `t_schedule`
+--
+ALTER TABLE `t_schedule`
+  MODIFY `Schedule_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `t_schedule_items`
+--
+ALTER TABLE `t_schedule_items`
+  MODIFY `Schedule_Items_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
 -- AUTO_INCREMENT for table `t_student_account`
 --
 ALTER TABLE `t_student_account`
-  MODIFY `Student_Account_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Student_Account_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `t_student_taken_curriculum_subject`
@@ -1183,6 +1493,13 @@ ALTER TABLE `t_student_taken_curriculum_subject`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `r_campus_course`
+--
+ALTER TABLE `r_campus_course`
+  ADD CONSTRAINT `r_campus_course_ibfk_1` FOREIGN KEY (`Campus_Course_CourseID`) REFERENCES `r_course` (`Course_ID`),
+  ADD CONSTRAINT `r_campus_course_ibfk_2` FOREIGN KEY (`Campus_Course_CampusID`) REFERENCES `r_campus` (`Campus_ID`);
 
 --
 -- Constraints for table `r_course_fee`
@@ -1203,7 +1520,8 @@ ALTER TABLE `r_course_fee_items`
 --
 ALTER TABLE `r_curriculum`
   ADD CONSTRAINT `r_curriculum_ibfk_1` FOREIGN KEY (`Curriculum_SemesterID`) REFERENCES `r_semester` (`Semester_ID`),
-  ADD CONSTRAINT `r_curriculum_ibfk_2` FOREIGN KEY (`Curriculum_CourseID`) REFERENCES `r_course` (`Course_ID`);
+  ADD CONSTRAINT `r_curriculum_ibfk_2` FOREIGN KEY (`Curriculum_CourseID`) REFERENCES `r_course` (`Course_ID`),
+  ADD CONSTRAINT `r_curriculum_ibfk_3` FOREIGN KEY (`Curriculum_CurriculumYearID`) REFERENCES `r_curriculumyear` (`CurriculumYear_ID`);
 
 --
 -- Constraints for table `r_curriculumitem`
@@ -1225,6 +1543,12 @@ ALTER TABLE `r_mandatory_fee`
 ALTER TABLE `r_prerequisite`
   ADD CONSTRAINT `r_prerequisite_ibfk_1` FOREIGN KEY (`Prerequisite_Main_SubjectID`) REFERENCES `r_subject` (`Subject_ID`),
   ADD CONSTRAINT `r_prerequisite_ibfk_2` FOREIGN KEY (`Prerequisite_Prequisite_SubjectID`) REFERENCES `r_subject` (`Subject_ID`);
+
+--
+-- Constraints for table `r_room`
+--
+ALTER TABLE `r_room`
+  ADD CONSTRAINT `r_room_ibfk_1` FOREIGN KEY (`Room_CampusID`) REFERENCES `r_campus` (`Campus_ID`);
 
 --
 -- Constraints for table `r_section`
@@ -1284,12 +1608,31 @@ ALTER TABLE `t_payment_history`
   ADD CONSTRAINT `t_payment_history_ibfk_1` FOREIGN KEY (`Payment_History_Payment_ID`) REFERENCES `t_payment` (`Payment_ID`);
 
 --
+-- Constraints for table `t_schedule`
+--
+ALTER TABLE `t_schedule`
+  ADD CONSTRAINT `t_schedule_ibfk_1` FOREIGN KEY (`Schedule_CurriculumItemID`) REFERENCES `r_curriculumitem` (`CurriculumItem_ID`),
+  ADD CONSTRAINT `t_schedule_ibfk_2` FOREIGN KEY (`Schedule_ProfessorID`) REFERENCES `r_professor` (`Professor_ID`),
+  ADD CONSTRAINT `t_schedule_ibfk_4` FOREIGN KEY (`Schedule_SectionID`) REFERENCES `r_section` (`Section_ID`),
+  ADD CONSTRAINT `t_schedule_ibfk_5` FOREIGN KEY (`Schedule_ChildrenID`) REFERENCES `r_subject` (`Subject_ID`),
+  ADD CONSTRAINT `t_schedule_ibfk_6` FOREIGN KEY (`Schedule_AcademicYearID`) REFERENCES `r_academic_year` (`Academic_Year_ID`);
+
+--
+-- Constraints for table `t_schedule_items`
+--
+ALTER TABLE `t_schedule_items`
+  ADD CONSTRAINT `t_schedule_items_ibfk_1` FOREIGN KEY (`Schedule_Items_ScheduleID`) REFERENCES `t_schedule` (`Schedule_ID`),
+  ADD CONSTRAINT `t_schedule_items_ibfk_2` FOREIGN KEY (`Schedule_Items_RoomID`) REFERENCES `r_room` (`Room_ID`);
+
+--
 -- Constraints for table `t_student_account`
 --
 ALTER TABLE `t_student_account`
   ADD CONSTRAINT `t_student_account_ibfk_1` FOREIGN KEY (`Student_Account_Student_Profile_ID`) REFERENCES `r_student_profile` (`Student_Profile_ID`),
   ADD CONSTRAINT `t_student_account_ibfk_2` FOREIGN KEY (`Student_Account_CourseID`) REFERENCES `r_course` (`Course_ID`),
-  ADD CONSTRAINT `t_student_account_ibfk_3` FOREIGN KEY (`Student_Account_SectionID`) REFERENCES `r_section` (`Section_ID`);
+  ADD CONSTRAINT `t_student_account_ibfk_3` FOREIGN KEY (`Student_Account_SectionID`) REFERENCES `r_section` (`Section_ID`),
+  ADD CONSTRAINT `t_student_account_ibfk_4` FOREIGN KEY (`Student_Account_CurriculumYearID`) REFERENCES `r_curriculumyear` (`CurriculumYear_ID`),
+  ADD CONSTRAINT `t_student_account_ibfk_5` FOREIGN KEY (`Student_Account_CampusID`) REFERENCES `r_campus` (`Campus_ID`);
 
 --
 -- Constraints for table `t_student_taken_curriculum_subject`
@@ -1298,7 +1641,8 @@ ALTER TABLE `t_student_taken_curriculum_subject`
   ADD CONSTRAINT `t_student_taken_curriculum_subject_ibfk_1` FOREIGN KEY (`Student_Taken_Curriculum_Subject_SemesterID`) REFERENCES `r_semester` (`Semester_ID`),
   ADD CONSTRAINT `t_student_taken_curriculum_subject_ibfk_2` FOREIGN KEY (`Student_Taken_Curriculum_Subject_AcademicIYearID`) REFERENCES `r_academic_year` (`Academic_Year_ID`),
   ADD CONSTRAINT `t_student_taken_curriculum_subject_ibfk_3` FOREIGN KEY (`Student_Taken_Curriculum_Subject_SubjectID`) REFERENCES `r_subject` (`Subject_ID`),
-  ADD CONSTRAINT `t_student_taken_curriculum_subject_ibfk_4` FOREIGN KEY (`Student_Taken_Curriculum_Subject_StudentAccountID`) REFERENCES `t_student_account` (`Student_Account_ID`);
+  ADD CONSTRAINT `t_student_taken_curriculum_subject_ibfk_4` FOREIGN KEY (`Student_Taken_Curriculum_Subject_StudentAccountID`) REFERENCES `t_student_account` (`Student_Account_ID`),
+  ADD CONSTRAINT `t_student_taken_curriculum_subject_ibfk_5` FOREIGN KEY (`Student_Taken_Curriculum_Subject_SectionID`) REFERENCES `r_section` (`Section_ID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

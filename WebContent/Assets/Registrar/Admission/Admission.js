@@ -436,11 +436,18 @@ var EditableTable = function () {
         						},
         					url:'Controller/Registrar/Admission/StudentProfile',
         					success: function(result){
-	    						 swal("Record Added!", "The data is successfully added!", "success");
-	                             var aiNew = oTable.fnAddData([codeTxt, descTxt, "<center><a class='btn btn-success edit' data-toggle='modal' href='#CourseEdit' ><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a></center>"]);
-	                             var nRow = oTable.fnGetNodes(aiNew[0]);
-	                             document.getElementById("form-data").reset();
-	                             $("#addcloseBtn").click();
+	        						swal({
+	                                    title: "Record Added!"
+	                                    , text: "The data is successfully Added!"
+	                                    , type: "success"
+	                                    , confirmButtonColor: '#88A755'
+	                                    , confirmButtonText: 'Okay'
+	                                    , closeOnConfirm: false
+	                                }, function (isConfirm) {
+	                                    if (isConfirm) {
+	                                        window.location.reload();
+	                                    }
+	                                });
 	                             
         					},
                             error: function (response) {
@@ -708,30 +715,31 @@ var EditableTable = function () {
         						},
         					url:'Controller/Registrar/Admission/Enroll',
         					success: function(result){
-//        						$('#mainBody tr').each(function(key,val){
-//        							var sub = $(this).find('.codeText').html();
-//        							var taken = $(this).find('input:checkbox').prop("checked");
-//            						$.ajax({
-//                    					type:'POST',
-//                    					data:{
-//                    							sub:sub,
-//                    							taken:taken
-//                    						
-//                    						},
-//                    					url:'Controller/Admin/Student/AdmissionTakenSubjectController',
-//                    					success: function(result2){
-//                    						
-//        	                             
-//                    					},
-//                                        error: function (response2) {
-//                                            swal("Error encountered while adding data", "Please try again", "error");
-//                                            $("#editable-sample_new").click();
-//                                        }
-//                    				});
+        						$('#mainBody tr').each(function(key,val){
+        							var sub = $(this).find('.codeText').html();
+        							var taken = $(this).find('input:checkbox').prop("checked");
+            						$.ajax({
+                    					type:'POST',
+                    					data:{
+                    							sub:sub,
+                    							taken:taken,
+                    							SectionDrp:SectionDrp
+                    						
+                    						},
+                    					url:'Controller/Registrar/Admission/AdmissionTakenSubjectController',
+                    					success: function(result2){
+                    						
+        	                             
+                    					},
+                                        error: function (response2) {
+                                            swal("Error encountered while adding data", "Please try again", "error");
+                                            $("#editable-sample_new").click();
+                                        }
+                    				});
             						
             						
         							
-//        						});
+        						});
         						swal({
                                     title: "Record Enrolled!"
                                     , text: "The data is successfully enrolled!"
