@@ -63,7 +63,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		String sql = "";
 		if(type.equals("Insert"))
-			sql = "INSERT INTO `r_professor` (Professor_Code,Professor_FirstName,Professor_MiddleName,Professor_LastName,Professor_Description) VALUES ((SELECT concat(YEAR(NOW()),'-',right(count(*)+100001,5),'-CM') FROM (SELECT * FROM `r_professor`) AS T1 WHERE LEFT(T1.Professor_Code,4) = YEAR(NOW())),'"+ec.encrypt(ec.key, ec.initVector, fname)+"','"+ec.encrypt(ec.key, ec.initVector, mname)+"','"+ec.encrypt(ec.key, ec.initVector, lname)+"','"+ec.encrypt(ec.key, ec.initVector, desc)+"')";
+			sql = "INSERT INTO `r_professor` (Professor_Code,Professor_FirstName,Professor_MiddleName,Professor_LastName,Professor_Description) VALUES ((SELECT concat(YEAR(NOW()),'-',right(count(*)+100001,5)) FROM (SELECT * FROM `r_professor`) AS T1 WHERE LEFT(T1.Professor_Code,4) = YEAR(NOW())),'"+ec.encrypt(ec.key, ec.initVector, fname)+"','"+ec.encrypt(ec.key, ec.initVector, mname)+"','"+ec.encrypt(ec.key, ec.initVector, lname)+"','"+ec.encrypt(ec.key, ec.initVector, desc)+"')";
 		try {
 			stmnt.execute(sql);
 		} catch (SQLException e) {

@@ -48,6 +48,8 @@ public class AdmissionTakenSubjectController extends HttpServlet {
 		String sub = request.getParameter("sub");
 		String taken = request.getParameter("taken");
 		String SectionDrp = request.getParameter("SectionDrp");
+		String CourseDrp = request.getParameter("CourseDrp");
+		
 		
 		DBConfiguration db = new DBConfiguration(); 
 		Connection conn = db.getConnection();
@@ -59,12 +61,13 @@ public class AdmissionTakenSubjectController extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String sql = "insert into t_student_taken_curriculum_subject (Student_Taken_Curriculum_Subject_SubjectID,Student_Taken_Curriculum_Subject_StudentAccountID,Student_Taken_Curriculum_Subject_Taken_Status,Student_Taken_Curriculum_Subject_SemesterID,Student_Taken_Curriculum_Subject_AcademicIYearID,Student_Taken_Curriculum_Subject_SectionID) values ((SELECT Subject_ID FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, sub)+"'),(SELECT Student_Account_ID FROM t_student_account ORDER BY Student_Account_Date_Added DESC LIMIT 1),'"+taken+"',(SELECT Active_Semester_SemesterID FROM r_active_semester WHERE Active_Semester_Flag = 'Active' and Active_Semester_Display_Status = 'Active'),(SELECT Active_Academic_Year_AcademicYearID FROM r_active_academic_year WHERE Active_Academic_Year_Flag = 'Active' and Active_Academic_Year_Display_Status = 'Active'),'"+SectionDrp+"')";
+		String sql = "insert into t_student_taken_curriculum_subject (Student_Taken_Curriculum_Subject_SubjectID,Student_Taken_Curriculum_Subject_StudentAccountID,Student_Taken_Curriculum_Subject_Taken_Status,Student_Taken_Curriculum_Subject_SemesterID,Student_Taken_Curriculum_Subject_AcademicIYearID,Student_Taken_Curriculum_Subject_SectionID,Student_Taken_Curriculum_Subject_CourseID) values ((SELECT Subject_ID FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, sub)+"'),(SELECT Student_Account_ID FROM t_student_account ORDER BY Student_Account_Date_Added DESC LIMIT 1),'"+taken+"',(SELECT Semester_ID FROM r_semester WHERE Semester_Active_Flag = 'Active' and Semester_Display_Status = 'Active'),(SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present' and Academic_Year_Display_Status = 'Active'),'"+SectionDrp+"',(SELECT Course_ID FROM r_course WHERE Course_Code = '"+ec.encrypt(ec.key, ec.initVector, CourseDrp)+"'))";
 
 		PrintWriter out = response.getWriter();	
 		out.print(sql);
 		try {
 			stmnt.execute(sql);
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -6,7 +6,7 @@
 <%@attribute name="customImportedScript" fragment="true" %>
 <%
 	if(session.getAttribute("username") == null || !session.getAttribute("type").equals("Registrar")){
-		response.sendRedirect("http://"+request.getServerName()+":"+request.getServerPort()+"/SIS/" +"index.jsp");
+		response.sendRedirect("http://"+request.getServerName()+":"+request.getServerPort()+"/SIS/" +"Login.jsp");
 	}
 
 %>
@@ -131,6 +131,7 @@
                     	<li class="" id="SubjectBtn"><a href="SubjectFee.jsp">Subject Fee</a></li>
                     	<li class="" id="MandatoryBtn"><a href="MandatoryFee.jsp">Mandatory Fee</a></li>
                     	<li class="" id="SectionOfferingBtn"><a href="SectionOffering.jsp">Section Offering</a></li>
+                    	<li class="" id="RegistrationOpeningBtn"><a href="RegistrationOpening.jsp">Registration Opening</a></li>
                     </ul>
                 </li>
                 <li>
@@ -139,6 +140,29 @@
 	                    <span>Admission</span>
 	                </a>
            		</li>
+           		<li>
+	                <a href="Application.jsp" class="" id="ApplicationBtn">
+	                    <i class="fa fa-briefcase"></i>
+	                    <span>Application</span>
+	                </a>
+           		</li>
+           		<li>
+	                <a href="Student.jsp" class="" id="StudentBtn">
+	                    <i class="fa  fa-smile-o"></i>
+	                    <span>Student</span>
+	                </a>
+           		</li>
+           		<li class="sub-menu">
+                    <a href="javascript:;" class="" id="GradeBtn" >
+                        <i class="fa fa-star"></i>
+                        <span>Grade</span>
+                    </a>
+                    <ul class="sub">
+                    	<li class="" id="GradeOpeningBtn"><a href="GradeOpening.jsp">Grade Opening</a></li>
+                    	<li class="" id="GradesBtn"><a href="Grade.jsp">Grade</a></li>
+                    </ul>
+                </li>
+           		
             </ul>            
         </div>
         <!-- sidebar menu end-->
@@ -282,6 +306,8 @@
 	<script src="../Assets/js/flot-chart/jquery.flot.tooltip.min.js"></script>
 	<script src="../Assets/js/flot-chart/jquery.flot.resize.js"></script>
 	<script src="../Assets/js/flot-chart/jquery.flot.pie.resize.js"></script>
+	<script type="text/javascript" src="../Assets/js/jquery-multi-select/js/jquery.multi-select.js"></script>
+	<script type="text/javascript" src="../Assets/js/jquery-multi-select/js/jquery.quicksearch.js"></script>
 
     <script src="../Assets/js/scripts.js"></script>
     <!--icheck init -->
@@ -306,11 +332,25 @@
 			$("#AdmissionBtn").addClass("active");
  		else if(title == "Section Offering") 
 			$("#SectionOfferingBtn").addClass("active");
+ 		else if(title == "Student") 
+			$("#StudentBtn").addClass("active");
+ 		else if(title == "Application") 
+			$("#ApplicationBtn").addClass("active");
+ 		else if(title == "Grade Opening" ) 
+			$("#GradeOpeningBtn").addClass("active");
+ 		else if(title == "Grade" ) 
+			$("#GradesBtn").addClass("active");
+ 		else if(title == "Registration Opening" ) 
+			$("#RegistrationOpeningBtn").addClass("active");
 		
-		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering') 
+		
+		
+		
+		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering' || title == 'Registration Opening') 
 			$('#Pre-Enrollment').click();
-		
-		
+		if(title == 'Grade Opening' || title == "Grade") 
+			$('#GradeBtn').click();
+				
 		$('#logoutBtn').click(function(){
     		$.ajax({
 				type:'POST',

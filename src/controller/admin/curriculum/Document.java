@@ -44,6 +44,7 @@ public class Document extends HttpServlet {
 		EncryptandDecrypt ec = new EncryptandDecrypt();
 
 		String desc = request.getParameter("descTxt");
+		String man = request.getParameter("man");
 		
 		String latcode = request.getParameter("latcode");
 		String type = request.getParameter("type");
@@ -61,7 +62,7 @@ public class Document extends HttpServlet {
 		 
 		String sql = "";
 		if(type.equals("Insert"))
-			sql = "Insert into r_documents (Documents_Description) values ('"+ec.encrypt(ec.key, ec.initVector, desc)+"')";
+			sql = "Insert into r_documents (Documents_Description,Documents_Mandatory) values ('"+ec.encrypt(ec.key, ec.initVector, desc)+"','"+man+"')";
 	//	else if(type.equals("Update"))
 	//		sql = "Update r_subject set Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"',Subject_Description = '"+ec.encrypt(ec.key, ec.initVector, desc)+"',Subject_Units = '"+unit+"' where Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"'";
 ///		else if(type.equals("Delete"))

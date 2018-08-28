@@ -122,6 +122,95 @@ public class Dropdowns {
 			
 		}
 		i = 0;
+		rs = stmnt.executeQuery("Select Academic_Year_Code,Academic_Year_Description from r_academic_year WHERE Academic_Year_Display_Status = 'Active' and Academic_Year_Active_Flag = 'To be Used'");
+		while(rs.next()){
+			if(i == 0){
+				Drp += "<optgroup label='To be Used'>";				
+				
+			}
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Code"))+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Description"))+"</option>";
+			i++;
+			
+		}
+		if(i != 0){
+			Drp += "</optgroup>";				
+			
+		}
+		i = 0;
+
+		
+		rs = stmnt.executeQuery("Select Academic_Year_Code,Academic_Year_Description from r_academic_year WHERE Academic_Year_Display_Status = 'Active' and Academic_Year_Active_Flag = 'Not Used'");
+		while(rs.next()){
+			if(i == 0){
+				Drp += "<optgroup label='Not Used'>";				
+				
+			}
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Code"))+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Description"))+"</option>";
+			i++;
+			
+		}
+		if(i != 0){
+			Drp += "</optgroup>";				
+			
+		}
+		i = 0;
+		return Drp;
+	}
+	
+	public String fillacadyearDrp2() throws SQLException {
+		String Drp = "";
+		Statement stmnt = conn.createStatement();
+		int  i = 0 ;
+		
+		rs = stmnt.executeQuery("Select Academic_Year_Code,Academic_Year_Description from r_academic_year WHERE Academic_Year_Display_Status = 'Active' and Academic_Year_Active_Flag = 'Used'");
+		while(rs.next()){
+			if(i == 0){
+				Drp += "<optgroup label='Used'>";				
+				
+			}
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Code"))+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Description"))+"</option>";
+
+			i++;
+			
+		}
+		if(i != 0){
+			Drp += "</optgroup>";				
+			
+		}
+		i = 0;
+		rs = stmnt.executeQuery("Select Academic_Year_Code,Academic_Year_Description from r_academic_year WHERE Academic_Year_Display_Status = 'Active' and Academic_Year_Active_Flag = 'Present'");
+		while(rs.next()){
+			if(i == 0){
+				Drp += "<optgroup label='Present'>";				
+				
+			}
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Code"))+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Description"))+"</option>";
+
+			i++;
+			
+		}
+		if(i != 0){
+			Drp += "</optgroup>";				
+			
+		}
+		
+		i = 0;
+		rs = stmnt.executeQuery("Select Academic_Year_Code,Academic_Year_Description from r_academic_year WHERE Academic_Year_Display_Status = 'Active' and Academic_Year_Active_Flag = 'To be Used'");
+		while(rs.next()){
+			if(i == 0){
+				Drp += "<optgroup label='To be Used'>";				
+				
+			}
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Code"))+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Description"))+"</option>";
+			i++;
+			
+		}
+		if(i != 0){
+			Drp += "</optgroup>";				
+			
+		}
+		
+		i = 0;
 		rs = stmnt.executeQuery("Select Academic_Year_Code,Academic_Year_Description from r_academic_year WHERE Academic_Year_Display_Status = 'Active' and Academic_Year_Active_Flag = 'Not Used'");
 		while(rs.next()){
 			if(i == 0){
@@ -179,7 +268,45 @@ public class Dropdowns {
 		
 		return Drp;
 	}
-	
+	public String filldocumentDrp() throws SQLException {
+		String Drp = "";
+		Statement stmnt = conn.createStatement();
+		rs = stmnt.executeQuery("Select * from r_documents WHERE Documents_Display_Status = 'Active' and Documents_Mandatory = 'Yes'");
+		int  i = 0 ;
+		while(rs.next()){
+			if(i == 0){
+				Drp += "<optgroup label='Mandatory'>";				
+				
+			}
+			Drp += "<option value='"+rs.getString("Documents_ID")+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Documents_Description"))+"</option>";
+
+			i++;
+			
+		}
+		if(i != 0){
+			Drp += "</optgroup>";				
+			
+		}
+		i = 0;
+		rs = stmnt.executeQuery("Select * from r_documents WHERE Documents_Display_Status = 'Active' and Documents_Mandatory = 'No'");
+		while(rs.next()){
+			if(i == 0){
+				Drp += "<optgroup label='Non-Mandatory'>";				
+				
+			}
+			Drp += "<option value='"+ rs.getString("Documents_ID")+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Documents_Description"))+"</option>";
+
+			i++;
+			
+		}
+		if(i != 0){
+			Drp += "</optgroup>";				
+			
+		}
+		i = 0;
+		
+		return Drp;
+	}
 	public String fillgroupsubjectDrp() throws SQLException {
 		String Drp = "";
 		Statement stmnt = conn.createStatement();
@@ -212,10 +339,10 @@ public class Dropdowns {
 	public String fillcampusDrp() throws SQLException {
 		String Drp = "";
 		Statement stmnt = conn.createStatement();
-		rs = stmnt.executeQuery("Select Campus_Code,Campus_Name from r_campus WHERE Campus_Display_Status = 'Active' ");
+		rs = stmnt.executeQuery("Select Campus_Code,Campus_Name,Campus_Address  from r_campus WHERE Campus_Display_Status = 'Active' ");
 		int  i = 0 ;
 		while(rs.next()){
-			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Campus_Code"))+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Campus_Name"))+"</option>";
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Campus_Code"))+"' data-address='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Campus_Address"))+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Campus_Name"))+"</option>";
 
 			i++;
 			
@@ -245,6 +372,25 @@ public class Dropdowns {
 			
 		}
 		i = 0;
+		
+		rs = stmnt.executeQuery("Select Semester_Code,Semester_Description from r_semester WHERE Semester_Display_Status = 'Active' and Semester_Active_Flag ='To be Used' ");
+		i = 0 ;
+		while(rs.next()){
+			if(i == 0){
+				Drp += "<optgroup label='To be Used'>";				
+				
+			}
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Code"))+"' >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Description"))+"</option>";
+
+			i++;
+			
+		}
+		if(i != 0){
+			Drp += "</optgroup>";				
+			
+		}
+		i = 0;
+		
 		rs = stmnt.executeQuery("Select Semester_Code,Semester_Description from r_semester WHERE Semester_Display_Status = 'Active' and Semester_Active_Flag ='Inactive' ");
 		while(rs.next()){
 			if(i == 0){

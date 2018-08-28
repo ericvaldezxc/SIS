@@ -79,11 +79,11 @@ public class TimeandRoom extends HttpServlet {
 
 		try {
 			if(lattype.equals("solo"))
-				sql = "SELECT CurriculumItem_ID FROM `r_curriculum` inner join r_curriculumitem on CurriculumItem_CurriculumID = Curriculum_ID where Curriculum_SemesterID = (SELECT Semester_ID FROM r_semester WHERE Semester_Code = '"+ ec.encrypt(ec.key, ec.initVector, semester)+"') and Curriculum_CourseID = (SELECT Course_ID from r_course where Course_Code = '"+ec.encrypt(ec.key, ec.initVector, curcode)+"')  and Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM r_curriculumyear WHERE CurriculumYear_Code = '"+ec.encrypt(ec.key, ec.initVector, curi)+"')  and Curriculum_YearLevel = '"+yearlvl+"' and CurriculumItem_SubjectID = (SELECT Subject_ID FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"')  ";
+				sql = "SELECT CurriculumItem_ID FROM `r_curriculum` inner join r_curriculumitem on CurriculumItem_CurriculumID = Curriculum_ID where Curriculum_SemesterID = (SELECT Semester_ID FROM r_semester WHERE Semester_Code = '"+ ec.encrypt(ec.key, ec.initVector, semester)+"') and Curriculum_CourseID = (SELECT Course_ID from r_course where Course_Code = '"+ec.encrypt(ec.key, ec.initVector, curcode)+"')  and Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM r_curriculumyear WHERE CurriculumYear_Code = '"+ec.encrypt(ec.key, ec.initVector, curi)+"')  and Curriculum_YearLevel = '"+yearlvl+"' and CurriculumItem_SubjectID = (SELECT Subject_ID FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"') ";
 			else
 				sql = "SELECT CurriculumItem_ID FROM `r_curriculum` inner join r_curriculumitem on CurriculumItem_CurriculumID = Curriculum_ID where Curriculum_SemesterID = (SELECT Semester_ID FROM r_semester WHERE Semester_Code = '"+ ec.encrypt(ec.key, ec.initVector, semester)+"') and Curriculum_CourseID = (SELECT Course_ID from r_course where Course_Code = '"+ec.encrypt(ec.key, ec.initVector, curcode)+"')  and Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM r_curriculumyear WHERE CurriculumYear_Code = '"+ec.encrypt(ec.key, ec.initVector, curi)+"')  and Curriculum_YearLevel = '"+yearlvl+"' and CurriculumItem_SubjectID = (SELECT Subject_Group FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"')  ";
 
-//			out.print(sql+"\n");
+			out.print(sql+"\n");
 			stmnt = conn.createStatement();
 			String id = "";
 			ResultSet rs = stmnt.executeQuery(sql);
@@ -95,7 +95,7 @@ public class TimeandRoom extends HttpServlet {
 			// and Schedule_ProfessorID = (SELECT Professor_ID FROM r_section WHERE Professor_Code = '"+professorDrp+"') 
 			if(lattype.equals("solo")) {
 //				sql = "SELECT COUNT(*) as cou,Schedule_ID FROM t_schedule where Schedule_CurriculumItemID = '"+id+"' and Schedule_SectionID  = (SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"')";
-				sql = "SELECT Schedule_ID FROM t_schedule where Schedule_CurriculumItemID = '"+id+"' and Schedule_SectionID  = (SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"')";
+				sql = "SELECT Schedule_ID FROM t_schedule where Schedule_CurriculumItemID = '"+id+"' and Schedule_SectionID  = (SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"') and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present' and Academic_Year_Display_Status = 'Active')";
 //				out.print(sql+"\n");
 				stmnt = conn.createStatement();				
 				rs = stmnt.executeQuery(sql);
@@ -111,7 +111,8 @@ public class TimeandRoom extends HttpServlet {
 					sql = "insert into `t_schedule_items` (Schedule_Items_ScheduleID,Schedule_Items_RoomID,Schedule_Items_Date,Schedule_Items_Time_Start,Schedule_Items_Time_End) values ("+schedid+",(SELECT Room_ID FROM r_room WHERE Room_Code = '"+ec.encrypt(ec.key, ec.initVector, room)+"'),'"+day+"','"+timestart+"','"+timeend+"') ";
 			}
 			else {
-				sql = "SELECT Schedule_ID FROM t_schedule where Schedule_CurriculumItemID = '"+id+"' and Schedule_SectionID  = (SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"')";
+				sql = "SELECT Schedule_ID FROM t_schedule where Schedule_CurriculumItemID = '"+id+"' and Schedule_SectionID  = (SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"') and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present' and Academic_Year_Display_Status = 'Active') and Schedule_ChildrenID = (SELECT Subject_ID FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"') ";
+				out.print(sql+"\n");
 				stmnt = conn.createStatement();				
 				rs = stmnt.executeQuery(sql);
 				String schedid = "";
@@ -127,7 +128,7 @@ public class TimeandRoom extends HttpServlet {
 //
 //				
 //				
-//				out.print(sql+"\n");
+				out.print(sql+"\n");
 //				sql = "SELECT COUNT(*) as cou,Schedule_ID FROM t_schedule where Schedule_CurriculumItemID = '"+id+"' and Schedule_SectionID  = (SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"') and Schedule_ChildrenID = (SELECT Subject_ID FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"')";
 //				out.print(sql+"\n");
 //				stmnt = conn.createStatement();				

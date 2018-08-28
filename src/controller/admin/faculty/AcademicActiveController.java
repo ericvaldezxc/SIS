@@ -60,6 +60,8 @@ public class AcademicActiveController extends HttpServlet {
 		try {
 			sql = "Update r_academic_year set Academic_Year_Active_Flag = 'Used' where Academic_Year_Active_Flag = 'Present'";
 			stmnt.execute(sql);
+			sql = "Update r_academic_year set Academic_Year_Active_Flag = 'To be Used' where Academic_Year_Active_Flag = 'Not Used'";
+			stmnt.execute(sql);
 			sql = "Update r_academic_year set Academic_Year_Active_Flag = 'Present' where Academic_Year_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"'";
 			stmnt.execute(sql);
 		} catch (SQLException e) {

@@ -2,6 +2,7 @@ var getcode = '';
 var getname = '';
 var codeTxt = '';
 var descTxt = '';
+var amountTxt = '';
 var unitTxt = '';
 var latcode = '';
 var schoolyear = '';
@@ -137,9 +138,8 @@ var EditableTable = function () {
 			});
             $('#updateBtn').click(function(e){
             	e.preventDefault();
-            	codeTxt = $('#codeUpdateTxt').val();
-            	unitTxt = $('#unitsTxt').val();				 
-            	descTxt = $('#descUpdateTxt').val();
+            	descTxt = $('#upddescTxt').val();
+            	amountTxt = $('#updamountTxt').val();
 
 				
                 swal({
@@ -157,8 +157,8 @@ var EditableTable = function () {
                     if (isConfirm) {
                 		$.ajax({
         					type:'POST',
-        					data:{codeTxt: codeTxt, descTxt: descTxt,type:"Update",latcode:latcode,unitTxt:unitTxt},
-        					url:'Controller/Admin/Curriculum/SubjectController',
+        					data:{amountTxt: amountTxt, descTxt: descTxt,type:"Update",latcode:latcode},
+        					url:'Controller/Registrar/PreEnrollment/TuitionFee2',
         					success: function(result){
         						 $('#codeTxt').val('') ;
         						 $('#descTxt').val('');
@@ -189,6 +189,58 @@ var EditableTable = function () {
                 });
 								
 			});
+            
+            $('#editable-sample').on('click',' a.gradeopen', function (e) {
+                e.preventDefault();
+                
+                swal({
+
+                        title: "Are you sure?",
+                        text: "The record will be save and will be use for further transaction",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: '#DD6B55',
+                        confirmButtonText: 'Yes, do it!',
+                        cancelButtonText: "No!",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            $.ajax({
+                                type: 'post',
+                                url: 'Controller/Registrar/Grade/GradeOpening',
+                                success: function (response) {
+                                    swal({
+
+                                            title: "Record Updated!",
+                                            text: "The data is successfully updated!",
+                                            type: "success",
+                                            confirmButtonColor: '#86CCEB',
+                                            confirmButtonText: 'Okay',
+                                            closeOnConfirm: false
+                                        },
+                                        function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+
+                                            } else
+                                                swal("Cancelled", "The transaction is cancelled", "error");
+
+                                        });
+                                },
+                                error: function (response) {
+                                    swal("Error encountered while adding data", "Please try again", "error");
+                                }
+
+                            });
+
+                        } else
+                            swal("Cancelled", "The transaction is cancelled", "error");
+
+                    });
+
+            });
 
             $('#editable-sample').on('click',' a.delete', function (e) {
                 e.preventDefault();
@@ -319,6 +371,8 @@ var EditableTable = function () {
                     nEditing = null;
                 }
             });
+            
+            
 
 
 
@@ -330,8 +384,8 @@ var EditableTable = function () {
                 var getdesc = $(this).closest('tr').children('td:first').next().text();
                 var nRow = $(this).parents('tr')[0];
                 
-        		$('#codeUpdateTxt').val(getcode)
-        		$('#descUpdateTxt').val(getdesc)
+        		$('#upddescTxt').val(getcode)
+        		$('#updamountTxt').val(getdesc)
 
                 
             });

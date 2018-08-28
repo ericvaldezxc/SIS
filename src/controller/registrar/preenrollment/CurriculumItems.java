@@ -90,7 +90,7 @@ public class CurriculumItems extends HttpServlet {
 		
 		
 		
-		sql = "SELECT CurriculumItem_ID,Subject_ID,Subject_Code,Subject_Description,Subject_Credited_Units,Subject_Tuition_Hours,(SELECT COUNT(*) FROM r_subject AS T2 WHERE T2.Subject_Group = t1.Subject_ID) as grp FROM `r_curriculumitem` inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  INNER JOIN r_curriculumyear ON CurriculumYear_ID = Curriculum_CurriculumYearID  INNER JOIN r_subject as t1 ON CurriculumItem_SubjectID = Subject_ID WHERE Curriculum_CourseID = (SELECT Course_ID from r_course where Course_Code = '"+ec.encrypt(ec.key, ec.initVector, curcode)+"') and Curriculum_SemesterID = (SELECT Semester_ID FROM r_semester WHERE Semester_Code = '"+ ec.encrypt(ec.key, ec.initVector, semester)+"') and Curriculum_YearLevel = 'First Year' and CurriculumItem_Display_Status = 'Active'and CurriculumYear_Ative_Flag = 'Active' and Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM r_curriculumyear WHERE CurriculumYear_Code = '"+ec.encrypt(ec.key, ec.initVector, curi)+"') group by CurriculumItem_ID order by Subject_Type  asc";
+		sql = "SELECT CurriculumItem_ID,Subject_ID,Subject_Code,Subject_Description,Subject_Credited_Units,Subject_Tuition_Hours,(SELECT COUNT(*) FROM r_subject AS T2 WHERE T2.Subject_Group = t1.Subject_ID) as grp FROM `r_curriculumitem` inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  INNER JOIN r_curriculumyear ON CurriculumYear_ID = Curriculum_CurriculumYearID  INNER JOIN r_subject as t1 ON CurriculumItem_SubjectID = Subject_ID WHERE Curriculum_CourseID = (SELECT Course_ID from r_course where Course_Code = '"+ec.encrypt(ec.key, ec.initVector, curcode)+"') and Curriculum_SemesterID = (SELECT Semester_ID FROM r_semester WHERE Semester_Code = '"+ ec.encrypt(ec.key, ec.initVector, semester)+"') and Curriculum_YearLevel = '"+yearlvl+"' and CurriculumItem_Display_Status = 'Active'and CurriculumYear_Ative_Flag = 'Active' and Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM r_curriculumyear WHERE CurriculumYear_Code = '"+ec.encrypt(ec.key, ec.initVector, curi)+"') group by CurriculumItem_ID order by Subject_Type  asc";
 		JSONArray arr = new JSONArray();
 		JSONArray grouplist = new JSONArray();
 		JSONArray schedlist = new JSONArray();
@@ -213,8 +213,8 @@ public class CurriculumItems extends HttpServlet {
 							 group.put("tuition", rs4.getString("Subject_Tuition_Hours"));
 							 group.put("units", rs4.getString("Subject_Credited_Units"));
 							 
-							 sql5 = "SELECT ifnull(Professor_Code,0) as pcode,Professor_FirstName,Professor_MiddleName,Professor_LastName FROM `t_schedule` left join r_professor on Schedule_ProfessorID = Professor_ID left join r_curriculumitem on Schedule_CurriculumItemID =  CurriculumItem_ID right join r_subject on CurriculumItem_SubjectID = Subject_Group WHERE Schedule_SectionID = (SELECT Section_ID from r_section where Section_Code = '"+section+"')  and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present')   and CurriculumItem_SubjectID = '"+groupid+"'";
-							 //out.print(sql5+"\n");
+							 sql5 = "SELECT ifnull(Professor_Code,0) as pcode,Professor_FirstName,Professor_MiddleName,Professor_LastName FROM `t_schedule` left join r_professor on Schedule_ProfessorID = Professor_ID left join r_curriculumitem on Schedule_CurriculumItemID =  CurriculumItem_ID right join r_subject on CurriculumItem_SubjectID = Subject_Group WHERE Schedule_SectionID = (SELECT Section_ID from r_section where Section_Code = '"+section+"')  and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present')   and Schedule_ChildrenID = '"+groupid+"'";
+//							 out.print(sql5+"\n");
 							 rs5 = stmnt5.executeQuery(sql5);
 							 Fullname = "";
 							 int countprof = 0;

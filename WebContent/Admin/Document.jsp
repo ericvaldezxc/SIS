@@ -19,7 +19,7 @@
 	Statement stmnt = conn.createStatement();
 	ResultSet rs = stmnt.executeQuery("Select * from r_documents ");
 		while(rs.next()){
-			tablebody += "<tr><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Documents_Description"))+"</td><td>"; 
+			tablebody += "<tr><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Documents_Description"))+"</td><td>"+rs.getString("Documents_Mandatory")+"</td><td>"; 
 			if(rs.getString("Documents_Display_Status").equals("Active"))
 				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 			else
@@ -37,7 +37,7 @@
       	<script>
 			$(document).ready(function (){
 				EditableTable.init();
-				$("#campusDrp").select2( {width: '100%' });
+				$("#mandatory").select2( {width: '100%' });
 				
 				
 			});
@@ -71,6 +71,7 @@
 	                                    <thead>
 	                                        <tr>
 	                                            <th style="width: ">Description</th>
+	                                            <th style="width: ">Mandatory</th>
 	                                            <th style="width: 10%">Action</th>  
 	                                        </tr>
 	                                    </thead>
@@ -99,7 +100,14 @@
 	                        	<div class="col-lg-12">
 	                        		<div class="col-lg-6">
 		                                 Description <input type="text" class="form-control" placeholder="ex. Form-138" id="descTxt" >
-		                            </div>                        	
+		                            </div>  
+		                            <div class="col-lg-6">
+		                            	Mandatory
+		                                <select style="width: 300px" id="mandatory">
+						   					<option value="Yes" selected="selected" >Yes</option>									   				
+						   					<option value="No" >No</option>									   				
+                                    	</select>   
+		                            </div>  
 	                        	</div>
 	                        </div>
 	                    </form>

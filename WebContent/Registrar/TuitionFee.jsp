@@ -63,11 +63,7 @@
                             <div class="panel-body">
                                 <div class="adv-table editable-table ">
                                     <div class="clearfix">
-                                        <div class="btn-group">
-                                            <button id="editable-sample_new" class="btn btn-success add" data-toggle="modal" href="#FeeAdd">
-                                        Add New <i class="fa fa-plus"></i>
-                                    </button>
-                                        </div>
+                                        
                                         <div class="btn-group pull-right">
                                             <button class="btn btn-default " id="btnprint">Print <i class="fa fa-print"></i></button>
                                         </div>
@@ -136,6 +132,34 @@
 	                <div class="modal-footer">
 	                    <button data-dismiss="modal" class="btn btn-default" id="addcloseBtn" type="button"><u>C</u>lose</button>
 	                    <button class="btn btn-success " id="addBtn" type="button"><u>S</u>ave</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>	
+	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="FeeEdit" class="modal fade">
+	        <div class="modal-dialog" style="width:700px">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                    <h4 class="modal-title">Edit Tuition Fee</h4>
+	                </div>
+	                <div class="modal-body">
+	                    <form method="post" id="form-data">
+	                        <div class="row" style="padding-left:15px;padding-top:10px">
+	                        	<div class="col-lg-12">
+		                            <div class="col-lg-6" style="padding-top:10px">
+		                        		Description <input type="text" class="form-control" placeholder="ex. Tuition Unit" id="upddescTxt" >
+		                            </div>		                   
+		                            <div class="col-lg-6" style="padding-top:10px">
+		                        		Amount <input type="number" min="0.00" max="10000.00" step="0.01" class="form-control" placeholder="ex. 8" id="updamountTxt" >
+		                            </div>		                        	
+	                        	</div>
+	                        </div>
+	                    </form>
+	                </div>
+	                <div class="modal-footer">
+	                    <button data-dismiss="modal" class="btn btn-default" id="addcloseBtn" type="button"><u>C</u>lose</button>
+	                    <button class="btn btn-success " id="updateBtn" type="button"><u>S</u>ave</button>
 	                </div>
 	            </div>
 	        </div>

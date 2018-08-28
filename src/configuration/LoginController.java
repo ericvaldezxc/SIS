@@ -183,6 +183,54 @@ public class LoginController extends HttpServlet {
 				
 				
 			}
+			else if(type.equals("Faculty")) {
+				sql = "SELECT * from r_professor where Professor_ID = '"+refid+"' ";
+				try {
+					ResultSet rs = stmnt.executeQuery(sql);
+					while(rs.next()){
+						fname = rs.getString("Professor_FirstName");
+						mname = rs.getString("Professor_MiddleName");
+						lname = rs.getString("Professor_LastName");
+						if(mname.equals("")){
+							Fullname = ec.decrypt(ec.key, ec.initVector, lname)  + ", " + ec.decrypt(ec.key, ec.initVector, fname);
+							
+						}
+						else {
+							Fullname = ec.decrypt(ec.key, ec.initVector, lname) + ", " + ec.decrypt(ec.key, ec.initVector, fname) + " " + ec.decrypt(ec.key, ec.initVector, mname);
+							
+						}
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+			else if(type.equals("Student")) {
+				sql = "SELECT * FROM `r_student_profile` inner join t_student_account on Student_Profile_ID = Student_Account_Student_Profile_ID where Student_Account_ID = '"+refid+"' ";
+				try {
+					ResultSet rs = stmnt.executeQuery(sql);
+					while(rs.next()){
+						fname = rs.getString("Student_Profile_First_Name");
+						mname = rs.getString("Student_Profile_Middle_Name");
+						lname = rs.getString("Student_Profile_Last_Name");
+						if(mname.equals("")){
+							Fullname = ec.decrypt(ec.key, ec.initVector, lname)  + ", " + ec.decrypt(ec.key, ec.initVector, fname);
+							
+						}
+						else {
+							Fullname = ec.decrypt(ec.key, ec.initVector, lname) + ", " + ec.decrypt(ec.key, ec.initVector, fname) + " " + ec.decrypt(ec.key, ec.initVector, mname);
+							
+						}
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
 			
 			
 		}

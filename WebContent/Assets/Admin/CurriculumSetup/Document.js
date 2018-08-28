@@ -4,6 +4,7 @@ var codeTxt = '';
 var descTxt = '';
 var unitTxt = '';
 var latcode = '';
+var man = '';
 
 
 var EditableTable = function () {
@@ -87,7 +88,7 @@ var EditableTable = function () {
             $('#addBtn').click(function(e){
             	e.preventDefault();	 
 				 descTxt = $('#descTxt').val();
-
+				 man = $('#mandatory').val();
 				
                 swal({
                     title: "Are you sure?",
@@ -104,11 +105,11 @@ var EditableTable = function () {
                     if (isConfirm) {
                 		$.ajax({
         					type:'POST',
-        					data:{ descTxt: descTxt,type:"Insert",latcode:latcode},
+        					data:{ descTxt: descTxt,man:man,type:"Insert",latcode:latcode},
         					url:'Controller/Admin/Curriculum/Document',
         					success: function(result){
 	    						 swal("Record Added!", "The data is successfully added!", "success");
-	                             var aiNew = oTable.fnAddData([descTxt, "<center><a class='btn btn-success edit' data-toggle='modal' href='#SubjectEdit' ><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a></center>", '']);
+	                             var aiNew = oTable.fnAddData([descTxt,man, "<center><a class='btn btn-success edit' data-toggle='modal' href='#SubjectEdit' ><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a></center>", '']);
 	                             var nRow = oTable.fnGetNodes(aiNew[0]);
 	                             document.getElementById("form-data").reset();
 	                             $("#addcloseBtn").click();

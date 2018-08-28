@@ -6,7 +6,7 @@
 <%@attribute name="customImportedScript" fragment="true" %>
 <%
 	if(session.getAttribute("username") == null || !session.getAttribute("type").equals("Admin")){
-		response.sendRedirect("http://"+request.getServerName()+":"+request.getServerPort()+"/SIS/" +"index.jsp");
+		response.sendRedirect("http://"+request.getServerName()+":"+request.getServerPort()+"/SIS/" +"Login.jsp");
 	}
 
 %>

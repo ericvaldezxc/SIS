@@ -21,9 +21,11 @@
 			tablebody += "<tr><td>" + ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Code"))+ "</td><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Description"))+"</td><td>"+rs.getString("Semester_Active_Flag")+"</td><td>"; 
 			if(rs.getString("Semester_Display_Status").equals("Active") && rs.getString("Semester_Active_Flag").equals("Active"))
 //				tablebody += "<center> <a class='btn btn-info view' href='javascript:;'><i class='fa fa-eye'></i></a> <a class='btn btn-success edit' data-toggle='modal' href='#CurriculumEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
-				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
+				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a>  <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 			else if(rs.getString("Semester_Display_Status").equals("Active") && rs.getString("Semester_Active_Flag").equals("Inactive"))
-			tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info makeactive' href='javascript:;'><i class='fa fa-bolt'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
+				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info makeactive' title='Make Active' href='javascript:;'><i class='fa fa-bolt'></i></a> <a class='btn btn-primary tobeused' title='To be Used' href='javascript:;'><i class='fa fa-anchor'></i></a>   <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
+			else if(rs.getString("Semester_Display_Status").equals("Active") && rs.getString("Semester_Active_Flag").equals("To be Used"))
+				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info makeactive' href='javascript:;'><i class='fa fa-bolt'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 			else
 				tablebody += "<center><a class='btn btn-info retrieve' href='javascript:;'><i class='fa fa-rotate-left'></i></a><center></td></tr>";
 			

@@ -74,7 +74,6 @@ public class StudentProfile extends HttpServlet {
 		String sql = "";
 		if(type.equals("Insert"))
 			sql = "insert into r_student_profile (Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Student_Profile_Date_Of_Birth,Student_Profile_Place_Of_Birth,Student_Profile_Gender,Student_Profile_Civil_Status,Student_Profile_Address,Student_Profile_Contact_Number,Student_Profile_Email_Address) values ('"+ec.encrypt(ec.key, ec.initVector, firstNameTxt)+"','"+ec.encrypt(ec.key, ec.initVector, middleNameTxt)+"','"+ec.encrypt(ec.key, ec.initVector, lastNameTxt)+"','"+dobTxt+"','"+ec.encrypt(ec.key, ec.initVector, pobTxt)+"','"+genderDrp+"','"+civilDrp+"','"+ec.encrypt(ec.key, ec.initVector, addressTxt)+"','"+ec.encrypt(ec.key, ec.initVector, conTxt)+"','"+ec.encrypt(ec.key, ec.initVector, emailTxt)+"')";
-
 		
 //		else if(type.equals("Update"))
 //			sql = "Update r_subject set Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"',Subject_Description = '"+ec.encrypt(ec.key, ec.initVector, desc)+"' where Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"'";
@@ -87,6 +86,9 @@ public class StudentProfile extends HttpServlet {
 		try {
 			stmnt.execute(sql);
 
+			sql = "Insert into r_student_application (Student_Application_StudentProfileID,Student_Application_Application_Number) values ((SELECT MAX(Student_Profile_ID) FROM r_student_profile),(SELECT CONCAT(YEAR(CURRENT_DATE),'-',RIGHT(100000+count(*)+1,5)) FROM (SELECT * FROM r_student_application) AS T1 where LEFT(Student_Application_Application_Number,4) = YEAR(CURRENT_DATE)))";
+			stmnt.execute(sql);
+			out.print(sql);
 			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

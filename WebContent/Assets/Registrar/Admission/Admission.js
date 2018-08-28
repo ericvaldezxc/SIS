@@ -668,9 +668,9 @@ var EditableTable = function () {
             $('#editable-sample').on('click','a.admission', function (e) {
                 e.preventDefault();
                 
-                $('#studentName').html($(this).closest('tr').children('td:first').text());
+                $('#studentName').html($(this).closest('tr').children('td:eq(1)').text());
                 latid = $(this).data('studentid');
-                $('#studentStatus').html($(this).closest('tr').children('td:first').next().text());
+                $('#studentStatus').html($(this).closest('tr').children('td:eq(3)').text());
 //                $('#courseDrp').trigger("change")
 //                $('#campusDrp').trigger("change")
                 

@@ -291,6 +291,65 @@ var EditableTable = function () {
 
             });
 
+
+            $('#editable-sample').on('click',' a.tobeused', function (e) {
+                e.preventDefault();
+
+                var getval = $(this).closest('tr').children('td:first').text();;
+                var nRow = $(this).parents('tr')[0];
+
+
+                swal({
+
+                        title: "Are you sure?",
+                        text: "The record will be save and will be use for further transaction",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: '#DD6B55',
+                        confirmButtonText: 'Yes, do it!',
+                        cancelButtonText: "No!",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            $.ajax({
+                                type: 'post',
+                                url: 'Controller/Admin/Faculty/AcademicTobeactive',
+                                data: {
+                                	getval: getval
+                                },
+                                success: function (response) {
+                                    swal({
+
+                                            title: "Record Changed!",
+                                            text: "The data is successfully changed!",
+                                            type: "success",
+                                            confirmButtonColor: '#86CCEB',
+                                            confirmButtonText: 'Okay',
+                                            closeOnConfirm: false
+                                        },
+                                        function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+
+                                            } else
+                                                swal("Cancelled", "The transaction is cancelled", "error");
+
+                                        });
+                                },
+                                error: function (response) {
+                                    swal("Error encountered while adding data", "Please try again", "error");
+                                }
+
+                            });
+
+                        } else
+                            swal("Cancelled", "The transaction is cancelled", "error");
+
+                    });
+
+            });
             $('#editable-sample ').on('click','a.retrieve', function (e) {
                 e.preventDefault();
 

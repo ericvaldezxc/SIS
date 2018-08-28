@@ -28,7 +28,7 @@
 	String lname = "";	
 	String status = "";	
 	Statement stmnt = conn.createStatement();
-	ResultSet rs = stmnt.executeQuery("SELECT * FROM `r_student_profile` where Student_Profile_ID not in (SELECT Student_Account_Student_Profile_ID from t_student_account WHERE Student_Account_Display_Status = 'Active') ");
+	ResultSet rs = stmnt.executeQuery("SELECT * FROM `r_student_profile` inner join r_student_application on Student_Profile_ID = Student_Application_StudentProfileID where Student_Profile_ID not in (SELECT Student_Account_Student_Profile_ID from t_student_account WHERE Student_Account_Display_Status = 'Active') ");
 		while(rs.next()){
 			fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
 			mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
@@ -38,9 +38,13 @@
 			else	
 				fullname = lname + ", " + fname + " " +  mname;
 			
-			tablebody += "<tr><td>" + fullname +"</td><td>Ready for Admission</td><td>"; 
+			tablebody += "<tr><td>" + rs.getString("Student_Application_Application_Number") +"</td><td>" + fullname +"</td><td>For Assessment</td><td>"; 
+//			if(rs.getString("Student_Profile_Display_Status").equals("Active") )
+//					tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#AdmissionEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info admission' data-toggle='modal' data-studentid='"+rs.getString("Student_Profile_ID")+"' href='#Admission'><i class='fa fa-briefcase'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
+//			else
+//				tablebody += "<center><a class='btn btn-info retrieve' href='javascript:;'><i class='fa fa-rotate-left'></i></a><center></td></tr>";
 			if(rs.getString("Student_Profile_Display_Status").equals("Active") )
-					tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#AdmissionEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info admission' data-toggle='modal' data-studentid='"+rs.getString("Student_Profile_ID")+"' href='#Admission'><i class='fa fa-briefcase'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
+				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#AdmissionEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 			else
 				tablebody += "<center><a class='btn btn-info retrieve' href='javascript:;'><i class='fa fa-rotate-left'></i></a><center></td></tr>";
 			
@@ -123,9 +127,10 @@
                                     <table class="table table-striped table-hover table-bordered" id="editable-sample">
 	                                    <thead>
 	                                        <tr>
-	                                            <th style="width: 20%">Name</th>
-	                                            <th style="width: 30%">Admission Status</th>
-	                                            <th style="width: 20%">Action</th>  
+	                                            <th style="width: 20%">Application ID</th>
+	                                            <th style="width: 30%">Name</th>
+	                                            <th style="width: 20%">Status</th>
+	                                            <th style="width: 10%">Action</th>  
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>    
