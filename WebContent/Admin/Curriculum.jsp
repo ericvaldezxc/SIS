@@ -337,7 +337,7 @@
 				</tbody>
 			</table>
          <!-- Modal -->
-         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="CurriculumAdd" class="modal fade">
+         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog"  id="CurriculumAdd" class="modal fade">
 	        <div class="modal-dialog" style="width:700px">
 	            <div class="modal-content">
 	                <div class="modal-header">
@@ -414,7 +414,7 @@
 	            </div>
 	        </div>
 	    </div>	
-	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="CurriculumEdit" class="modal fade">
+	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog"  id="CurriculumEdit" class="modal fade">
 	        <div class="modal-dialog" style="width:700px">
 	            <div class="modal-content">
 	                <div class="modal-header">
@@ -480,7 +480,7 @@
 	            </div>
 	       </div>
 	    </div>
-	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="FeeEdit" class="modal fade">
+	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog"  id="FeeEdit" class="modal fade">
 	        <div class="modal-dialog" style="width:70%">
 	            <div class="modal-content">
 	                <div class="modal-header">

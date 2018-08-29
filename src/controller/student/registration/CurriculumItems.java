@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +18,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import configuration.EncryptandDecrypt;
+import configuration.YearLevelUp;
 import connection.DBConfiguration;
 
 /**
@@ -54,7 +53,7 @@ public class CurriculumItems extends HttpServlet {
 		String curcode = request.getParameter("curcode");
 		DBConfiguration db = new DBConfiguration(); 
 		Connection conn = db.getConnection();
-		
+		YearLevelUp ylu = new YearLevelUp();
 		Statement stmnt = null;
 		Statement stmnt2 = null;
 		Statement stmnt3 = null;
@@ -87,14 +86,34 @@ public class CurriculumItems extends HttpServlet {
 			String yearlvl = "";
 			String course = "";
 			String curyear = "";
+			String accid = "";
 			while(rs.next()){
 				yearlvl = rs.getString("Student_Account_Year");
 				course = rs.getString("Student_Account_CourseID");
 				curyear = rs.getString("Student_Account_CurriculumYearID");
+				accid = rs.getString("Student_Account_ID");
+			}
+			
+			String tcount = "";
+			rs = stmnt.executeQuery("SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_SectionID is not null and Student_Taken_Curriculum_Subject_StudentAccountID = '"+accid+"' ");
+			while(rs.next()){
+				tcount =  rs.getString("cou");		
 				
 			}
 			
-			sql = "SELECT *,(if((SELECT count(*) FROM `r_prerequisite` where Prerequisite_Main_SubjectID = Subject_ID)=0,'Yes',(if((SELECT Prerequisite_Prequisite_SubjectID FROM `r_prerequisite` where Prerequisite_Main_SubjectID = Subject_ID) in ((SELECT Student_Taken_Curriculum_Subject_SubjectID FROM t_student_account left join t_student_taken_curriculum_subject on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID left join t_students_grade on Students_Grade_StudentTakenCurriculumSubjectID  = Student_Taken_Curriculum_Subject_ID WHERE Student_Account_Student_Number = '"+username+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and CASE WHEN ifnull(Students_Grade_Grade,0) = '5.00' OR ifnull(Students_Grade_Grade,0) = 'I'  OR ifnull(Students_Grade_Grade,0) = 'Not S'  OR ifnull(Students_Grade_Grade,0) = 'D' OR ifnull(Students_Grade_Grade,0) = '0' THEN 'F' ELSE 'P' END = 'P' )) ,'Yes','No' ) ))) as tstat FROM `r_curriculumitem` inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  INNER JOIN r_curriculumyear ON CurriculumYear_ID = Curriculum_CurriculumYearID  INNER JOIN r_subject ON CurriculumItem_SubjectID = Subject_ID WHERE Curriculum_CourseID = '"+course+"' and Curriculum_SemesterID = (SELECT Semester_ID FROM r_semester WHERE Semester_Active_Flag = 'Active') and Curriculum_YearLevel = '"+yearlvl+"' and CurriculumItem_Display_Status = 'Active' and CurriculumYear_ID = '"+curyear+"' ";
+			String sem = "";
+			rs = stmnt.executeQuery("SELECT Semester_Description FROM `r_semester` where Semester_Active_Flag = 'Active' ");
+			while(rs.next())
+				sem = rs.getString("Semester_Description");
+			sem = ec.decrypt(ec.key, ec.initVector, sem);
+			
+			//out.print(sem + " - " + tcount);
+			if(sem.equals("First Semester") && !tcount.equals("0")){
+				yearlvl = ylu.yearLevel(yearlvl);
+
+			}
+			
+			sql = "SELECT *,(if((SELECT count(*) FROM `r_prerequisite` where Prerequisite_Main_SubjectID = Subject_ID)=0,'Yes',(if((SELECT Prerequisite_Prequisite_SubjectID FROM `r_prerequisite` where Prerequisite_Main_SubjectID = Subject_ID) in ((SELECT Student_Taken_Curriculum_Subject_SubjectID FROM t_student_account left join t_student_taken_curriculum_subject on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID left join t_students_grade on Students_Grade_StudentTakenCurriculumSubjectID  = Student_Taken_Curriculum_Subject_ID WHERE Student_Account_Student_Number = '"+username+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and CASE WHEN ifnull(Students_Grade_Grade,0) = '5.00' OR ifnull(Students_Grade_Grade,0) = 'I'  OR ifnull(Students_Grade_Grade,0) = 'Not S'  OR ifnull(Students_Grade_Grade,0) = 'D' OR ifnull(Students_Grade_Grade,0) = '0' THEN 'F' ELSE 'P' END = 'P' )) ,'Yes','No' ) ))) as tstat,(if(Subject_ID in ((SELECT Student_Taken_Curriculum_Subject_SubjectID FROM t_student_account left join t_student_taken_curriculum_subject on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID left join t_students_grade on Students_Grade_StudentTakenCurriculumSubjectID  = Student_Taken_Curriculum_Subject_ID WHERE Student_Account_Student_Number = '"+username+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and CASE WHEN ifnull(Students_Grade_Grade,0) = '5.00' OR ifnull(Students_Grade_Grade,0) = 'I'  OR ifnull(Students_Grade_Grade,0) = 'Not S'  OR ifnull(Students_Grade_Grade,0) = 'D' OR ifnull(Students_Grade_Grade,0) = '0' THEN 'F' ELSE 'P' END = 'P' )) ,'Yes','No' ) ) as fstat FROM `r_curriculumitem` inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  INNER JOIN r_curriculumyear ON CurriculumYear_ID = Curriculum_CurriculumYearID  INNER JOIN r_subject ON CurriculumItem_SubjectID = Subject_ID WHERE Curriculum_CourseID = '"+course+"' and Curriculum_SemesterID = (SELECT Semester_ID FROM r_semester WHERE Semester_Active_Flag = 'Active') and Curriculum_YearLevel = '"+yearlvl+"' and CurriculumItem_Display_Status = 'Active' and CurriculumYear_ID = '"+curyear+"' ";
 			//out.print(sql+"\n");
 			rs = stmnt.executeQuery(sql);
 			ResultSet rs2,rs3,rs4;
@@ -117,7 +136,12 @@ public class CurriculumItems extends HttpServlet {
 				 obj.put("lec", rs.getString("Subject_Lecture_Hours"));
 				 obj.put("lab", rs.getString("Subject_Laboratory_Hours"));
 				 obj.put("units", rs.getString("Subject_Credited_Units"));
-				 obj.put("stat", rs.getString("tstat"));
+				 if(rs.getString("tstat").equals("Yes")) {
+					 obj.put("stat", "Taken");
+					 
+				 }else {					 
+					 obj.put("stat", rs.getString("tstat"));
+				 }
 				 String subid = rs.getString("Subject_ID");
 				 
 				 String acadyear = "";
@@ -165,7 +189,7 @@ public class CurriculumItems extends HttpServlet {
 				 }
 				 obj.put("section", sched);
 				 
-				 sql2 = "SELECT *,(if((SELECT count(*) FROM `r_prerequisite` where Prerequisite_Main_SubjectID = Subject_ID)=0,'Yes',(if((SELECT Prerequisite_Prequisite_SubjectID FROM `r_prerequisite` where Prerequisite_Main_SubjectID = Subject_ID) in ((SELECT Student_Taken_Curriculum_Subject_SubjectID FROM t_student_account left join t_student_taken_curriculum_subject on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID left join t_students_grade on Students_Grade_StudentTakenCurriculumSubjectID  = Student_Taken_Curriculum_Subject_ID WHERE Student_Account_Student_Number = '"+username+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and CASE WHEN ifnull(Students_Grade_Grade,0) = '5.00' OR ifnull(Students_Grade_Grade,0) = 'I'  OR ifnull(Students_Grade_Grade,0) = 'Not S'  OR ifnull(Students_Grade_Grade,0) = 'D' OR ifnull(Students_Grade_Grade,0) = '0' THEN 'F' ELSE 'P' END = 'P' )) ,'Yes','No' ) ))) as tstat FROM `r_subject` AS T1 WHERE T1.Subject_Group = (SELECT T2.Subject_ID FROM r_subject AS T2 where T2.Subject_Code = '"+rs.getString("Subject_Code")+"' )";
+				 sql2 = "SELECT *,(if((SELECT count(*) FROM `r_prerequisite` where Prerequisite_Main_SubjectID = Subject_ID)=0,'Yes',(if((SELECT Prerequisite_Prequisite_SubjectID FROM `r_prerequisite` where Prerequisite_Main_SubjectID = Subject_ID) in ((SELECT Student_Taken_Curriculum_Subject_SubjectID FROM t_student_account left join t_student_taken_curriculum_subject on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID left join t_students_grade on Students_Grade_StudentTakenCurriculumSubjectID  = Student_Taken_Curriculum_Subject_ID WHERE Student_Account_Student_Number = '"+username+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and CASE WHEN ifnull(Students_Grade_Grade,0) = '5.00' OR ifnull(Students_Grade_Grade,0) = 'I'  OR ifnull(Students_Grade_Grade,0) = 'Not S'  OR ifnull(Students_Grade_Grade,0) = 'D' OR ifnull(Students_Grade_Grade,0) = '0' THEN 'F' ELSE 'P' END = 'P' )) ,'Yes','No' ) ))) as tstat,(if(Subject_ID in ((SELECT Student_Taken_Curriculum_Subject_SubjectID FROM t_student_account left join t_student_taken_curriculum_subject on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID left join t_students_grade on Students_Grade_StudentTakenCurriculumSubjectID  = Student_Taken_Curriculum_Subject_ID WHERE Student_Account_Student_Number = '"+username+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and CASE WHEN ifnull(Students_Grade_Grade,0) = '5.00' OR ifnull(Students_Grade_Grade,0) = 'I'  OR ifnull(Students_Grade_Grade,0) = 'Not S'  OR ifnull(Students_Grade_Grade,0) = 'D' OR ifnull(Students_Grade_Grade,0) = '0' THEN 'F' ELSE 'P' END = 'P' )) ,'Yes','No' ) ) as fstat FROM `r_subject` AS T1 WHERE T1.Subject_Group = (SELECT T2.Subject_ID FROM r_subject AS T2 where T2.Subject_Code = '"+rs.getString("Subject_Code")+"' )";
 				// out.print(sql2+"\n");
 				 rs2 = stmnt2.executeQuery(sql2);
 				 

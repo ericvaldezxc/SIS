@@ -51,6 +51,28 @@
 		
 		
 	}
+	
+	String tcount = "";
+	rs = stmnt.executeQuery("SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_SectionID is not null and Student_Taken_Curriculum_Subject_StudentAccountID = '"+accid+"' ");
+	while(rs.next()){
+		tcount =  rs.getString("cou");		
+		
+	}
+	
+	String sem = "";
+	rs = stmnt.executeQuery("SELECT Semester_Description FROM `r_semester` where Semester_Active_Flag = 'Active' ");
+	while(rs.next())
+		sem = rs.getString("Semester_Description");
+	sem = ec.decrypt(ec.key, ec.initVector, sem);
+	
+	//out.print(sem + " - " + tcount);
+	if(sem.equals("First Semester") && !tcount.equals("0")){
+		yearlvl = ylu.yearLevel(yearlvl);
+
+	}
+	//out.print(yearlvl);
+	
+	
 	rs = stmnt.executeQuery("SELECT * FROM `r_registation_opening` where Registation_Opening_YearLevel = '"+yearlvl+"' and Registation_Opening_CourseID = '"+course+"' ");
 	int i =0;
 	int fstat = 0;
@@ -90,17 +112,7 @@
 	}
 	
 	acadyear = ec.decrypt(ec.key, ec.initVector, acadyear);
-	String sem = "";
-	rs = stmnt.executeQuery("SELECT Semester_Description FROM `r_semester` where Semester_Active_Flag = 'Active' ");
-	while(rs.next())
-		sem = rs.getString("Semester_Description");
-	sem = ec.decrypt(ec.key, ec.initVector, sem);
-	
 
-	if(sem.equals("First Semester")){
-		ylu.yearLevel(yearlvl);
-
-	}
 	
 	String feebody = "";	
 	float totalfee = 0;
@@ -129,6 +141,10 @@
 		ffee =  rs.getString("fee");		
 		
 	}
+
+	
+	
+	
 	
 	pageContext.setAttribute("body", body);
 	pageContext.setAttribute("acadyear", acadyear);
@@ -267,6 +283,10 @@
    									});
 //   									alert(val.code+sel)
 	       							$('#mainBody').append('<tr><td style="font-weight:bold;font-size:12px;color:#68a0b0;" class="subject"><center class="codeText" data-tuition="'+val.tuition+'" style="cursor: pointer;">'+val.code+'</center></td><td style="font-size:12px" ><center class="descText">'+val.desc+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lec+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lab+'</center></td><td style="font-size:12px" ><center class="unitTexts">'+val.units+'</center></td><td><select class="populate sectionselect"  >'+sel+'</td><td><center><input type="checkbox" class="form-control ckbox" style="width:20px;height:20px;" ></center></td></tr>')
+   									
+   								}
+   								else if(val.stat == 'Taken'){
+	       							$('#mainBody').append('<tr><td style="font-weight:bold;font-size:12px;color:#68a0b0;" class="subject"><center class="codeText" data-tuition="'+val.tuition+'">'+val.code+'</center></td><td style="font-size:12px" ><center class="descText">'+val.desc+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lec+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lab+'</center></td><td style="font-size:12px" ><center class="unitTexts">'+val.units+'</center></td><td style="text-align:center;color:#68a0b0">You already Taken this subject</td><td><center><input type="checkbox" class="form-control" disabled style="width:20px;height:20px;" ></center></td></tr>')
    									
    								}
 	       						else
