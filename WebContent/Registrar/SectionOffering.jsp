@@ -32,7 +32,7 @@
 	pageContext.setAttribute("campusDrp", campusDrp);
 	pageContext.setAttribute("curyearDrp", curyearDrp);
 	pageContext.setAttribute("yearDrp", drp.fillyearlvldrp());
-	pageContext.setAttribute("semDrp", drp.fillsemesterDrp());	
+	pageContext.setAttribute("semDrp", drp.fillsemesterDrp2());	
 	pageContext.setAttribute("dayDrp", drp.filldayDrp());
 	pageContext.setAttribute("professorDrp", drp.fillprofessor());
 	pageContext.setAttribute("curriculumDrp", drp.fillcuryearDrp());

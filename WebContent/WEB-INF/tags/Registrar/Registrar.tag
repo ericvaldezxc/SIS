@@ -147,11 +147,27 @@
 	                </a>
            		</li>
            		<li>
+	                <a href="Faculty.jsp" class="" id="FacultyBtn">
+	                    <i class="fa fa-bullhorn"></i>
+	                    <span>Faculty</span>
+	                </a>
+           		</li>
+           		<li>
 	                <a href="Student.jsp" class="" id="StudentBtn">
 	                    <i class="fa  fa-smile-o"></i>
 	                    <span>Student</span>
 	                </a>
            		</li>
+           		<li class="sub-menu">
+                    <a href="javascript:;" class="" id="CurriculumSetupBtn" >
+                        <i class="fa fa-tasks"></i>
+                        <span>Curriculum</span>
+                    </a>
+                    <ul class="sub">
+                    	<li class="" id="SubjectBtn2"><a href="Subject.jsp">Subject</a></li>
+                    	<li class="" id="CurriculumBtn"><a href="Curriculum.jsp">Curriculum</a></li>
+                    </ul>
+                </li>
            		<li class="sub-menu">
                     <a href="javascript:;" class="" id="GradeBtn" >
                         <i class="fa fa-star"></i>
@@ -342,6 +358,12 @@
 			$("#GradesBtn").addClass("active");
  		else if(title == "Registration Opening" ) 
 			$("#RegistrationOpeningBtn").addClass("active");
+ 		else if(title == "Faculty" ) 
+			$("#FacultyBtn").addClass("active");
+ 		else if(title == "Subject" ) 
+			$("#SubjectBtn2").addClass("active");
+ 		else if(title == "Curriculum" ) 
+			$("#CurriculumBtn").addClass("active");
 		
 		
 		
@@ -350,6 +372,8 @@
 			$('#Pre-Enrollment').click();
 		if(title == 'Grade Opening' || title == "Grade") 
 			$('#GradeBtn').click();
+		if(title == 'Curriculum' || title == "Subject") 
+			$('#CurriculumSetupBtn').click();
 				
 		$('#logoutBtn').click(function(){
     		$.ajax({

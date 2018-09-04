@@ -11,6 +11,8 @@ public class FinalGrade {
 			equi = "INC";
 		else if(grade.equals("5.00"))
 			equi = "F";
+		else if(grade.equals("D"))
+			equi = "F";
 		else
 			equi = "P";
 

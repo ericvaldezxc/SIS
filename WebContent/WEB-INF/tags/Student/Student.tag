@@ -137,6 +137,12 @@
 	                    <span>Grade</span>
 	                </a>
            		</li>
+           		<li>
+	                <a href="Profile.jsp" class="" id="ProfileBtn">
+	                    <i class="fa fa-smile-o"></i>
+	                    <span>Profile</span>
+	                </a>
+           		</li>
             </ul>            
         </div>
         <!-- sidebar menu end-->
@@ -302,11 +308,9 @@
 			$("#GradeBtn").addClass("active");
  		else if(title == "Registration") 
 			$("#RegistrationBtn").addClass("active");
- 		
-		
-		
-		
-		
+ 		else if(title == "Profile") 
+			$("#ProfileBtn").addClass("active");
+			
 		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering') 
 			$('#Pre-Enrollment').click();
 				

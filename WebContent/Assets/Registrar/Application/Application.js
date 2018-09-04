@@ -124,6 +124,7 @@ var EditableTable = function () {
             var tottuitionunit = 0;
             
             function fillcurriculum(){
+            	/*
             	totunit = 0
             	if( $('#courseDrp').val() != 'default'){
             		var curcode =  $('#courseDrp').val()
@@ -131,7 +132,8 @@ var EditableTable = function () {
     					type:'POST',
     					data:{curcode:curcode},
     					async:true,
-    					url:'Controller/Registrar/Admission/CurriculumItems',
+//    					url:'Controller/Registrar/Admission/CurriculumItems',
+    					url:'Controller/Registrar/Application/ApplicationCurriculumItems',
     					success: function(result){
     						var item = $.parseJSON(result)
 							$('#mainBody').html('')
@@ -172,6 +174,86 @@ var EditableTable = function () {
                         }
     				});
             	}
+            	*/
+            	
+            	if( $('#courseDrp').val() != 'default'){
+            		var curcode =  $('#courseDrp').val()
+            		$.ajax({
+    					type:'POST',
+    					data:{curcode:curcode},
+    					url:'Controller/Registrar/Application/ApplicationCurriculumItems',
+    					success: function(result){
+    						var item = $.parseJSON(result)
+    						$('#mainBody').html('')
+       						$.each(item, function (key, val) {
+       							if(val.group == ''){
+   									var sel = ''
+   									var sec = ''
+   									$.each(val.section, function (key2, val2) {
+   										var sched = ''
+   	   									sec = val2.section
+   	   									var j = 0
+   										$.each(val2.sched, function (key3, val3) {
+	   										if(j != 0)
+	   											sched += " / "
+	   										sched += val3.schedule 
+	   										j++
+	   									});
+   	   									
+   										sel += "<option value='"+sec+"'>"+sec+" - "+sched+"</option>"
+
+   									});
+	       							$('#mainBody').append('<tr><td style="font-weight:bold;font-size:12px;color:#68a0b0;" class="subject"><center class="codeText" data-tuition="'+val.tuition+'" style="cursor: pointer;">'+val.code+'</center></td><td style="font-size:12px" ><center class="descText">'+val.desc+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lec+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lab+'</center></td><td style="font-size:12px" ><center class="unitTexts">'+val.units+'</center></td><td><select class="populate sectionselect"  >'+sel+'</td><td><center><input type="checkbox" class="form-control ckbox" style="width:20px;height:20px;" ></center></td></tr>')
+       							}
+           						else{
+           							$('#mainBody').append('<tr><td colspan="7" style="font-weight:bold;font-style:italic;font-size:12px;" ><center class="codeText" style="text-align:center;font-weight:bold">'+val.code+'</center></td></tr>')
+           							$.each(val.group, function (key2, val2) {
+       									var sel = ''
+       	   								var sec = ''
+       	   								$.each(val2.schedule, function (key3, val3) {
+       										var sched = ''
+       	   									sec = val3.section
+       	   									var j = 0
+       										$.each(val3.schedule, function (key4, val4) {
+       											$.each(val4, function (key5, val5) {
+        	   										if(j != 0)
+        	   											sched += " / "
+        	   										sched += val5
+        	   										j++
+        	   									});
+    	   									});
+       	   									
+       										sel += "<option value='"+sec+"'>"+sec+" - "+sched+"</option>"
+
+       									});
+       	   								
+	           							$('#mainBody').append('<tr><td style="font-weight:bold;font-size:12px;color:#68a0b0;" class="subject" ><center class="codeText" data-tuition="'+val2.tuition+'" style="cursor: pointer;">'+val2.code+'</center></td><td style="font-size:12px" ><center class="descText">'+val2.desc+'</center></td><td style="font-size:12px" ><center class="unitText">'+val2.lec+'</center></td><td style="font-size:12px" ><center class="unitText">'+val2.lab+'</center></td><td style="font-size:12px" ><center class="unitTexts">'+val2.units+'</center></td><td><select class="populate sectionselect"  >'+sel+'</td><td><center><input type="checkbox" class="form-control ckbox" style="width:20px;height:20px;" ></center></td></tr>')
+    										
+           							});
+           							
+           							
+           						}
+       							$("select.sectionselect").select2( {width: '100%' });
+                            });
+       						if($('#mainBody').html() == ''){
+       							$('#mainBody').html('<tr><td style="font-size:12px" ><center class="codeText"></center></td><td style="font-size:12px" ><center class="descText"></center></td><td style="font-size:12px" ><center class="unitText"></center></td><td><center></center></td></tr>')
+       							
+       						}
+       						else{
+       							$('#mainBody').append('<tr><td style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px" colspan="7" id="totunit">Total: 0 Unit</td></tr>')
+       						}
+    						
+    						
+    	            		fillsubjectfee()
+    						
+    						
+    					},
+                        error: function (response) {
+                            swal("Error encountered while adding data"+response, "Please try again", "error");
+                        }
+    				});
+            	}
+            	
             	
             }
             
@@ -371,13 +453,13 @@ var EditableTable = function () {
         	}
 			
             $('#mainBody').on('change','.ckbox',function(){
-        		
             	totunit = 0;
 				tottuitionunit = 0
             	$('#mainBody tr').each(function(){
-            		if($(this).find('.unitText').html() != undefined){
+            		if($(this).find('.unitTexts').html() != undefined){
+//                		alert($(this).find('.unitTexts').html())
             			if($(this).find('input:checkbox').prop("checked") == true){            				
-            				totunit += parseInt($(this).find('.unitText').html())
+            				totunit += parseInt($(this).find('.unitTexts').html())
             				tottuitionunit += parseInt($(this).find('.codeText').data("tuition"))
             				
             			}
@@ -1056,6 +1138,14 @@ var EditableTable = function () {
                 },
                 function (isConfirm) {
                     if (isConfirm) {
+                    	var sub = []
+                    	$('#subjectBody tr').each(function(key,val){
+                    		if($(this).find('.subject2 option:selected').val() != 'default' && $(this).find('.grade option:selected').val() != 'default')
+                    			sub.push({code:$(this).find('.subject2 option:selected').val(),grade:$(this).find('.grade option:selected').val()})
+                    	})
+                    	console.log(sub)
+                    	
+                    	
                 		$.ajax({
         					type:'POST',
         					data:{
@@ -1064,34 +1154,39 @@ var EditableTable = function () {
         						SectionDrp:SectionDrp,
         						campus:campus,
         						typeDrp:typeDrp,
-        						amount:amount
+        						amount:amount,
+        						subject:JSON.stringify(sub)
         						},
         					url:'Controller/Registrar/Admission/Enroll',
         					success: function(result){
         						$('#mainBody tr').each(function(key,val){
         							var sub = $(this).find('.codeText').html();
         							var taken = $(this).find('input:checkbox').prop("checked");
-            						$.ajax({
-            							async:false,
-                    					type:'POST',
-                    					data:{
-                    							sub:sub,
-                    							CourseDrp:CourseDrp, 
-                    							taken:taken,
-                    							SectionDrp:SectionDrp
-                    						
-                    						},
-                    					url:'Controller/Registrar/Admission/AdmissionTakenSubjectController',
-                    					success: function(result2){
-                    						
-                    						
-        	                             
-                    					},
-                                        error: function (response2) {
-                                            swal("Error encountered while adding data", "Please try again", "error");
-                                            $("#editable-sample_new").click();
-                                        }
-                    				});
+        							var sec = $(this).find('.sectionselect option:selected').val();
+        							if(sec!= undefined){
+        								$.ajax({
+                							async:false,
+                        					type:'POST',
+                        					data:{
+                        							sub:sub,
+                        							CourseDrp:CourseDrp, 
+                        							taken:taken,
+                        							SectionDrp:sec
+                        						
+                        						},
+                        					url:'Controller/Registrar/Admission/AdmissionTakenSubjectController',
+                        					success: function(result2){
+                        						
+                        						
+            	                             
+                        					},
+                                            error: function (response2) {
+                                                swal("Error encountered while adding data", "Please try again", "error");
+                                                $("#editable-sample_new").click();
+                                            }
+                        				});
+        							}
+            						
             						
             						
         							

@@ -53,7 +53,11 @@ public class ExportTable extends HttpServlet {
 
 		String subjectDrp = request.getParameter("subjectDrp");
 		String section = request.getParameter("section");
+		String acadyearDrp = request.getParameter("acadyear");
+		String semesterDrp = request.getParameter("sem");
 		subjectDrp = ec.encrypt(ec.key, ec.initVector, subjectDrp);
+		semesterDrp = ec.encrypt(ec.key, ec.initVector, semesterDrp);
+		acadyearDrp = ec.encrypt(ec.key, ec.initVector, acadyearDrp);
 	
 		
 
@@ -79,139 +83,38 @@ public class ExportTable extends HttpServlet {
 		String lname = "";	
 		
 		try {
-			if(section.equals("default")) {
-				HttpSession session = request.getSession();
-				String username = session.getAttribute("username").toString();
-				JSONArray studlist = new JSONArray();
-				studlist.add("Student Number");
-				studlist.add("Student Name");
-				studlist.add("Section");
-				studlist.add("Grade");
-				studlist.add("Final Grade");
-				arr.add(studlist);
-				sql = "SELECT DISTINCT IFNULL(Students_Grade_Grade,0) GRADE,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name, Schedule_AcademicYearID,Professor_ID,t1.Subject_Code,t1.Subject_Description,Student_Account_Student_Number FROM `t_student_taken_curriculum_subject` inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_subject as t1  on Student_Taken_Curriculum_Subject_SubjectID =  t1.Subject_ID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join t_schedule on Schedule_CurriculumItemID = CurriculumItem_ID  left join r_professor on Schedule_ProfessorID = Professor_ID  left join r_subject as t2 on t1.Subject_Group = t2.Subject_ID inner join r_section on Student_Account_SectionID = Section_ID left join t_students_grade on Student_Taken_Curriculum_Subject_ID = Students_Grade_StudentTakenCurriculumSubjectID   where Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' and Schedule_ProfessorID = Professor_ID and Schedule_AcademicYearID = Academic_Year_ID and Professor_Code = '"+username+"'  and t1.Subject_Code = '"+subjectDrp+"'";
-				ResultSet rs = stmnt.executeQuery(sql);
-				
-				while(rs.next()){
-					fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
-					mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
-					lname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Last_Name"));
-					if(mname.equals(""))
-						fullname = lname + ", " + fname;
-					else	
-						fullname = lname + ", " + fname + " " +  mname;
-					studlist = new JSONArray();
-					studlist.add(rs.getString("Student_Account_Student_Number"));
-					studlist.add(fullname);
-					studlist.add(rs.getString("Section_Code"));	
-					if(!rs.getString("GRADE").equals("0"))
-						studlist.add(rs.getString("GRADE"));	
-					else
-						studlist.add("Not S");	
-
-					if(!rs.getString("GRADE").equals("0"))
-						studlist.add(fg.finalGrade(rs.getString("GRADE")));
-					else
-						studlist.add("Not S");	
-
-					arr.add(studlist);
-				      
-				}
-
-				sql = "SELECT distinct IFNULL(Students_Grade_Grade,0) GRADE,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Professor_Code,Subject_Code,Subject_Description,Student_Account_Student_Number FROM `t_student_taken_curriculum_subject` inner join t_schedule on Student_Taken_Curriculum_Subject_SubjectID = Schedule_ChildrenID  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID left join r_professor on Schedule_ProfessorID = Professor_ID inner join  r_subject on Student_Taken_Curriculum_Subject_SubjectID =  Subject_ID inner join r_section on Student_Account_SectionID = Section_ID left join t_students_grade on Student_Taken_Curriculum_Subject_ID = Students_Grade_StudentTakenCurriculumSubjectID  where Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' and Schedule_ProfessorID = Professor_ID and Schedule_AcademicYearID = Academic_Year_ID and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Professor_Code = '"+username+"' and Subject_Code = '"+subjectDrp+"'";
-				rs = stmnt.executeQuery(sql);
-				while(rs.next()){
-					fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
-					mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
-					lname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Last_Name"));
-					if(mname.equals(""))
-						fullname = lname + ", " + fname;
-					else	
-						fullname = lname + ", " + fname + " " +  mname;
-					studlist = new JSONArray();
-					studlist.add(rs.getString("Student_Account_Student_Number"));
-					studlist.add(fullname);
-					studlist.add(rs.getString("Section_Code"));	
-					if(!rs.getString("GRADE").equals("0"))
-						studlist.add(rs.getString("GRADE"));	
-					else
-						studlist.add("Not S");	
-
-					if(!rs.getString("GRADE").equals("0"))
-						studlist.add(fg.finalGrade(rs.getString("GRADE")));
-					else
-						studlist.add("Not S");	
-					      
-				}
+			HttpSession session = request.getSession();
+			String username = session.getAttribute("username").toString();
+			JSONArray studlist = new JSONArray();
+			studlist.add("Student Number");
+			studlist.add("Student Name");
+			studlist.add("Section");
+			studlist.add("Grade");
+			studlist.add("Final Grade");
+			arr.add(studlist);
+			
+			
+			
+			
+			sql = "SELECT  *,IFNULL(Students_Grade_Grade,'Not S') GRADE from t_student_taken_curriculum_subject inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_section on Student_Taken_Curriculum_Subject_SectionID = Section_ID inner join r_subject on Student_Taken_Curriculum_Subject_SubjectID =  Subject_ID inner join r_curriculumitem on CurriculumItem_SubjectID = if(ifnull(Subject_Group,0)=0,Subject_ID,Subject_Group) left join t_schedule on Schedule_CurriculumItemID = CurriculumItem_ID left join t_students_grade on Students_Grade_StudentTakenCurriculumSubjectID = Student_Taken_Curriculum_Subject_ID left join r_professor on Schedule_ProfessorID = Professor_ID  where Student_Taken_Curriculum_Subject_SemesterID is not null  and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Section_Code = '"+section+"' and Subject_Code = '"+subjectDrp+"' and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM r_semester WHERE Semester_Code = '"+semesterDrp+"') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` WHERE Academic_Year_Code = '"+acadyearDrp+"'  )  and if (Schedule_ChildrenID is null ,0,Schedule_ChildrenID) = if(Schedule_ChildrenID is null ,0,Subject_ID) and Schedule_SectionID = Section_ID ";
+			//out.print(sql);
+			ResultSet rs = stmnt.executeQuery(sql);
+			while(rs.next()){
+				fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
+				mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
+				lname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Last_Name"));
+				if(mname.equals(""))
+					fullname = lname + ", " + fname;
+				else	
+					fullname = lname + ", " + fname + " " +  mname;
+				 studlist = new JSONArray();
+				 studlist.add(rs.getString("Student_Account_Student_Number"));
+				 studlist.add(fullname);
+				 studlist.add(rs.getString("Section_Code"));
+				 studlist.add(rs.getString("GRADE"));
+				 studlist.add(fg.finalGrade(rs.getString("GRADE")));
+				 arr.add(studlist);
 			}
-			else {
-				HttpSession session = request.getSession();
-				String username = session.getAttribute("username").toString();
-				JSONArray studlist = new JSONArray();
-				studlist.add("Student Number");
-				studlist.add("Student Name");
-				studlist.add("Section");
-				studlist.add("Grade");
-				studlist.add("Final Grade");
-				arr.add(studlist);
-				sql = "SELECT DISTINCT IFNULL(Students_Grade_Grade,0) GRADE,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name, Schedule_AcademicYearID,Professor_ID,t1.Subject_Code,t1.Subject_Description,Student_Account_Student_Number FROM `t_student_taken_curriculum_subject` inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_subject as t1  on Student_Taken_Curriculum_Subject_SubjectID =  t1.Subject_ID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join t_schedule on Schedule_CurriculumItemID = CurriculumItem_ID  left join r_professor on Schedule_ProfessorID = Professor_ID  left join r_subject as t2 on t1.Subject_Group = t2.Subject_ID inner join r_section on Student_Account_SectionID = Section_ID left join t_students_grade on Student_Taken_Curriculum_Subject_ID = Students_Grade_StudentTakenCurriculumSubjectID   where Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' and Schedule_ProfessorID = Professor_ID and Schedule_AcademicYearID = Academic_Year_ID and Professor_Code = '"+username+"'  and t1.Subject_Code = '"+subjectDrp+"' and Section_Code ='"+section+"'";
-				ResultSet rs = stmnt.executeQuery(sql);
-				
-				while(rs.next()){
-					fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
-					mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
-					lname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Last_Name"));
-					if(mname.equals(""))
-						fullname = lname + ", " + fname;
-					else	
-						fullname = lname + ", " + fname + " " +  mname;
-					studlist = new JSONArray();
-					studlist.add(rs.getString("Student_Account_Student_Number"));
-					studlist.add(fullname);
-					studlist.add(rs.getString("Section_Code"));	
-					if(!rs.getString("GRADE").equals("0"))
-						studlist.add(rs.getString("GRADE"));	
-					else
-						studlist.add("Not S");	
-
-					if(!rs.getString("GRADE").equals("0"))
-						studlist.add(fg.finalGrade(rs.getString("GRADE")));
-					else
-						studlist.add("Not S");	
-
-					arr.add(studlist);
-				      
-				}
-
-				sql = "SELECT distinct IFNULL(Students_Grade_Grade,0) GRADE,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Professor_Code,Subject_Code,Subject_Description,Student_Account_Student_Number FROM `t_student_taken_curriculum_subject` inner join t_schedule on Student_Taken_Curriculum_Subject_SubjectID = Schedule_ChildrenID  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID left join r_professor on Schedule_ProfessorID = Professor_ID inner join  r_subject on Student_Taken_Curriculum_Subject_SubjectID =  Subject_ID inner join r_section on Student_Account_SectionID = Section_ID left join t_students_grade on Student_Taken_Curriculum_Subject_ID = Students_Grade_StudentTakenCurriculumSubjectID  where Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' and Schedule_ProfessorID = Professor_ID and Schedule_AcademicYearID = Academic_Year_ID and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Professor_Code = '"+username+"' and Subject_Code = '"+subjectDrp+"'  and Section_Code ='"+section+"'";
-				rs = stmnt.executeQuery(sql);
-				while(rs.next()){
-					fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
-					mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
-					lname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Last_Name"));
-					if(mname.equals(""))
-						fullname = lname + ", " + fname;
-					else	
-						fullname = lname + ", " + fname + " " +  mname;
-					studlist = new JSONArray();
-					studlist.add(rs.getString("Student_Account_Student_Number"));
-					studlist.add(fullname);
-					studlist.add(rs.getString("Section_Code"));	
-					if(!rs.getString("GRADE").equals("0"))
-						studlist.add(rs.getString("GRADE"));	
-					else
-						studlist.add("Not S");	
-
-					if(!rs.getString("GRADE").equals("0"))
-						studlist.add(fg.finalGrade(rs.getString("GRADE")));
-					else
-						studlist.add("Not S");	
-					      
-				}
-			}
-			
-			
-			
 			
 			out.print(arr);	
 

@@ -83,81 +83,77 @@ var EditableTable = function () {
             jQuery('#editable-sample_wrapper .dataTables_filter input').addClass("form-control medium"); // modify table search input
             jQuery('#editable-sample_wrapper .dataTables_length select').addClass("form-control xsmall"); // modify table per page dropdown
             $('#acadyearDrp').change(function (e) {
-            	fillsubject()
                 
             });
             $('#semesterDrp').change(function (e) {
-            	fillsubject()
                 
             });
-            function fillsubject(){
-            	var sem = $('#semesterDrp').val()
-            	var year = $('#acadyearDrp').val()
-            	
-            	$.ajax({
- 					type:'POST',
- 					data:{sem:sem,year:year},
- 					url:'Controller/Faculty/Grading/GetSubject',
- 					success: function(result){
- 						var item = $.parseJSON(result)
-						var subdrp = '<option value="default" selected="selected" disabled="disabled" >Select a Subject</option>'
-						$('#subjectDrp').select2("val","default")
- 						$.each(item, function (key, val) { 							
- 							subdrp += '<option value="'+val.code+'" >'+val.desc+'</option>'
-                        });
- 						
- 						$('#subjectDrp').html(subdrp)
- 						    						
- 					},
-                     error: function (response) {
-                         swal("Error encountered while adding data"+response, "Please try again", "error");
-                     }
- 				});
-            	
+            
+            $('#sectionDrp').change(function (e) {
+            	fillstud()
+                 
+            });
+            
+            function fillstud(){
+            	var section = $('#sectionDrp').val()
+           	 	console.log(section)
+                var subjectDrp = $('#subjectDrp').val()
+                var acadyear = $('#acadyearDrp').val()
+                var sem = $('#semesterDrp').val()
+                var table = $('#editable-sample').DataTable();
+                jQuery(table.fnGetNodes()).each(function (index,elem) {
+                	oTable.fnDeleteRow(0);
+                });
+                
+                if(section!='default'){
+
+                	if(subjectDrp == 'default'){
+                 		$('#excelBtn').slideUp()
+                 	}
+                 	else{
+                 		$('#excelBtn').slideDown()
+                 		
+                 	}
+                	$.ajax({
+     					type:'POST',
+     					data:{subjectDrp:subjectDrp,section:section,acadyear:acadyear,sem:sem},
+     					url:'Controller/Faculty/Grading/GetStudents',
+     					success: function(result){
+     						var item = $.parseJSON(result)
+     						var grade = ''
+     						var finalize = 0
+     						console.log(item)
+     						$.each(item, function (key, val) {
+     							if(val.grade == 0)
+     								grade = ''
+     							else{
+     								grade = val.grade
+     								
+     							}
+        						console.log(val.grade)
+    							if(val.grade != 'Not S')
+    								finalize = 1
+     								
+                                 var aiNew = oTable.fnAddData([val.number ,val.name ,val.section , grade,val.finalgrade]);
+                                 var nRow = oTable.fnGetNodes(aiNew[0]);
+                             });
+     						if(finalize == 1)
+    							$('#lblimport').slideUp();
+    						else
+    							$('#lblimport').slideDown();
+     						
+     						    						
+     					},
+                         error: function (response) {
+                             swal("Error encountered while adding data"+response, "Please try again", "error");
+                         }
+     				});
+                }
             	
             }
-            $('#sectionDrp').change(function (e) {
-            	 var section = $(this).val()
-                 var subjectDrp = $('#subjectDrp').val()
-                 var table = $('#editable-sample').DataTable();
-                 jQuery(table.fnGetNodes()).each(function (index,elem) {
-                 	oTable.fnDeleteRow(0);
-                 });
-                 
-                 if(section!='default'){
-                	 $.ajax({
-      					type:'POST',
-      					data:{subjectDrp:subjectDrp,section:section},
-      					url:'Controller/Faculty/Grading/GetStudents',
-      					success: function(result){
-      						var item = $.parseJSON(result)
-      						var grade = ''
-      						var finalize = 0
-      						$.each(item, function (key, val) {
-      							if(val.grade == 0)
-      								grade = ''
-      							else{
-      								grade = val.grade
-      								
-      							}
-      							
-      								
-                                  var aiNew = oTable.fnAddData([val.number ,val.name ,val.section , grade,val.finalgrade]);
-                                  var nRow = oTable.fnGetNodes(aiNew[0]);
-                              });
-      						
-      						    						
-      					},
-                          error: function (response) {
-                              swal("Error encountered while adding data"+response, "Please try again", "error");
-                          }
-      				});
-                 }
-                 
-                 
-             });
-            $('#subjectDrp').change(function (e) {
-                var subjectDrp = $(this).val()
+            //laman ng subdrp 
+            /*
+ 			var subjectDrp = $(this).val()
                 var section = $('#sectionDrp').val()
             	$('#saveBtn').addClass('hidden')
 //                alert(subjectDrp)
@@ -166,8 +162,8 @@ var EditableTable = function () {
                 	oTable.fnDeleteRow(0);
                 });
                 
-                
-                if(section!='default'){
+               
+                if(section!=  null){
                 	$.ajax({
      					type:'POST',
      					data:{subjectDrp:subjectDrp,section:section},
@@ -176,6 +172,7 @@ var EditableTable = function () {
      						var item = $.parseJSON(result)
      						var grade = ''
      						var finalize = 0
+     						
      						$.each(item, function (key, val) {
      							if(val.grade == 0)
      								grade = ''
@@ -183,12 +180,14 @@ var EditableTable = function () {
      								grade = val.grade
      								
      							}
+         						console.log(val.grade)
      							if(val.grade != 'Not S')
      								finalize = 1
      								
                                  var aiNew = oTable.fnAddData([val.number ,val.name ,val.section , grade,val.finalgrade]);
                                  var nRow = oTable.fnGetNodes(aiNew[0]);
                              });
+     						console.log(finalize)
      						if(finalize == 1)
      							$('#lblimport').slideUp();
      						else
@@ -199,10 +198,21 @@ var EditableTable = function () {
                              swal("Error encountered while adding data"+response, "Please try again", "error");
                          }
      				});
+                	
+                	if($(this).val == 'default'){
+                 		$('#excelBtn').slideUp()
+                 	}
+                 	else{
+                 		$('#excelBtn').slideDown()
+                 		
+                 	}
                 }
+                             */
+            $('#subjectDrp').change(function (e) {
+               
+            	fillstud()
                 
-                
-                
+                /*eto last edit
                 $.ajax({
 					type:'POST',
 					data:{subjectDrp:subjectDrp},
@@ -223,14 +233,8 @@ var EditableTable = function () {
                         swal("Error encountered while adding data"+response, "Please try again", "error");
                     }
 				});
-                if($(this).val == 'default'){
-            		$('#excelBtn').slideUp()
-            	}
-            	else{
-            		$('#excelBtn').slideDown()
-            		
-            	}
-                
+               
+                */
             });
             
             
@@ -267,9 +271,11 @@ var EditableTable = function () {
 	             
             	 var subjectDrp = $('#subjectDrp').val()
             	 var section = $('#sectionDrp').val()
+	             var acadyear = $('#acadyearDrp').val()
+	             var sem = $('#semesterDrp').val()
             	 $.ajax({
 					type:'POST',
-					data:{subjectDrp:subjectDrp,section:section},
+ 					data:{subjectDrp:subjectDrp,section:section,acadyear:acadyear,sem:sem},
 					url:'Controller/Faculty/Grading/ExportTable',
 					success: function(result){
 						var item = JSON.parse(result);
@@ -294,6 +300,7 @@ var EditableTable = function () {
         	 
         	 $("#saveBtn").on('click', function() {
         		 var subjectDrp = $('#subjectDrp').val()
+        		 console.log(student)
         		 swal({
                      title: "Are you sure?",
                      text: "The record will be save and will be use for further transaction",
@@ -312,6 +319,7 @@ var EditableTable = function () {
          					data:{subjectDrp:subjectDrp,student: JSON.stringify(student)},
          					url:'Controller/Faculty/Grading/UploadGrades',
          					success: function(result){
+         						$('#lblimport').slideUp();
  	    						 swal("Record Added!", "The data is successfully added!", "success");
          					},
                              error: function (response) {
@@ -352,15 +360,19 @@ var EditableTable = function () {
 
     		function processData(csv) {
     		    var allTextLines = csv.split(/\r\n|\n/);
+    		    console.log(allTextLines)
     		    student = []
     		    for (var i=1; i<allTextLines.length; i++) {
     		        var row = allTextLines[i].split(';');		
     		        for (var j=0; j<row.length; j++) {
     			        var col = row[j].split(',');
-    			        if(col[0] != ""){
+//    				    alert(col[2])
+    			        if(col[0] != "" && col[2] != undefined){
+    				        student.push({number:col[0],name:col[1].replace('"','') + col[2].replace('"',''),section:col[3],grade:col[4]} );
     			        	//alert(col[0])
-        			        var name = col[1].substring(1, col[1].length) + col[2].substr(0, col[2].length-1)
-    				        student.push({number:col[0],name:name,section:col[3],grade:col[4]} );
+//        			        var name = col[1].substring(1, col[1].length) + col[2].substr(0, col[2].length-1)
+        			       //var name = col[1].substring(1, col[1].length) + col[2].substr(0, col[2].length-1)
+//    			        	alert((col[1] + col[2]).replace('"',''))
     			        	
     			        }
     		        }
@@ -376,7 +388,7 @@ var EditableTable = function () {
                 jQuery(table.fnGetNodes()).each(function () {
                     oTable.fnDeleteRow(0);
                 });
-               
+               console.log(student)
                 $(student).each(function(key , val){
                 	var gs = ''
                 	
@@ -388,14 +400,20 @@ var EditableTable = function () {
                     else if(parseFloat(val.grade).toFixed(2) == 5.00)
                         gs = 'F'
                     else if(val.grade == 'I')
-                        gs = 'INC'
+	                    gs = 'INC'
+                    else if(val.grade == 'D')
+                        gs = 'Drop'
                     else
                         gs = 'Not s'
                             
-                    if(val.grade != '' && val.grade != "Not S")
-                    	var aiNew = oTable.fnAddData([val.number ,val.name ,val.section ,parseFloat(val.grade).toFixed(2) ,gs ]);
-                    else
+                    if(val.grade == '' || val.grade == "Not S" )
                     	var aiNew = oTable.fnAddData([val.number ,val.name ,val.section, "Not S",gs ]);
+                    else if(val.grade == 'I')
+                    	var aiNew = oTable.fnAddData([val.number ,val.name ,val.section, "I",gs ]);
+                    else if(val.grade == 'D')
+                    	var aiNew = oTable.fnAddData([val.number ,val.name ,val.section, "D",gs ]);
+                    else
+                    	var aiNew = oTable.fnAddData([val.number ,val.name ,val.section ,parseFloat(val.grade).toFixed(2) ,gs ]);
                     	
                 	var nRow = oTable.fnGetNodes(aiNew[0]);
     				

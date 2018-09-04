@@ -21,6 +21,7 @@
 	if( session.getAttribute("username").toString() != null)
 		 uname = session.getAttribute("username").toString(); 
 	Statement stmnt = conn.createStatement();
+	Statement stmnt2 = conn.createStatement();
 	String acadyearDrp = "";
 /*	ResultSet rs = stmnt.executeQuery("SELECT distinct  IF(IFNULL(Schedule_ChildrenID,0)=0,(SELECT Subject_Code FROM r_subject WHERE CurriculumItem_SubjectID  = Subject_ID),(SELECT Subject_Code FROM r_subject WHERE Schedule_ChildrenID = Subject_ID)) CODE,IF(IFNULL(Schedule_ChildrenID,0)=0,(SELECT Subject_Description FROM r_subject WHERE CurriculumItem_SubjectID  = Subject_ID),(SELECT Subject_Description FROM r_subject WHERE Schedule_ChildrenID = Subject_ID)) DESCR  FROM `t_schedule_items` left join t_schedule on Schedule_Items_ScheduleID = Schedule_ID inner join r_curriculumitem on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on Curriculum_ID = CurriculumItem_CurriculumID  left join r_room on Room_ID = Schedule_Items_RoomID inner join r_section on Schedule_SectionID =  Section_ID left join r_professor on Schedule_ProfessorID =  Professor_ID where Schedule_Items_Display_Status = 'Active'  and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present') and Professor_Code = '"+uname+"' ");
 	while(rs.next()){
@@ -34,9 +35,73 @@
 		status = rs.getString("Grade_Opening_Open");
 		
 	}
+	
+	rs = stmnt.executeQuery("SELECT * FROM `r_faculty_subject` inner join r_subject on Faculty_Subject_SubjectID = Subject_ID where Faculty_Subject_ProfessorID = (SELECT Professor_ID FROM `r_professor` WHERE `Professor_Code` = '"+uname+"' ) and Subject_Type = 'Academic' ");
+	String Drp = "";
+	int  i = 0 ;
+	
+	while(rs.next()){
+		if(i == 0){
+			Drp += "<optgroup label='Academic'>";				
+			
+		}
+		Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+
+		i++;
+		
+	}
+	if(i != 0){
+		Drp += "</optgroup>";				
+		
+	}
+	i = 0;
+	rs = stmnt.executeQuery("SELECT * FROM `r_faculty_subject` inner join r_subject on Faculty_Subject_SubjectID = Subject_ID where Faculty_Subject_ProfessorID = (SELECT Professor_ID FROM `r_professor` WHERE `Professor_Code` = '"+uname+"' ) and Subject_Type = 'Non-Academic'");
+	while(rs.next()){
+		if(i == 0){
+			Drp += "<optgroup label='Non-Academic'>";				
+			
+		}
+		Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+
+		i++;
+		
+	}
+	if(i != 0){
+		Drp += "</optgroup>";				
+		
+	}
+
+	String sectionDrp = "";
+	rs = stmnt.executeQuery("SELECT * FROM `r_campus` ");
+	while(rs.next()){
+		i = 0 ;
+		ResultSet rs2 =  stmnt2.executeQuery("SELECT * FROM `r_section` where Section_CampusID = '"+rs.getString("Campus_ID")+"'");
+		while(rs2.next()){
+			if(i == 0){
+				sectionDrp += "<optgroup label='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Campus_Code"))+"'>";				
+				
+			}
+			
+			sectionDrp += "<option value='"+rs2.getString("Section_Code")+"'>"+rs2.getString("Section_Code")+"</option>";			
+			i++;
+			
+		}
+
+		if(i != 0){
+			sectionDrp += "</optgroup>";				
+			
+		}
+
+		
+	}
+		
+		
+	
 	pageContext.setAttribute("status", status);
 	pageContext.setAttribute("acadyearDrp", drp.fillacadyearDrp2());
 	pageContext.setAttribute("semesterDrp", drp.fillsemesterDrp());
+	pageContext.setAttribute("subjectDrp", Drp);
+	pageContext.setAttribute("sectionDrp", sectionDrp);
 	if(status.equals("Yes")){
 	
 %>    
@@ -94,14 +159,16 @@
 			                    	Subject
 			                    	<br/>
 			                        <select class="populate " id="subjectDrp">
-				                  	    <option value="default" selected="selected" disabled="disabled" >Select a Subject</option>                            	       	
+				                  	    <option value="default" selected="selected" disabled="disabled" >Select a Subject</option>      
+				                  	    ${subjectDrp}                      	       	
 			                		</select>
 			                    </div>
 			                    <div class="col-lg-6">
 			                    	Section
 			                    	<br/>
 			                        <select class="populate " id="sectionDrp">
-				                  	   <option value="default" disabled="disabled" selected="selected">Select a Section</option>              	       	
+				                  	   <option value="default" disabled="disabled" selected="selected">Select a Section</option>    
+				                  	   ${sectionDrp}            	       	
 			                		</select>
 			                    </div>
 	 		            	</div>

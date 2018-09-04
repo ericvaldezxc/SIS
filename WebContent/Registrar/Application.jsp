@@ -57,6 +57,9 @@
 	pageContext.setAttribute("courseDrp", "");	
 	pageContext.setAttribute("campusDrp", campusDrp);	
 	pageContext.setAttribute("documentDrp", drp.filldocumentDrp());	
+	pageContext.setAttribute("subject", drp.fillsubjectDrp2());	
+	pageContext.setAttribute("semDrp", drp.fillsemesterDrp());	
+
 	
 
 %>    
@@ -69,7 +72,64 @@
 //				alert(window.location.hostname+":"+window.location.port+"/")
 //				$('#yearhidden').hide()
 				EditableTable.init();
-				$("select.fee").select2();
+				$("select.fee").select2({width: '100%'});
+				$("select#courseDrp").select2({width: '100%'});
+				
+				$('#selSubject').multiSelect({
+					
+					selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+				    selectionHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+				    afterInit: function (ms) {
+				        var that = this,
+				            $selectableSearch = that.$selectableUl.prev(),
+				            $selectionSearch = that.$selectionUl.prev(),
+				            selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)' ,
+				            selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+
+				        that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+				            .on('keydown', function (e) {
+				                if (e.which === 40) {
+				                    that.$selectableUl.focus();
+				                    return false;
+				                }
+				            });
+
+				        that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+				            .on('keydown', function (e) {
+				                if (e.which == 40) {
+				                    that.$selectionUl.focus();
+				                    return false;
+				                }
+				            });
+				    },
+				    afterSelect: function () {
+				        this.qs1.cache();
+				        this.qs2.cache();
+				    },
+				    afterDeselect: function () {
+				        this.qs1.cache();
+				        this.qs2.cache();
+				    }
+				});
+				$('.ms-container').css("width", "100%"); 
+				$('#credSub').slideUp()
+				$('#semDrpRow').slideUp()
+				$('#typeDrp').change(function(){
+					var type = $(this).val()
+					if(type == 'Transferee'){
+						$('#credSub').slideDown()
+						//$('#semDrpRow').slideDown()
+						
+					}
+					else{
+						$('#credSub').slideUp()
+						$('#semDrpRow').slideUp()
+
+					}
+
+
+				})
+				
 				$('#campusDrp').on('change',function(){
 					var camp = $(this).val()
 					$.ajax({
@@ -385,6 +445,23 @@
 				    a = window.open();
 				    a.document.write(html);
 				}
+				
+				
+				$('#subjectBody').on('change','.subject2',function(){
+					$(this).closest('tr').find('.desc').html($(this).closest('tr').find('.subject2 option:selected').data('desc'))
+					$(this).closest('tr').find('.cred').html($(this).closest('tr').find('.subject2 option:selected').data('cred-unit'))
+					
+				})
+				
+				var sbody = $('#subjectRow').html()
+				$('#subjectBody').append(sbody)
+				$("select.grade").select2({width: '100%'});
+				$("select.subject2").select2({width: '100%'});
+				$('.addItemEdit').on('click',function(){
+					$('#subjectBody').append(sbody)
+					$("select.subject2").select2({width: '100%'});
+					$("select.grade").select2({width: '100%'});
+				})
 		
 				
 			});
@@ -420,10 +497,10 @@
 	                                    <thead>
 	                                        <tr>
 	                                            <th style="width: 20%">Application ID</th>
-	                                            <th style="width: 30%">Name</th>
+	                                            <th style="width: 25%">Name</th>
 	                                            <th style="width: 20%">Documents</th>
 	                                            <th style="width: 20%">Status</th>
-	                                            <th style="width: 10%">Action</th>  
+	                                            <th style="width: 15%">Action</th>  
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>    
@@ -435,6 +512,37 @@
                         </section>
 
                 </div>
+         </div>
+         <div class="hidden">
+         <table>
+         	<tbody id="subjectRow">
+	         	<tr>
+		         	<td>
+			            <select class="populate subject2">
+			         		<option selected disabled value="default">Select a subject</option>
+			         		${subject}
+			         	</select>
+		         	</td>
+		         	<td class="desc"></td>
+	       		 	<td class="cred" style="text-align:center;"></td>
+	       		 	<td>
+			            <select class="populate grade">
+			         		<option selected disabled value="default">Select a Grade</option>
+			         		<option value="1.00" >1.00</option>
+			         		<option value="1.25" >1.25</option>
+			         		<option value="1.50" >1.50</option>
+			         		<option value="1.75" >1.75</option>
+			         		<option value="2.00" >2.00</option>
+			         		<option value="2.25" >2.25</option>
+			         		<option value="2.50" >2.50</option>
+			         		<option value="2.75" >2.75</option>
+			         		<option value="3.00" >3.00</option>
+			         	</select>
+	       		 	</td>
+		         </tr>
+         	</tbody>
+         </table>
+         	
          </div>
 
          <!-- Modal -->
@@ -584,7 +692,7 @@
 	       </div>
 	    </div>
 	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="Application" class="modal fade">
-	        <div class="modal-dialog" style="width:700px">
+	        <div class="modal-dialog" style="width:50%">
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -636,6 +744,15 @@
                                      	 <option value="Transferee"  >Transferee</option>			
                                    	</select> 
 	                            </div>
+                        	</div>  
+                        	<div class="row" id="semDrpRow">
+	                        	<div class="col-lg-6" style="padding-top:10px">
+	                                Semester
+                        			<select id="semDrp" class="populate fee" style="width: 290px">
+                                     	 <option value="default" selected="selected" disabled="disabled" >Select a Semester</option>		
+                                     	  ${semDrp} 	
+                                   	</select> 
+	                            </div>
                         	</div>                       	
                         	<div class="row">
                             	<section class="panel">
@@ -648,10 +765,13 @@
 	 								<table class="table table-striped table-hover table-bordered" id="itemsTbl">
 			                            	<thead>
 		                                        <tr>
-		                                            <th style="width: 200px">Code</th>
-		                                            <th style="width: 200px">Description</th>
-		                                            <th style="width: 100px">Cred. Units</th>
-		                                            <th style="width: 70px">Action</th>  
+		                                            <th style="width: 20%">Code</th>
+								                	<th style="width: 30%">Description</th>
+								                	<th style="width: 5%">Lec. Hours</th>
+								                	<th style="width: 5%">Lab. Hours	</th>
+								                	<th style="width: 5%">Cred. Units</th>
+								                	<th style="width: 30%">Schedule</th>
+								                	<th style="width: 5%">Action</th> 
 		                                        </tr>
 		                                    </thead>
 		                                    <tbody id="mainBody">    
@@ -703,7 +823,39 @@
 	            			</div>
 					        </section>
                        	</div>
-	                </div>
+	                    <div class="row" id="credSub">
+                           	<section class="panel">
+			            		<header class="panel-heading" style="background-color:#F1F2F7;margin-top:10px">
+			            		Credited Subjects <span class="tools pull-right">
+					            <a href="javascript:;" class="fa fa-chevron-down"></a>
+					            </span>
+					            </header>
+					            <div class="panel-body" >
+					            	<table class="table table-striped table-hover table-bordered" >
+		                            	<thead>
+	                                        <tr>
+	                                            <th style="width: 25%">Code</th>
+	                                            <th style="width: 35%">Description</th>
+	                                            <th style="width: 20%">Cred. Units</th>
+	                                            <th style="width: 20%">Grade</th>
+	                                        </tr>
+	                                    </thead>
+	                                    <tbody id="subjectBody">   
+	                                   		 
+	                                    </tbody>
+		                            </table>
+									<a class="btn btn-success addItemEdit" href="javascript:;"><i class="fa fa fa-plus"></i></a>									<!--
+									<div class="col-lg-12">
+							            Subject
+						                <select name="country" class="multi-select" multiple="" id="selSubject" >
+						                    ${subject}
+						                </select>
+					           		</div>
+					           		-->
+					            </div>
+					        </section>
+                       	</div>
+                    </div>
 	                <div class="modal-footer">
 	                	 <button data-dismiss="modal" class="btn btn-default" id="updatecloseBtn" type="button"><u>C</u>lose</button>
 	                     <button class="btn btn-success " id="EnrollBtn" type="button"><u>E</u>nroll</button>	                

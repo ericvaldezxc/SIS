@@ -317,6 +317,29 @@ var EditableTable = function () {
         			$("#professorDrp").select2("val", "default");
         		else
         			$("#professorDrp").select2("val", profcode);
+            	
+            	$.ajax({
+					type:'POST',
+					data:{subject: courcode},
+					url: "Controller/Registrar/Preenrollment/GetFacultyPerSubject",
+					success: function(result){
+						var item = $.parseJSON(result)
+						console.log(item)
+						$('#professorDrp').html('')
+						$('#professorDrp').append('<option value="default" >TBA</option>') 
+						$.each(item, function (key, val) {
+							$('#professorDrp').append('<option value='+val.code+' >'+val.name+'</option>') 
+                			
+                		})
+	            		
+					},
+                    error: function (response) {
+                        swal("Error encountered while accessing the data", "Please try again", "error");
+                    }
+				});
+        		
+            	
+            	
         		$('#schedmainBody').html('')
         		var campus = $('#campusDrp').val()
             	var course = $('#courseDrp').val()
@@ -333,7 +356,7 @@ var EditableTable = function () {
 							room += '<option value='+val.code+' >'+val.desc+'</option>';
                 			
                 		})
-            			room += '</select></td>'	                    		
+                		room += '</select></td>'	                    		
 	            		$.ajax({
 							type:'POST',
 							data:{section:section,year:yearlvl,curriculumDrp:curi,lattype:lattype,subject:courcode},
@@ -353,8 +376,7 @@ var EditableTable = function () {
 		                		})
 		                		
 				            	if($('#schedmainBody').html() == ''){
-				            		alert('asd')
-					            	$.ajax({
+				            		$.ajax({
 										type:'POST',
 										data:{Campus: camp},
 										url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'FillRoom',

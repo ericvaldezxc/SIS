@@ -141,6 +141,12 @@
 	                    <span>Grading</span>
 	                </a>
            		</li>
+           		 <li>
+	                <a href="Subject.jsp" class="" id="SubjectBtn">
+	                    <i class="fa fa-bookmark"></i>
+	                    <span>Subject</span>
+	                </a>
+           		</li>
                 
             </ul>            
         </div>
@@ -311,6 +317,10 @@
 			$("#SectionOfferingBtn").addClass("active");
  		else if(title == "Current Student") 
 			$("#CurrentStudentBtn").addClass("active");
+ 		else if(title == "Subject") 
+			$("#SubjectBtn").addClass("active");
+		
+		
 		
 		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering') 
 			$('#Pre-Enrollment').click();

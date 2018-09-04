@@ -90,13 +90,15 @@ public class EnrollSubject extends HttpServlet {
 	        String semester = "";
 	        String acadyear = "";
 	        String semesterdesc = "";
-
+	        String sect = "";
 			sql = "SELECT * FROM `t_student_account` where Student_Account_Student_Number = '"+username+"'";
 			rs = stmnt.executeQuery(sql);
 	        while(rs.next()){
 	        	studaccid = rs.getString("Student_Account_ID");
 	        	course = rs.getString("Student_Account_CourseID");
 	        	yearlvl =  rs.getString("Student_Account_Year");
+	        	sect =  rs.getString("Student_Account_SectionID");
+	        	
 	        }
 
 	        sql = "SELECT * FROM `r_semester` where Semester_Active_Flag = 'Active' and Semester_Active_Flag = 'Active'";
@@ -116,8 +118,16 @@ public class EnrollSubject extends HttpServlet {
 	        
 	        if(semesterdesc.equals("First Semester")) {
 	        	yearlvl = ylu.yearLevel(yearlvl);
-	        	sql = "update t_student_account set Student_Account_Year = '"+yearlvl+"'  where  Student_Account_Student_Number = '"+username+"' ";
-				
+		        sql = "SELECT * FROM `r_section` as t1 where Section_Year = '"+yearlvl+"' and Section_CourseID = (select t2.Section_CourseID from r_section as t2 where t2.Section_ID = '"+sect+"' ) and Section_Section = (select t2.Section_Section from r_section as t2 where t2.Section_ID = '"+sect+"' )  and Section_Display_Status = 'Active'";
+				rs = stmnt.executeQuery(sql);
+		        while(rs.next()){
+		        	sect = rs.getString("Section_ID");
+		        }
+
+	        	sql = "update t_student_account set Student_Account_Year = '"+yearlvl+"',Student_Account_SectionID = '"+sect+"'  where  Student_Account_Student_Number = '"+username+"' ";
+				stmnt.execute(sql);
+
+		        
 	        }
 	        
 	        

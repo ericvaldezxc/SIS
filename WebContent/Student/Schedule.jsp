@@ -54,7 +54,7 @@
 								if(i == 0)
 									sched = ''
 								console.log(val2.room)
-								sched += val2.time + val2.room + ' '
+								sched += val2.time + val2.room + ' ';
 								i++
 								
 							})
@@ -64,7 +64,10 @@
 								body += '<tr><td>'+val.code+'</td><td>'+val.desc+'</td><td>'+val.lec+'</td><td>'+val.lab+'</td><td>'+val.cred+'</td><td>'+sched+'</td></tr>'
 
 						})
-						$('#schedBody').html(body)
+						if(body == '')
+							$('#schedBody').html('<tr><td colspan="6" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>  </tr>')
+						else
+							$('#schedBody').html(body)
                          
 					},
                     error: function (response2) {

@@ -130,7 +130,7 @@ public class UploadGrade extends HttpServlet {
 				
 				String insertquery = "";
 				if(cou2.equals("0"))
-					 insertquery = "Insert into t_students_grade (Students_Grade_StudentTakenCurriculumSubjectID,Students_Grade_Grade) values ('"+studtakenid+"','"+grade+"')";
+					 insertquery = "Insert into t_students_grade (Students_Grade_StudentTakenCurriculumSubjectID,Students_Grade_Grade,Students_Grade_FacultyID) values ('"+studtakenid+"','"+grade+"',(SELECT Professor_ID FROM `r_professor` where Professor_Code = '"+username+"' ))";
 				else
 					 insertquery = "update t_students_grade set Students_Grade_Grade = '"+grade+"' where Students_Grade_StudentTakenCurriculumSubjectID = '"+studtakenid+"'";
 					
