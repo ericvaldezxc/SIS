@@ -137,7 +137,7 @@ public class CurriculumItemController extends HttpServlet {
 				
 			}
 			else if(type.equals("Update")){
-				sql = "SELECT COUNT(*) as cou FROM r_curriculumitem INNER JOIN r_subject ON CurriculumItem_SubjectID =  Subject_ID INNER JOIN r_curriculum ON CurriculumItem_CurriculumID  = Curriculum_ID WHERE Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"' AND Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"' ";
+				sql = "SELECT COUNT(*) as cou FROM r_curriculumitem INNER JOIN r_subject ON CurriculumItem_SubjectID =  Subject_ID INNER JOIN r_curriculum ON CurriculumItem_CurriculumID  = Curriculum_ID WHERE Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"' AND Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"'";
 				stmnt.execute(sql);
 
 				ResultSet rs = stmnt.executeQuery(sql);

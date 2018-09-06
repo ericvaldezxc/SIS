@@ -158,7 +158,7 @@ public class CurriculumItems extends HttpServlet {
 			 
 				 
 				 
-				 sql2 = "SELECT Section_Code,Schedule_ID from r_curriculumitem inner join t_schedule on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  inner join r_section on Schedule_SectionID = Section_ID where Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM `r_curriculumyear` where CurriculumYear_Ative_Flag = 'Active' ) and Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Schedule_AcademicYearID = '"+acadyear+"' and Schedule_Display_Status = 'Active' and CurriculumItem_SubjectID = '"+subid+"' and CurriculumItem_Display_Status = 'Active' ";
+				 sql2 = "SELECT Section_Code,Schedule_ID from r_curriculumitem inner join t_schedule on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  inner join r_section on Schedule_SectionID = Section_ID where Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM `r_curriculumyear` where CurriculumYear_Ative_Flag = 'Active' ) and Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Schedule_AcademicYearID = '"+acadyear+"' and Schedule_Display_Status = 'Active' and CurriculumItem_SubjectID = '"+subid+"' and CurriculumItem_Display_Status = 'Active'  ";
 				 rs2 = stmnt2.executeQuery(sql2);
 				 //out.print(sql2+"\n");
 				 String schedid = "";
@@ -226,7 +226,7 @@ public class CurriculumItems extends HttpServlet {
 					 
 					 String subid2 = rs2.getString("Subject_ID");
 				
-					 String sql3 = "SELECT Section_Code,Schedule_ID from r_curriculumitem inner join t_schedule on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  inner join r_section on Schedule_SectionID = Section_ID inner join r_subject on Subject_Group =  CurriculumItem_SubjectID  where Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM `r_curriculumyear` where CurriculumYear_Ative_Flag = 'Active' ) and Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Schedule_AcademicYearID = '"+acadyear+"' and Schedule_Display_Status = 'Active' and CurriculumItem_SubjectID = '"+subid+"' and CurriculumItem_Display_Status = 'Active' and Schedule_ChildrenID = '"+subid2+"' group by Section_Code ";
+					 String sql3 = "SELECT Section_Code,Schedule_ID from r_curriculumitem inner join t_schedule on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  inner join r_section on Schedule_SectionID = Section_ID inner join r_subject on Subject_Group =  CurriculumItem_SubjectID  where Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM `r_curriculumyear` where CurriculumYear_Ative_Flag = 'Active' ) and Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Schedule_AcademicYearID = '"+acadyear+"' and Schedule_Display_Status = 'Active' and CurriculumItem_SubjectID = '"+subid+"' and CurriculumItem_Display_Status = 'Active' and Schedule_ChildrenID = '"+subid2+"'  group by Section_Code ";
 					 //out.print(sql3+"\n");
 					 schedlist2 = new JSONArray();
 					 section2 = new JSONObject();

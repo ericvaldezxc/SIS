@@ -99,7 +99,7 @@ var EditableTable = function () {
 					success: function(result){
 						var item = $.parseJSON(result)
 						$.each(item, function (key, val) {
-							room += '<option value='+val.code+' >'+val.desc+'</option>';
+							room += '<option value="'+val.code+' ">'+val.desc+'</option>';
                 			
                 		})
                 		room += '</select></td>'	                    		
@@ -353,7 +353,7 @@ var EditableTable = function () {
 					success: function(result){
 						var item = $.parseJSON(result)
 						$.each(item, function (key, val) {
-							room += '<option value='+val.code+' >'+val.desc+'</option>';
+							room += '<option value="'+val.code+'">'+val.desc+'</option>';
                 			
                 		})
                 		room += '</select></td>'	                    		
@@ -383,7 +383,7 @@ var EditableTable = function () {
 										success: function(result){
 											var item = $.parseJSON(result)
 											$.each(item, function (key, val) {
-												room += '<option value='+val.code+' >'+val.desc+'</option>';
+												room += '<option value="'+val.code+'" >'+val.desc+'</option>';
 					                			
 					                		})
 					                		room += '</select></td>'	                    		

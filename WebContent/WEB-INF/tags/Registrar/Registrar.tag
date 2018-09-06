@@ -178,6 +178,12 @@
                     	<li class="" id="GradesBtn"><a href="Grade.jsp">Grade</a></li>
                     </ul>
                 </li>
+                <li>
+	                <a href="SummerClass.jsp" class="" id="SummerBtn">
+	                    <i class="fa  fa-tasks"></i>
+	                    <span>Summer Class</span>
+	                </a>
+           		</li>
            		
             </ul>            
         </div>
@@ -364,6 +370,8 @@
 			$("#SubjectBtn2").addClass("active");
  		else if(title == "Curriculum" ) 
 			$("#CurriculumBtn").addClass("active");
+ 		else if(title == "Summer Class" ) 
+			$("#SummerBtn").addClass("active");
 		
 		
 		

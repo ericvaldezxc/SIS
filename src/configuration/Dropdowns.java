@@ -562,6 +562,50 @@ public class Dropdowns {
 
 		return Drp;
 	}
+	public String fillstudentDrp() throws SQLException {
+		String Drp = "";
+		
+		Statement stmnt = conn.createStatement();
+		Statement stmnt2 = conn.createStatement();
+		rs = stmnt.executeQuery("Select * from r_course WHERE Course_Display_Status = 'Active' ");
+		while(rs.next()){
+			String sql = "SELECT * FROM `t_student_account` inner join r_student_profile on Student_Profile_ID = Student_Account_Student_Profile_ID where Student_Account_CourseID = '"+rs.getString("Course_ID")+"' and Student_Account_Year in ('First Year','Second Year','Third Year','Fourth Year')";
+		
+			ResultSet rs2 = stmnt2.executeQuery(sql);
+			int  i = 0 ;
+			String fullname = "";	
+			String fname = "";	
+			String mname = "";	
+			String lname = "";	
+			while(rs2.next()){
+				if(i == 0){
+					Drp += "<optgroup label='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Code"))+"'>";				
+					
+				}
+				fname = ec.decrypt(ec.key, ec.initVector, rs2.getString("Student_Profile_First_Name"));
+				mname = ec.decrypt(ec.key, ec.initVector, rs2.getString("Student_Profile_Middle_Name"));
+				lname = ec.decrypt(ec.key, ec.initVector, rs2.getString("Student_Profile_Last_Name"));
+				Fullname fn = new Fullname();
+				fullname = fn.fullname(fname, mname, lname);
+				Drp += "<option value='"+rs2.getString("Student_Account_Student_Number")+"' >"+fullname+"</option>";
+				
+				i++;
+				
+				
+			}
+			if(i != 0){
+				Drp += "</optgroup>";				
+				
+			}
+			
+
+			
+		}
+		
+		
+		return Drp;
+	}
+
 
 
 }
