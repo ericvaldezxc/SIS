@@ -1,4 +1,4 @@
-package controller.admin.faculty;
+package controller.registrar.preenrollment;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,14 +17,14 @@ import connection.DBConfiguration;
 /**
  * Servlet implementation class RoomController
  */
-@WebServlet("/Registrar/Controller/Registrar/Pre-Enrollment/SemesterController")
-public class SemesterController extends HttpServlet {
+@WebServlet("/Registrar/Controller/Registrar/Pre-Enrollment/AcademicYearController")
+public class AcademicYearController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SemesterController() {
+    public AcademicYearController() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -61,7 +61,7 @@ public class SemesterController extends HttpServlet {
 		}
 		String sql = "";
 		if(type.equals("Insert"))
-			sql = "Insert into r_semester (Semester_Code,Semester_Description) values ('"+ec.encrypt(ec.key, ec.initVector, code)+"','"+ec.encrypt(ec.key, ec.initVector, desc)+"')";
+			sql = "Insert into r_academic_year (Academic_Year_Code,Academic_Year_Description) values ('"+ec.encrypt(ec.key, ec.initVector, code)+"','"+ec.encrypt(ec.key, ec.initVector, desc)+"')";
 //		else if(type.equals("Update"))
 //			sql = "Update r_subject set Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"',Subject_Description = '"+ec.encrypt(ec.key, ec.initVector, desc)+"',Subject_Units = '"+amount+"' where Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"'";
 //		else if(type.equals("Delete"))

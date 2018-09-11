@@ -60,6 +60,7 @@ public class Summer extends HttpServlet {
 		
 		String subject = request.getParameter("subject");
 		String faculty = request.getParameter("faculty");
+		String campus = request.getParameter("campus");
 		try {
 			sched=jsonParser.parse(request.getParameter("schedule"));
 			student=jsonParser.parse(request.getParameter("student"));
@@ -101,8 +102,8 @@ public class Summer extends HttpServlet {
 				 
 				
 			}
-			code = year + "-"+subject+"-"+num;
-			sql = "INSERT INTO t_summer_class (Summer_Class_Code,Summer_Class_Academic_Year,Summer_Class_Subject_ID,Summer_Class_ProfessorID) VALUES ('"+code+"',(SELECT Academic_Year_ID  FROM `r_academic_year` where Academic_Year_Active_Flag =  'Present'),(SELECT Subject_ID  FROM `r_subject` where Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"'),(SELECT Professor_ID  FROM `r_professor` where Professor_Code = '"+faculty+"')) "; 
+			code = year + "-"+subject+"-"+num+"-"+campus;
+			sql = "INSERT INTO t_summer_class (Summer_Class_Code,Summer_Class_Academic_Year,Summer_Class_Subject_ID,Summer_Class_ProfessorID,Summer_Class_CampusID) VALUES ('"+code+"',(SELECT Academic_Year_ID  FROM `r_academic_year` where Academic_Year_Active_Flag =  'Present'),(SELECT Subject_ID  FROM `r_subject` where Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"'),(SELECT Professor_ID  FROM `r_professor` where Professor_Code = '"+faculty+"'),(SELECT Campus_ID  FROM `r_campus` where Campus_Code = '"+ec.encrypt(ec.key, ec.initVector, campus)+"')) "; 
 			out.print(sql+"\n");
 			
 			

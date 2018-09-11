@@ -1,4 +1,4 @@
-package controller.admin.faculty;
+package controller.registrar.preenrollment;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,14 +19,14 @@ import connection.DBConfiguration;
 /**
  * Servlet implementation class RoomController
  */
-@WebServlet("/Registrar/Controller/Registrar/Pre-Enrollment/SemesterActiveController")
-public class SemesterActiveController extends HttpServlet {
+@WebServlet("/Registrar/Controller/Registrar/Pre-Enrollment/AcademicActiveController")
+public class AcademicActiveController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SemesterActiveController() {
+    public AcademicActiveController() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -54,21 +54,17 @@ public class SemesterActiveController extends HttpServlet {
 		Statement stmnt = null;
 		Statement stmnt2 = null;
 		Statement stmnt3 = null;
-		Statement stmnt4 = null;
 		try {
 			stmnt = conn.createStatement();
 			stmnt2 = conn.createStatement();
 			stmnt3 = conn.createStatement();
-			stmnt4 = conn.createStatement();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String sql = "";
 		PrintWriter out = response.getWriter();	
-
+		String sql = "";
 		try {
-			
 			ResultSet rs = stmnt.executeQuery("SELECT Student_Account_ID,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Student_Account_Student_Number,case when Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' then 'Enrolled' else 'Not Enrolled' end as status,IF((SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'))=0,'Not Enrolled','Enrolled') as enrolledba FROM `t_student_taken_curriculum_subject`  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join r_section on Student_Account_SectionID = Section_ID where Student_Account_ID not in (SELECT Graduate_StudentAccountID FROM `t_graduate` WHERE Graduate_Display_Status = 'Active') and Student_Account_Display_Status = 'Active'  group by Student_Taken_Curriculum_Subject_StudentAccountID");
 			while(rs.next()){
 				String studid = rs.getString("Student_Account_ID");
@@ -89,11 +85,11 @@ public class SemesterActiveController extends HttpServlet {
 					
 				}
 				
-				
 				if(flag == 0) {
+					
 					String sql3 = "INSERT INTO t_graduate (Graduate_StudentAccountID,Graduate_AcademicYearID,Graduate_SemesterID) VALUES ('"+studid+"',(SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present' ),(SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active'))";
 					out.print(sql3);
-					stmnt4.execute(sql3);
+					stmnt.execute(sql3);
 				}
 				
 				
@@ -102,10 +98,11 @@ public class SemesterActiveController extends HttpServlet {
 			}
 			
 			
-			
-			sql = "Update r_semester set Semester_Active_Flag = 'Inactive' ";
+			sql = "Update r_academic_year set Academic_Year_Active_Flag = 'Used' where Academic_Year_Active_Flag = 'Present'";
 			stmnt.execute(sql);
-			sql = "Update r_semester set Semester_Active_Flag = 'Active' where Semester_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"'";
+			sql = "Update r_academic_year set Academic_Year_Active_Flag = 'To be Used' where Academic_Year_Active_Flag = 'Not Used'";
+			stmnt.execute(sql);
+			sql = "Update r_academic_year set Academic_Year_Active_Flag = 'Present' where Academic_Year_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"'";
 			stmnt.execute(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -125,7 +125,8 @@
                         <span>Pre-Enrollment</span>
                     </a>
                     <ul class="sub">
-                    	<li class="" id="FeeBtn"><a href="Fee.jsp">School Calendar</a></li>
+                    	<li class="" id="AcademicYearBtn"><a href="AcademicYear.jsp">Academic Year</a></li>
+                    	<li class="" id="SemesterBtn"><a href="Semester.jsp">Semester</a></li>
                     	<li class="" id="TuitionBtn"><a href="TuitionFee.jsp">Tuition Fee</a></li>
                     	<li class="" id="CourseBtn"><a href="CourseFee.jsp">Course Fee</a></li>
                     	<li class="" id="SubjectBtn"><a href="SubjectFee.jsp">Subject Fee</a></li>
@@ -146,12 +147,16 @@
 	                    <span>Application</span>
 	                </a>
            		</li>
-           		<li>
-	                <a href="Faculty.jsp" class="" id="FacultyBtn">
-	                    <i class="fa fa-bullhorn"></i>
-	                    <span>Faculty</span>
-	                </a>
-           		</li>
+           		<li class="sub-menu">
+                    <a href="javascript:;" class="" id="FacultyheadBtn" >
+                        <i class="fa fa-bullhorn"></i>
+                        <span>Faculty</span>
+                    </a>
+                    <ul class="sub">
+                    	<li class="" id="FacultyBtn"><a href="Faculty.jsp">Faculty</a></li>
+                    	<li class="" id="GuardBtn"><a href="Guard.jsp">Guard</a></li>
+                    </ul>
+                </li>
            		<li>
 	                <a href="Student.jsp" class="" id="StudentBtn">
 	                    <i class="fa  fa-smile-o"></i>
@@ -184,7 +189,16 @@
 	                    <span>Summer Class</span>
 	                </a>
            		</li>
-           		
+           		<li class="sub-menu">
+                    <a href="javascript:;" class="" id="GraduationBtn" >
+                        <i class="fa fa-flag-checkered"></i>
+                        <span>Graduation</span>
+                    </a>
+                    <ul class="sub">
+                    	<li class="" id="GraduatingBtn"><a href="GraduatingStudent.jsp">Graduating Student</a></li>
+                    	<li class="" id="GraduatedBtn"><a href="GraduatedStudent.jsp">Graduated Student</a></li>
+                    </ul>
+                </li>
             </ul>            
         </div>
         <!-- sidebar menu end-->
@@ -344,6 +358,8 @@
 		var title = document.title;
 		if(title == "Tuition Fee") 
 			$("#TuitionBtn").addClass("active");
+ 		else if(title == "School Calendar") 
+			$("#CalendarBtn").addClass("active");
  		else if(title == "Mandatory Fee") 
 			$("#MandatoryBtn").addClass("active");
  		else if(title == "Subject Fee") 
@@ -372,16 +388,30 @@
 			$("#CurriculumBtn").addClass("active");
  		else if(title == "Summer Class" ) 
 			$("#SummerBtn").addClass("active");
+ 		else if(title == "Graduating Student" ) 
+			$("#GraduatingBtn").addClass("active");
+ 		else if(title == "Graduated Student" ) 
+			$("#GraduatedBtn").addClass("active");
+ 		else if(title == "Academic Year" ) 
+			$("#AcademicYearBtn").addClass("active");
+ 		else if(title == "Semester" ) 
+			$("#SemesterBtn").addClass("active");
+ 		else if(title == "Faculty" ) 
+			$("#FacultyBtn").addClass("active");
+ 		else if(title == "Guard" ) 
+			$("#GuardBtn").addClass("active");
 		
 		
-		
-		
-		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering' || title == 'Registration Opening') 
+		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering' || title == 'Registration Opening' || title == 'Academic Year' || title == 'Semester') 
 			$('#Pre-Enrollment').click();
 		if(title == 'Grade Opening' || title == "Grade") 
 			$('#GradeBtn').click();
 		if(title == 'Curriculum' || title == "Subject") 
 			$('#CurriculumSetupBtn').click();
+		if(title == 'Graduating Student' || title == "Graduated Student") 
+			$('#GraduationBtn').click();
+		if(title == 'Faculty' || title == "Guard") 
+			$('#FacultyheadBtn').click();
 				
 		$('#logoutBtn').click(function(){
     		$.ajax({

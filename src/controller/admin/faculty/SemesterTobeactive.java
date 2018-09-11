@@ -17,7 +17,7 @@ import connection.DBConfiguration;
 /**
  * Servlet implementation class RoomController
  */
-@WebServlet("/Admin/Controller/Admin/Faculty/SemesterTobeactive")
+@WebServlet("/Registrar/Controller/Registrar/Pre-Enrollment/SemesterTobeactive")
 public class SemesterTobeactive extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
