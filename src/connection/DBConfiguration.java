@@ -8,7 +8,7 @@ public class DBConfiguration {
 	public Connection getConnection() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sis_13", "root", "");
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sis_17", "root", "");
 			return conn;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
