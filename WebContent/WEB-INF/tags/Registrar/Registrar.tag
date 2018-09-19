@@ -184,6 +184,12 @@
                     </ul>
                 </li>
                 <li>
+	                <a href="Scholarship.jsp" class="" id="ScholarBtn">
+	                    <i class="fa fa-group"></i>
+	                    <span>Scholarship</span>
+	                </a>
+           		</li>
+                <li>
 	                <a href="SummerClass.jsp" class="" id="SummerBtn">
 	                    <i class="fa  fa-tasks"></i>
 	                    <span>Summer Class</span>
@@ -400,6 +406,8 @@
 			$("#FacultyBtn").addClass("active");
  		else if(title == "Guard" ) 
 			$("#GuardBtn").addClass("active");
+ 		else if(title == "Scholarship" ) 
+			$("#ScholarBtn").addClass("active");
 		
 		
 		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering' || title == 'Registration Opening' || title == 'Academic Year' || title == 'Semester') 

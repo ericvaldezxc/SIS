@@ -63,8 +63,8 @@ public class GetStudentInformation extends HttpServlet {
 		DBConfiguration db = new DBConfiguration(); 
 		Connection conn = db.getConnection();
 		
-		//String StudentNumber = request.getParameter("StudentNumber");
-		String StudentNumber = "2018-00001-CM-0";
+		String StudentNumber = request.getParameter("StudentNumber");
+		//String StudentNumber = "2018-00001-CM-0";
 		Statement stmnt = null;
 		try {
 			stmnt = conn.createStatement();
@@ -146,19 +146,20 @@ public class GetStudentInformation extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		String cn = "";
+		String cn = "23";
 		String message = "";
 		String apikey = "TR-STUDE770480_PNV9P";
 		String type = "NORMAL";
 		String url = "https://www.itexmo.com/php_api/api.php";
 		//URL url = new URL("https://www.itexmo.com/php_api/api.php"); 
 		String fullname = "";	
-		String fname = "";	
+		String fname = "qweqwe";	
 		String mname = "";	
 		String lname = "";	
 		
-		
+	    PrintWriter out = response.getWriter();	
 		String sql = "SELECT *,ifnull(Student_Profile_Guardian_Contact_Number,0) as cn FROM t_student_account inner join r_student_profile on Student_Profile_ID = Student_Account_Student_Profile_ID where Student_Account_Student_Number = '"+StudentNumber+"'";
+		//out.print(sql);
 		ResultSet rs;
 		try {
 			rs = stmnt.executeQuery(sql);
@@ -213,7 +214,6 @@ public class GetStudentInformation extends HttpServlet {
 	    out.print(EntityUtils.toString(((HttpResponse) response2).getEntity()));
 	    client.close();
 	    */
-	    PrintWriter out = response.getWriter();	
 	    JSONObject obj = new JSONObject();
 		obj.put("message", message);
 		obj.put("cn", cn);

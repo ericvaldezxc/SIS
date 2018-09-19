@@ -259,6 +259,8 @@ var EditableTable = function () {
             
             //$('#courseDrp').trigger()
            
+           
+            
         	$('#courseDrp').on('change',function(){
         		fillsec()
         		fillcurriculum()
@@ -338,6 +340,12 @@ var EditableTable = function () {
 					$(this).remove();
 					
 				})
+				$('#feemainBody  tr.discount').each(function(key,val){
+					$(this).remove();
+					
+				})
+				
+				
 				
 				$('#mainBody  tr ').each(function(key,val){
 					var sub = $(this).find('.codeText').html()
@@ -399,24 +407,78 @@ var EditableTable = function () {
         	}
 			function gettotamountfee(){
 				
+				
+				///*
+				var percentage = 0
+				var discount = ''
+				if($('#scholarshipDrp').val() == 'default'){
+					
+				}else{
+					percentage = $('#scholarshipDrp option:selected').data('percentage')
+						
+				}
+
+				
+				//*/
+				
+				
 				var totamo = 0;
+				var discountper
 				$('#feemainBody  tr ').each(function(key,val){
 					var amo = $(this).find('.amount').html()
-					if(amo != '' || amo != undefined )	{
+					if(amo != '' || amo != undefined || amo != 'undefined' )	{
 						amo = amo.replace(",", "");
 						totamo = parseFloat(totamo) + parseFloat(amo);
-
+						
 					}
 					
 				})
+				//alert(totamo )
+				if($('#scholarshipDrp').val() == 'default'){
+					discountper = 0 
+				}else{
+					if(percentage != 0){
+						discountper = (parseFloat(percentage) / 100.0 ) * parseFloat(totamo) 
+						//aualert('percent'+percentage+'totamo'+totamo)
+						
+					}
+						
+				}
+				origprice = parseFloat(totamo)
+				totamo = parseFloat(totamo) - parseFloat(discountper)
+				//alert(discountper)
+				
 				
 				$.ajax({
 					type:'POST',
 					data:{Amount: totamo},
 					url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
 					success: function(result){
-						$('#feemainBody').append('<tr class="totamount" style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px;"><td  >Total Amount: </td><td style="text-align:left;font-weight: bold" class="TotalAmount">'+result+'</td></tr>')
-	                	
+						$.ajax({
+							type:'POST',
+							data:{Amount: discountper},
+							url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
+							success: function(result2){   
+								if($('#scholarshipDrp').val() == 'default'){
+									discount = '<tr class="discount" style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px;"><td >Discount: </td><td style="text-align:left;font-weight: bold" class="discountvalue">0% | '+result2+'</td></tr>'
+									
+								}else{
+									percentage = $('#scholarshipDrp option:selected').data('percentage')
+									discount = '<tr class="discount" style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px;"><td >Discount: </td><td style="text-align:left;font-weight: bold" class="discountvalue">'+percentage+'% | '+result2+'</td></tr>'
+										
+								}
+								$('#feemainBody').append(discount)
+								$('#feemainBody').append('<tr class="totamount" style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px;"><td  >Total Amount: </td><td style="text-align:left;font-weight: bold" class="TotalAmount">'+result+'</td></tr>')
+			                	
+								
+								
+							},
+		                    error: function (response) {
+		                        swal("Error encountered while accessing the data", "Please try again", "error");
+		                    }
+						});
+						
+					
 
                          
 					},
@@ -457,7 +519,6 @@ var EditableTable = function () {
 				tottuitionunit = 0
             	$('#mainBody tr').each(function(){
             		if($(this).find('.unitTexts').html() != undefined){
-//                		alert($(this).find('.unitTexts').html())
             			if($(this).find('input:checkbox').prop("checked") == true){            				
             				totunit += parseInt($(this).find('.unitTexts').html())
             				tottuitionunit += parseInt($(this).find('.codeText').data("tuition"))
@@ -471,6 +532,24 @@ var EditableTable = function () {
             	
         		
             });
+            
+            $('#scholarshipDrp').on('change',function(){
+            	totunit = 0;
+				tottuitionunit = 0
+            	$('#mainBody tr').each(function(){
+            		if($(this).find('.unitTexts').html() != undefined){
+            			if($(this).find('input:checkbox').prop("checked") == true){            				
+            				totunit += parseInt($(this).find('.unitTexts').html())
+            				tottuitionunit += parseInt($(this).find('.codeText').data("tuition"))
+            				
+            			}
+            		}
+            		
+            	});
+            	$('#totunit').html('Total: ' + totunit + ' Units')
+            	fillsubjectfee()
+        	
+			})
             
             $('#addBtn').click(function(e){
             	e.preventDefault();
@@ -1105,6 +1184,7 @@ var EditableTable = function () {
 			
             	
             }
+            var origprice = ''
             function openDataUriWindow(url) {
 			    var html = '<html>' +
 			        '<style>html, body { padding: 0; margin: 0; } iframe { width: 100%; height: 100%; border: 0;}  </style>' +
@@ -1191,6 +1271,22 @@ var EditableTable = function () {
             						
         							
         						});
+        						var amounttttttt = origprice
+        						var scholarship = $('#scholarshipDrp option:selected').val()
+        						$.ajax({
+    		    					type:'POST',
+    		    					data:{studentnum: "Latest Student",type:"Assessment",amount:amounttttttt,orientation:"1",scholarship:scholarship,desc:"TOTAL AMOUNT DUE"},
+    		    					url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'AccountPayables',
+    		    					success: function(result2){
+    		 
+    		                             
+    		    					},
+    		                        error: function (response2) {
+    		                            swal("Error encountered while accessing the data", "Please try again", "error");
+    		                        }
+    		    				});
+        						
+        						
         						
 
         						swal({

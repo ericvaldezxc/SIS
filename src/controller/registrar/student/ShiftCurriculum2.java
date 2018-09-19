@@ -25,14 +25,14 @@ import connection.DBConfiguration;
 /**
  * Servlet implementation class AdmissionCurriculumItemViewController
  */
-@WebServlet("/Registrar/Controller/Registrar/Student/Curriculum")
-public class Curriculum extends HttpServlet {
+@WebServlet("/Registrar/Controller/Registrar/Student/ShiftCurriculum2")
+public class ShiftCurriculum2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Curriculum() {
+    public ShiftCurriculum2() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -51,7 +51,7 @@ public class Curriculum extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("plain/text");
 		EncryptandDecrypt ec = new EncryptandDecrypt();
-		String studentnumber = request.getParameter("studentnumber");
+		String course = request.getParameter("course");
 		Fullname fn = new Fullname();
 		
 		DBConfiguration db = new DBConfiguration(); 
@@ -80,29 +80,27 @@ public class Curriculum extends HttpServlet {
 		String courid = "";
 		String curyear = "";
 		String studaccid = "";
+		PrintWriter out = response.getWriter();	
 		try {
-			sql = "SELECT * from t_student_account inner join r_student_profile on Student_Account_Student_Profile_ID  =  Student_Profile_ID  where Student_Account_Student_Number= '"+studentnumber+"'";
+			sql = "SELECT * from r_course where Course_Code =  '"+ec.encrypt(ec.key, ec.initVector, course )+"'";
+			//out.print(sql);
 			ResultSet rs = stmnt.executeQuery(sql);
 			while(rs.next()){
-				yearlvl = rs.getString("Student_Account_Year");
-				courid = rs.getString("Student_Account_CourseID");
-				curyear = rs.getString("Student_Account_CurriculumYearID");
-				studaccid = rs.getString("Student_Account_ID");
+				courid = rs.getString("Course_ID");
 				
 			}
 		
-			sql = "SELECT * FROM r_curriculumitem inner join `r_curriculum` on  CurriculumItem_CurriculumID = Curriculum_ID inner join r_semester on Curriculum_SemesterID = Semester_ID where Curriculum_CourseID = '"+courid+"' and Curriculum_CurriculumYearID = '"+curyear+"' and CurriculumItem_Display_Status = 'Active' group by Curriculum_YearLevel ";
+			sql = "SELECT * FROM r_curriculumitem inner join `r_curriculum` on  CurriculumItem_CurriculumID = Curriculum_ID inner join r_semester on Curriculum_SemesterID = Semester_ID where Curriculum_CourseID = '"+courid+"' and Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM `r_curriculumyear` where CurriculumYear_Ative_Flag = 'Active') and CurriculumItem_Display_Status = 'Active' group by Curriculum_YearLevel ";
 			rs = stmnt.executeQuery(sql);
 			String peryearlvl ="";
 			String persem = "";
 			String semid = "";
 
-			PrintWriter out = response.getWriter();	
 			JSONArray wholecurriculum = new JSONArray();
 			
 			while(rs.next()){
 				peryearlvl = rs.getString("Curriculum_YearLevel");
-				String sql2 = "SELECT * FROM r_curriculumitem inner join `r_curriculum` on  CurriculumItem_CurriculumID = Curriculum_ID inner join r_semester on Curriculum_SemesterID = Semester_ID where Curriculum_CourseID = '"+courid+"' and Curriculum_CurriculumYearID = '"+curyear+"' and Curriculum_YearLevel = '"+peryearlvl+"' and CurriculumItem_Display_Status = 'Active' group by Semester_ID ";
+				String sql2 = "SELECT * FROM r_curriculumitem inner join `r_curriculum` on  CurriculumItem_CurriculumID = Curriculum_ID inner join r_semester on Curriculum_SemesterID = Semester_ID where Curriculum_CourseID = '"+courid+"' and Curriculum_CurriculumYearID =  (SELECT CurriculumYear_ID FROM `r_curriculumyear` where CurriculumYear_Ative_Flag = 'Active') and Curriculum_YearLevel = '"+peryearlvl+"' and CurriculumItem_Display_Status = 'Active' group by Semester_ID ";
 //				out.print(sql2+"\n");
 				ResultSet rs2 = stmnt2.executeQuery(sql2);
 				while(rs2.next()){
@@ -138,19 +136,7 @@ public class Curriculum extends HttpServlet {
 							status = rs4.getString("stat");
 							
 						}
-						subjectcur.put("status", status);		
-						
-						sql4 = "SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` WHERE `Student_Taken_Curriculum_Subject_StudentAccountID` = '"+studaccid+"' and Student_Taken_Curriculum_Subject_SubjectID = '"+subid+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` WHERE Semester_Active_Flag = 'Active' ) and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` WHERE Academic_Year_Active_Flag = 'Present' ) ";
-						rs4 = stmnt4.executeQuery(sql4);
-						String estatus = "Not Enrolled";
-						while(rs4.next()){
-							if(!rs4.getString("cou").equals("0")) {
-								estatus = "Enrolled";
-							}
-							
-						}
-						subjectcur.put("estatus", estatus);	
-
+						subjectcur.put("status", status);							 
 
 						
 						sql4 = "SELECT * FROM `r_subject` AS T1 WHERE T1.Subject_Group = (SELECT T2.Subject_ID FROM r_subject AS T2 where T2.Subject_Code = '"+rs3.getString("Subject_Code")+"' )";
@@ -181,17 +167,6 @@ public class Curriculum extends HttpServlet {
 								
 							}
 							group.put("status", status);
-							
-							sql5 = "SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` WHERE `Student_Taken_Curriculum_Subject_StudentAccountID` = '"+studaccid+"' and Student_Taken_Curriculum_Subject_SubjectID = '"+subid+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` WHERE Semester_Active_Flag = 'Active' ) and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` WHERE Academic_Year_Active_Flag = 'Present' ) ";
-							rs5 = stmnt5.executeQuery(sql5);
-							estatus = "Not Enrolled";
-							while(rs5.next()){
-								if(!rs5.getString("cou").equals("0")) {
-									estatus = "Enrolled";
-								}
-								
-							}
-							group.put("estatus", estatus);	
 
 							
 							grouplist.add(group);

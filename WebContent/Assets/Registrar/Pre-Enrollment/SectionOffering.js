@@ -326,7 +326,7 @@ var EditableTable = function () {
 						var item = $.parseJSON(result)
 						console.log(item)
 						$('#professorDrp').html('')
-						$('#professorDrp').append('<option value="default" >TBA</option>') 
+						$('#professorDrp').append('<option value="default" disabled >Select a Faculty</option>') 
 						$.each(item, function (key, val) {
 							$('#professorDrp').append('<option value='+val.code+' >'+val.name+'</option>') 
                 			

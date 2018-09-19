@@ -143,6 +143,12 @@
 	                    <span>Profile</span>
 	                </a>
            		</li>
+           		<li>
+	                <a href="Accounting.jsp" class="" id="AccountingBtn">
+	                    <i class="fa fa-money"></i>
+	                    <span>Accounting</span>
+	                </a>
+           		</li>
             </ul>            
         </div>
         <!-- sidebar menu end-->
@@ -310,6 +316,9 @@
 			$("#RegistrationBtn").addClass("active");
  		else if(title == "Profile") 
 			$("#ProfileBtn").addClass("active");
+ 		else if(title == "Accounting") 
+			$("#AccountingBtn").addClass("active");
+		
 			
 		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering') 
 			$('#Pre-Enrollment').click();

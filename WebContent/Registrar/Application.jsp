@@ -59,6 +59,8 @@
 	pageContext.setAttribute("documentDrp", drp.filldocumentDrp());	
 	pageContext.setAttribute("subject", drp.fillsubjectDrp2());	
 	pageContext.setAttribute("semDrp", drp.fillsemesterDrp());	
+	pageContext.setAttribute("scholarshipDrp", drp.scholarshipDrp());	
+	
 
 	
 
@@ -74,6 +76,7 @@
 				EditableTable.init();
 				$("select.fee").select2({width: '100%'});
 				$("select#courseDrp").select2({width: '100%'});
+				$("select#scholarshipDrp").select2({width: '100%'});
 				
 				$('#selSubject').multiSelect({
 					
@@ -753,6 +756,14 @@
                                      	  ${semDrp} 	
                                    	</select> 
 	                            </div>
+                        	</div> 
+                        	<div class="row" id="">
+	                        	<div class="col-lg-6" style="padding-top:10px">
+	                                Semester
+                        			<select id="scholarshipDrp" class="populate fee" style="width: 290px">
+                                     	  ${scholarshipDrp} 	
+                                   	</select> 
+	                            </div>
                         	</div>                       	
                         	<div class="row">
                             	<section class="panel">
@@ -776,14 +787,8 @@
 		                                    </thead>
 		                                    <tbody id="mainBody">    
 											   <tr>
-											   		<td style="font-size:15px" ><center class="codeText"></center></td>
-											   		<td style="font-size:15px" ><center class="descText"></center></td>
-											   		<td style="font-size:15px" ><center class="unitText"></center></td>
-											   		<td>
-											   			<center>
-											   				
-											   			</center>
-		                                            </td>
+											   		<td style="font-size:15px"  colspan="7" ><center class="codeText"></center></td>
+											   		
 											   </tr>
 		                                    </tbody>
 		                            	</table>

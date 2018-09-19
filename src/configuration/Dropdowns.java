@@ -605,6 +605,27 @@ public class Dropdowns {
 		
 		return Drp;
 	}
+	
+	public String scholarshipDrp() throws SQLException {
+		String Drp = "<option value='default' selected >No Scholarship</option>";
+		
+		Statement stmnt = conn.createStatement();
+		rs = stmnt.executeQuery("Select * FROM `r_scholarship` where Scholarship_Display_Status = 'Active' ");
+		while(rs.next()){
+
+				Drp += "<option value='"+rs.getString("Scholarship_Code")+"' data-percentage='"+rs.getString("Scholarship_Percentage")+"' >"+rs.getString("Scholarship_Description")+ " | "+ rs.getString("Scholarship_Percentage")  +" %</option>";
+				
+				
+				
+			}
+			
+
+			
+		
+		
+		
+		return Drp;
+	}
 
 
 

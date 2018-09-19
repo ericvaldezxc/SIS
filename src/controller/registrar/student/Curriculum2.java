@@ -25,14 +25,14 @@ import connection.DBConfiguration;
 /**
  * Servlet implementation class AdmissionCurriculumItemViewController
  */
-@WebServlet("/Registrar/Controller/Registrar/Student/Curriculum")
-public class Curriculum extends HttpServlet {
+@WebServlet("/Registrar/Controller/Registrar/Student/Curriculum2")
+public class Curriculum2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Curriculum() {
+    public Curriculum2() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -138,19 +138,7 @@ public class Curriculum extends HttpServlet {
 							status = rs4.getString("stat");
 							
 						}
-						subjectcur.put("status", status);		
-						
-						sql4 = "SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` WHERE `Student_Taken_Curriculum_Subject_StudentAccountID` = '"+studaccid+"' and Student_Taken_Curriculum_Subject_SubjectID = '"+subid+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` WHERE Semester_Active_Flag = 'Active' ) and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` WHERE Academic_Year_Active_Flag = 'Present' ) ";
-						rs4 = stmnt4.executeQuery(sql4);
-						String estatus = "Not Enrolled";
-						while(rs4.next()){
-							if(!rs4.getString("cou").equals("0")) {
-								estatus = "Enrolled";
-							}
-							
-						}
-						subjectcur.put("estatus", estatus);	
-
+						subjectcur.put("status", status);							 
 
 						
 						sql4 = "SELECT * FROM `r_subject` AS T1 WHERE T1.Subject_Group = (SELECT T2.Subject_ID FROM r_subject AS T2 where T2.Subject_Code = '"+rs3.getString("Subject_Code")+"' )";
@@ -181,17 +169,6 @@ public class Curriculum extends HttpServlet {
 								
 							}
 							group.put("status", status);
-							
-							sql5 = "SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` WHERE `Student_Taken_Curriculum_Subject_StudentAccountID` = '"+studaccid+"' and Student_Taken_Curriculum_Subject_SubjectID = '"+subid+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` WHERE Semester_Active_Flag = 'Active' ) and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` WHERE Academic_Year_Active_Flag = 'Present' ) ";
-							rs5 = stmnt5.executeQuery(sql5);
-							estatus = "Not Enrolled";
-							while(rs5.next()){
-								if(!rs5.getString("cou").equals("0")) {
-									estatus = "Enrolled";
-								}
-								
-							}
-							group.put("estatus", estatus);	
 
 							
 							grouplist.add(group);

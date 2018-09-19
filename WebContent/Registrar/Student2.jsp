@@ -40,7 +40,7 @@
 		tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+rs.getString("enrolledba")+"</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' href='#Profile'><i class='fa fa-eye'></i></a>  <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' href='#curriculum'><i class='fa fa-flag'></i></a> </td></tr>"; 
 		
 	}
-	String shiftcourses = "<option value='default' selected disabled >Select a Course</option>";
+	String shiftcourses = "<option value='default'>Select a Course</option>";
 	rs = stmnt.executeQuery("SELECT * FROM `r_course` where Course_Display_Status = 'Active'");
 	while(rs.next()){
 		shiftcourses += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Code"))+"'>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Description"))+"</option>";
@@ -66,7 +66,6 @@
 				EditableTable.init();
 				$("select.schedule").select2();
 				$("select#shiftCourseDrp").select2();
-				$("select#shiftsectionDrp").select2();				
 				var latstudnum = ''
 				var globsub = ''
 				var globstudnum = ''
@@ -199,18 +198,24 @@
 				
 				$('#shiftCourseDrp').change(function(){
 					var course = $(this).val()
-					
-					
-					
 					$.ajax({
     					type:'POST',
     					data:{course: course,studnum:latstudnum},
     					url: "Controller/Registrar/Student/ShiftCurriculum",
     					success: function(result){
     						var item = JSON.parse(result)
-    						var tbody = ''
     						var body = ''
        						$.each(item,function(key,val){
+       							body += "<section class='panel'>"+
+       							"<header class='panel-heading' style='background-color:#68a0b0;margin-top:10px;color:white'>"+
+       									"<label>"+val.yearlvl + " - " + val.semester +"</label><br/>"+
+       									"<span class='tools pull-right'>"+
+       					        "<a href='javascript:;' class='fa fa-chevron-down' style='color:white'></a>"+
+       					        "</span>"+
+       					        "</header>"+
+       					        "<div class='panel-body' style='background-color:;'>";
+       					        
+       					        var tbody = '';
        					 		$.each(val.subject,function(key2,val2){
        					 			if(val2.group  == ''){
        					 				var prereq = ''
@@ -222,17 +227,33 @@
        					 				
        					 					i++
        					 				})
+       					 				var st = ''
+       					 				var enrollstatus = val2.estatus
        					 				
-	       					 			if(val2.status == 'Cleared'){
-		       					 			tbody += 	"<tr><td>"+val2.code+"</td>"+
-					   						"<td>"+val2.desc+"</td>"+
-					   						"<td style='font-weight:bold;'>"+prereq+"</td>"+
-					   						"<td>"+val2.units+"</td></tr>"
-	       					 				
-	       					 			}
+       					 				if(val2.status == 'Not Cleared')
+       					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject'  data-toggle='modal' href='#enroll'><i class='fa fa-bolt'></i></a>"
+    					 				else{
+       					 					st = 'Cleared'
+       					 					enrollstatus = 'Cleared'
+    					 					
+    					 				}
+       					 					
+       						   			tbody +="<tr>"+
+    						   						"<td>"+val2.code+"</td>"+
+    						   						"<td>"+val2.desc+"</td>"+
+    						   						"<td style='font-weight:bold;'>"+prereq+"</td>"+
+    						   						"<td>"+val2.units+"</td>"+
+    						   						"<td>"+val2.status+"</td>"+
+    						   						"<td>"+enrollstatus+"</td>"+
+    						   						"<td>"+st+"</td>"+
+    						   					"</tr>"	
        					 				
        					 			}
        					 			else{
+       					 				
+    	   					 			tbody +="<tr>"+
+    						   						"<td colspan='6' style='font-weight:bold;text-align:lelft;color:#68a0b0'>"+val2.code+"</td>"+
+    						   					"</tr>"	
     						   			$.each(val2.group,function(key3,val3){
     	   					 				var prereq = ''
        	   					 				var i = 0
@@ -243,12 +264,25 @@
        	   					 				
        	   					 					i++
        	   					 				})
-											if(val3.status == 'Cleared')
-												tbody += 	"<tr><td>"+val2.code+"</td>"+
-						   						"<td>"+val2.desc+"</td>"+
-						   						"<td style='font-weight:bold;'>"+prereq+"</td>"+
-						   						"<td>"+val2.units+"</td></tr>"
+											var st = ''
+											enrollstatus = val3.estatus
+	       					 				if(val3.status == 'Not Cleared')
+	       					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject'  data-toggle='modal' href='#enroll'><i class='fa fa-bolt'></i></a>"
+	    					 				else{
+	       					 					st = 'Cleared'
+	           					 					enrollstatus = 'Cleared'
+	        					 					
+	        					 			}
     						   			
+    		   					 			tbody +="<tr style='font-style:italic'>"+
+    							   						"<td>"+val3.code+"</td>"+
+    							   						"<td>"+val3.desc+"</td>"+
+    							   						"<td style='font-weight:bold;'>"+prereq+"</td>"+
+    							   						"<td>"+val3.units+"</td>"+
+    							   						"<td>"+val3.status+"</td>"+
+    							   						"<td>"+enrollstatus+"</td>"+
+        						   						"<td>"+st+"</td>"+
+    							   					"</tr>"	
     						   				
     						   				
     						   			})
@@ -256,118 +290,34 @@
        					 			}
        					 			
        					 		})
-       					 		
+       					 		if(tbody != ''){
+    	   					 		body += "<table class='table table-hover'>"+
+    	   							"<thead>"+
+    		   							"<tr>"+
+    		   						    	"<th style='width: 20%'>Code</th>"+
+    		   						        "<th style='width: 25%'>Description</th>"+
+    		   						        "<th style='width: 15%'>Prerequisite</th>"+
+    		   						        "<th style='width: 5%'>Cred. Unit</th>"+
+    		   						        "<th style='width: 15%'>Status</th>"+
+    		   						        "<th style='width: 10%'>Enrolled</th>"+
+    		   						        "<th style='width: 10%'>Action</th>"+
+    		   						   	"</tr>"+
+    		   						"</thead>"+
+    		   						"<tbody>   ";
+    		   						body += tbody
+
+
+    	   					        body += 	"</tbody>"+
+       										"</table>";
+       					 			
+       					 		}
        					        
+       					        
+       							body +=  "</div>"+
+       							"</section>";
        						})
-       						if(tbody == ''){
-	   					 		body = "<tr style='font-style:italic;text-align:center'><td colspan='4'>No credited subjects</td></tr>";
-   					 			
-   					 		}
-       						else{
-	   					 		body = tbody;
-       							
-       						}
        						$('#shiftBody').html(body)
     						console.log(item)
-    						
-    						
-    						$.ajax({
-			   					type:'POST',
-			   					data:{curcode: course},
-			   					url:'Controller/Registrar/Student/ShifterCurriculum',
-			   					success: function(result2){
-			   						var item = $.parseJSON(result2)
-		    						$('#cmainBody').html('')
-		       						$.each(item, function (key, val) {
-		       							if(val.group == ''){
-		   									var sel = ''
-		   									var sec = ''
-		   									$.each(val.section, function (key2, val2) {
-		   										var sched = ''
-		   	   									sec = val2.section
-		   	   									var j = 0
-		   										$.each(val2.sched, function (key3, val3) {
-			   										if(j != 0)
-			   											sched += " / "
-			   										sched += val3.schedule 
-			   										j++
-			   									});
-		   	   									
-		   										sel += "<option value='"+sec+"'>"+sec+" - "+sched+"</option>"
-
-		   									});
-			       							$('#cmainBody').append('<tr><td style="font-weight:bold;font-size:12px;color:#68a0b0;" class="subject"><center class="codeText" data-tuition="'+val.tuition+'" style="cursor: pointer;">'+val.code+'</center></td><td style="font-size:12px" ><center class="descText">'+val.desc+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lec+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lab+'</center></td><td style="font-size:12px" ><center class="unitTexts">'+val.units+'</center></td><td><select class="populate sectionselect"  >'+sel+'</td><td><center><input type="checkbox" class="form-control ckbox" style="width:20px;height:20px;" ></center></td></tr>')
-		       							}
-		           						else{
-		           							$('#cmainBody').append('<tr><td colspan="7" style="font-weight:bold;font-style:italic;font-size:12px;" ><center class="codeText" style="text-align:center;font-weight:bold">'+val.code+'</center></td></tr>')
-		           							$.each(val.group, function (key2, val2) {
-		       									var sel = ''
-		       	   								var sec = ''
-		       	   								$.each(val2.schedule, function (key3, val3) {
-		       										var sched = ''
-		       	   									sec = val3.section
-		       	   									var j = 0
-		       										$.each(val3.schedule, function (key4, val4) {
-		       											$.each(val4, function (key5, val5) {
-		        	   										if(j != 0)
-		        	   											sched += " / "
-		        	   										sched += val5
-		        	   										j++
-		        	   									});
-		    	   									});
-		       	   									
-		       										sel += "<option value='"+sec+"'>"+sec+" - "+sched+"</option>"
-
-		       									});
-		       	   								
-			           							$('#cmainBody').append('<tr><td style="font-weight:bold;font-size:12px;color:#68a0b0;" class="subject" ><center class="codeText" data-tuition="'+val2.tuition+'" style="cursor: pointer;">'+val2.code+'</center></td><td style="font-size:12px" ><center class="descText">'+val2.desc+'</center></td><td style="font-size:12px" ><center class="unitText">'+val2.lec+'</center></td><td style="font-size:12px" ><center class="unitText">'+val2.lab+'</center></td><td style="font-size:12px" ><center class="unitTexts">'+val2.units+'</center></td><td><select class="populate sectionselect"  >'+sel+'</td><td><center><input type="checkbox" class="form-control ckbox" style="width:20px;height:20px;" ></center></td></tr>')
-		    										
-		           							});
-		           							
-		           							
-		           						}
-		       							$("select.sectionselect").select2( {width: '100%' });
-		                            });
-		       						if($('#cmainBody').html() == ''){
-		       							$('#cmainBody').html('<tr><td style="font-size:12px" ><center class="codeText"></center></td><td style="font-size:12px" ><center class="descText"></center></td><td style="font-size:12px" ><center class="unitText"></center></td><td><center></center></td></tr>')
-		       							
-		       						}
-		       						else{
-		       							$('#cmainBody').append('<tr><td style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px" colspan="7" id="totunit">Total: 0 Unit</td></tr>')
-		       						}
-			
-			   						
-			   						
-			   					},
-			                       error: function (response) {
-			                           swal("Error encountered while adding data"+response, "Please try again", "error");
-			                       }
-			   				})
-			   				
-			   				$.ajax({
-		    					type:'POST',
-		    					data:{course: course},
-		    					url: "Controller/Registrar/Student/GetSection",
-		    					success: function(result){
-		    						var item = JSON.parse(result)
-		    						console.log(item)
-		    						var body = '<option value="default" selected disabled>Select a Section</option>'
-		    						$.each(item,function(key,val){
-		    							body += "<option value='"+val+"'>"+val+"</option>"
-		    							
-		    						})
-		    						$('#shiftsectionDrp').html(body)
-		    						
-		    						
-		    					},
-		                        error: function (response) {
-		                            swal("Error encountered while accessing the data", "Please try again", "error");
-		                        }
-		    				});
-			   				
-			   				
-			    						
-    						
     						
     						
     					},
@@ -377,28 +327,7 @@
     				});
 					
 					
-					
-					
 				})
-				
-				$('#cmainBody').on('change','.ckbox',function(){
-	            	totunit = 0;
-					tottuitionunit = 0
-	            	$('#cmainBody tr').each(function(){
-	            		if($(this).find('.unitTexts').html() != undefined){
-	//                		alert($(this).find('.unitTexts').html())
-	            			if($(this).find('input:checkbox').prop("checked") == true){            				
-	            				totunit += parseInt($(this).find('.unitTexts').html())
-	            				tottuitionunit += parseInt($(this).find('.codeText').data("tuition"))
-	            				
-	            			}
-	            		}
-	            		
-	            	});
-	            	$('#totunit').html('Total: ' + totunit + ' Units')
-	            	
-	        		
-	            });
 				
 				
 				$('#editable-sample').on('click','a.curriculum',function(){
@@ -411,118 +340,105 @@
     					success: function(result){
     						var item = $.parseJSON(result)
        						var body = ''
-       							$.each(item,function(key,val){
-           							body += "<section class='panel'>"+
-           							"<header class='panel-heading' style='background-color:#68a0b0;margin-top:10px;color:white'>"+
-           									"<label>"+val.yearlvl + " - " + val.semester +"</label><br/>"+
-           									"<span class='tools pull-right'>"+
-           					        "<a href='javascript:;' class='fa fa-chevron-down' style='color:white'></a>"+
-           					        "</span>"+
-           					        "</header>"+
-           					        "<div class='panel-body' style='background-color:;'>";
-           					        
-           					        var tbody = '';
-           					 		$.each(val.subject,function(key2,val2){
-           					 			if(val2.group  == ''){
-           					 				var prereq = ''
-           					 				var i = 0
-           					 				$.each(val2.prerequisite,function(key3,val3){
-           					 					if(i != 0)
-           					 						prereq  += ', '
-           					 					prereq += val3
-           					 				
-           					 					i++
-           					 				})
-           					 				var st = ''
-           					 				var enrollstatus = val2.estatus
-           					 				
-           					 				if(enrollstatus == 'Enrolled')
-           					 					st = "Enrolled"           					 				
-           					 				else if(val2.status == 'Not Cleared')
-           					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject'  data-toggle='modal' href='#enroll'><i class='fa fa-bolt'></i></a>"
-        					 				else{
-           					 					st = 'Cleared'
-           					 					enrollstatus = 'Cleared'
-        					 					
-        					 				}
-           					 					
-           						   			tbody +="<tr>"+
-        						   						"<td>"+val2.code+"</td>"+
-        						   						"<td>"+val2.desc+"</td>"+
-        						   						"<td style='font-weight:bold;'>"+prereq+"</td>"+
-        						   						"<td>"+val2.units+"</td>"+
-        						   						"<td>"+val2.status+"</td>"+
+       						$.each(item,function(key,val){
+       							body += "<section class='panel'>"+
+       							"<header class='panel-heading' style='background-color:#68a0b0;margin-top:10px;color:white'>"+
+       									"<label>"+val.yearlvl + " - " + val.semester +"</label><br/>"+
+       									"<span class='tools pull-right'>"+
+       					        "<a href='javascript:;' class='fa fa-chevron-down' style='color:white'></a>"+
+       					        "</span>"+
+       					        "</header>"+
+       					        "<div class='panel-body' style='background-color:;'>";
+       					        
+       					        var tbody = '';
+       					 		$.each(val.subject,function(key2,val2){
+       					 			if(val2.group  == ''){
+       					 				var prereq = ''
+       					 				var i = 0
+       					 				$.each(val2.prerequisite,function(key3,val3){
+       					 					if(i != 0)
+       					 						prereq  += ', '
+       					 					prereq += val3
+       					 				
+       					 					i++
+       					 				})
+       					 				var st = ''
+       					 				if(val2.status == 'Not Cleared')
+       					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject'  data-toggle='modal' href='#enroll'><i class='fa fa-bolt'></i></a>"
+    					 				else
+       					 					st = 'Cleared'
+       					 					
+       						   			tbody +="<tr>"+
+    						   						"<td>"+val2.code+"</td>"+
+    						   						"<td>"+val2.desc+"</td>"+
+    						   						"<td style='font-weight:bold;'>"+prereq+"</td>"+
+    						   						"<td>"+val2.units+"</td>"+
+    						   						"<td>"+val2.status+"</td>"+
+    						   						"<td>"+st+"</td>"+
+    						   					"</tr>"	
+       					 				
+       					 			}
+       					 			else{
+       					 				
+    	   					 			tbody +="<tr>"+
+    						   						"<td colspan='6' style='font-weight:bold;text-align:lelft;color:#68a0b0'>"+val2.code+"</td>"+
+    						   					"</tr>"	
+    						   			$.each(val2.group,function(key3,val3){
+    	   					 				var prereq = ''
+       	   					 				var i = 0
+       	   					 				$.each(val3.prerequisite,function(key4,val4){
+       	   					 					if(i != 0)
+       	   					 						prereq  += ', '
+       	   					 					prereq += val4
+       	   					 				
+       	   					 					i++
+       	   					 				})
+											var st = ''
+	       					 				if(val3.status == 'Not Cleared')
+	       					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject'  data-toggle='modal' href='#enroll'><i class='fa fa-bolt'></i></a>"
+	    					 				else
+	       					 					st = 'Cleared'
+    						   			
+    		   					 			tbody +="<tr style='font-style:italic'>"+
+    							   						"<td>"+val3.code+"</td>"+
+    							   						"<td>"+val3.desc+"</td>"+
+    							   						"<td style='font-weight:bold;'>"+prereq+"</td>"+
+    							   						"<td>"+val3.units+"</td>"+
+    							   						"<td>"+val3.status+"</td>"+
         						   						"<td>"+st+"</td>"+
-        						   					"</tr>"	
-           					 				
-           					 			}
-           					 			else{
-           					 				
-        	   					 			tbody +="<tr>"+
-        						   						"<td colspan='6' style='font-weight:bold;text-align:lelft;color:#68a0b0'>"+val2.code+"</td>"+
-        						   					"</tr>"	
-        						   			$.each(val2.group,function(key3,val3){
-        	   					 				var prereq = ''
-           	   					 				var i = 0
-           	   					 				$.each(val3.prerequisite,function(key4,val4){
-           	   					 					if(i != 0)
-           	   					 						prereq  += ', '
-           	   					 					prereq += val4
-           	   					 				
-           	   					 					i++
-           	   					 				})
-    											var st = ''
-    											enrollstatus = val3.estatus
-    											if(enrollstatus == 'Enrolled')
-               					 					st = "Enrolled"             					 				
-               					 				else if(val3.status == 'Not Cleared')
-    	       					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject'  data-toggle='modal' href='#enroll'><i class='fa fa-bolt'></i></a>"
-    	    					 				else{
-    	       					 					st = 'Cleared'
-    	           					 					enrollstatus = 'Cleared'
-    	        					 					
-    	        					 			}
-        						   			
-        		   					 			tbody +="<tr style='font-style:italic'>"+
-        							   						"<td>"+val3.code+"</td>"+
-        							   						"<td>"+val3.desc+"</td>"+
-        							   						"<td style='font-weight:bold;'>"+prereq+"</td>"+
-        							   						"<td>"+val3.units+"</td>"+
-        							   						"<td>"+val3.status+"</td>"+
-            						   						"<td>"+st+"</td>"+
-        							   					"</tr>"	
-        						   				
-        						   				
-        						   			})
-        						   						
-           					 			}
-           					 			
-           					 		})
-           					 		if(tbody != ''){
-        	   					 		body += "<table class='table table-hover'>"+
-        	   							"<thead>"+
-        		   							"<tr>"+
-        		   						    	"<th style='width: 20%'>Code</th>"+
-        		   						        "<th style='width: 25%'>Description</th>"+
-        		   						        "<th style='width: 15%'>Prerequisite</th>"+
-        		   						        "<th style='width: 5%'>Cred. Unit</th>"+
-        		   						        "<th style='width: 15%'>Status</th>"+
-        		   						        "<th style='width: 10%'>Action</th>"+
-        		   						   	"</tr>"+
-        		   						"</thead>"+
-        		   						"<tbody>   ";
-        		   						body += tbody
+    							   					"</tr>"	
+    						   				
+    						   				
+    						   			})
+    						   						
+       					 			}
+       					 			
+       					 		})
+       					 		if(tbody != ''){
+    	   					 		body += "<table class='table table-hover'>"+
+    	   							"<thead>"+
+    		   							"<tr>"+
+    		   						    	"<th style='width: 20%'>Code</th>"+
+    		   						        "<th style='width: 25%'>Description</th>"+
+    		   						        "<th style='width: 20%'>Prerequisite</th>"+
+    		   						        "<th style='width: 10%'>Cred. Unit</th>"+
+    		   						        "<th style='width: 15%'>Status</th>"+
+    		   						        "<th style='width: 10%'>Action</th>"+
+    		   						   	"</tr>"+
+    		   						"</thead>"+
+    		   						"<tbody>   ";
+    		   						body += tbody
 
 
-        	   					        body += 	"</tbody>"+
-           										"</table>";
-           					 			
-           					 		}
-           					        
-           					        
-           							body +=  "</div>"+
-           							"</section>";
-           						})
+    	   					        body += 	"</tbody>"+
+       										"</table>";
+       					 			
+       					 		}
+       					        
+       					        
+       							body +=  "</div>"+
+       							"</section>";
+       						})
        						$('#curBody').html(body)
     						console.log(item)
 
@@ -577,71 +493,6 @@
 		
 		                        swal("Cancelled", "The transaction is cancelled", "error");
 		                        $("#editable-sample_new").click();
-		                    }
-		
-		                });
-					
-					
-				})			
-				$('#shiftBtn').click(function(){
-					var course = $('#shiftCourseDrp').val()
-					var section = $('#shiftsectionDrp').val()
-					var curtaken = []
-					$('#cmainBody tr').each(function(){
-						var takenstat = $(this).find('.ckbox').prop('checked') 
-						if(takenstat != undefined){
-							var code = $(this).find('.codeText').text()
-							var sect =  $(this).find('.sectionselect option:selected').val()
-							if(takenstat == true)
-								takenstat = 'true'
-							else
-								takenstat = 'false'
-							curtaken.push({code:code,section:sect,takenstat:takenstat})
-							
-						}
-					})
-					console.log(curtaken)
-					
-					swal({
-	                    title: "Are you sure?",
-	                    text: "The record will be save and will be use for further transaction",
-	                    type: "warning",
-	                    showCancelButton: true,
-	                    confirmButtonColor: '#DD6B55',
-	                    confirmButtonText: 'Yes, do it!',
-	                    cancelButtonText: "No!",
-	                    closeOnConfirm: false,
-	                    closeOnCancel: false
-	                },
-		                function (isConfirm) {
-		                    if (isConfirm) {
-		                    	$.ajax({
-		        					type:'POST',
-		        					data:{course: course,studnum: latstudnum,section: section,curtaken:JSON.stringify(curtaken)},
-		        					url: "Controller/Registrar/Student/Shift",
-		        					success: function(result){
-		        						swal({
-		                                    title: "Record Updated!"
-		                                    , text: "The data is successfully Updated!"
-		                                    , type: "success"
-		                                    , confirmButtonColor: '#88A755'
-		                                    , confirmButtonText: 'Okay'
-		                                    , closeOnConfirm: false
-		                                }, function (isConfirm) {
-		                                    if (isConfirm) {
-		                                        window.location.reload();
-		                                    }
-		                                });
-		        						
-		        					},
-		                            error: function (response) {
-		                                swal("Error encountered while accessing the data", "Please try again", "error");
-		                            }
-		        				});
-		
-		                    } else {
-		
-		                        swal("Cancelled", "The transaction is cancelled", "error");
 		                    }
 		
 		                });
@@ -734,7 +585,6 @@
 	                    <h4 class="modal-title" id="schedule-title">Curriculum</h4>
 	                </div>
 	                <div class="modal-body" id="curBody"> 
-	                
 	                   
 	                </div>
 	                <div class="modal-footer">
@@ -771,63 +621,16 @@
 	                    <h4 class="modal-title" id="Subject-Title">Shift</h4>
 	                </div>
 	                <div class="modal-body" > 
-		                <div class="row">
-			                <div class="col-lg-6">
-			                    Course
-		             			<select id="shiftCourseDrp" class="populate" style="width:100%">
-		                        	${shiftcourses}
-		                        </select>  
-		                    </div>
-		                    <div class="col-lg-6">
-			                    Section
-		             			<select id="shiftsectionDrp" class="populate" style="width:100%">
-		             				<option value="default" selected disabled>Select a Section</option>
-		                        </select>  
-		                    </div>
-		                    <div class="col-lg-12" style="margin-top:20px">
-			                    Credited Subjects
-		                        <table class='table table-striped table-hover table-bordered'>
-	    	   						<thead>
-	    		   							<tr>
-	    		   						    	<th style='width: 20%'>Code</th>
-	    		   						        <th style='width: 25%'>Description</th>
-	    		   						        <th style='width: 15%'>Prerequisite</th>
-	    		   						        <th style='width: 5%'>Cred. Unit</th>
-	    		   						   	</tr>
-	    		   					</thead>
-	    		   					<tbody id="shiftBody">
-									   <tr>
-									   		<td style="font-size:15px" colspan="4" ><center class="codeText"></center></td>
-									   </tr>
-	    		   					</tbody>
-		           				</table>
-		                    </div>
-		                    <div class="col-lg-12" style="margin-top:20px">
-			                    Curriculum
-	                        	<table class="table table-striped table-hover table-bordered" id="itemsTbl">
-	                            	<thead>
-	                                       <tr>
-	                                           <th style="width: 20%">Code</th>
-						                	<th style="width: 30%">Description</th>
-						                	<th style="width: 5%">Lec. Hours</th>
-						                	<th style="width: 5%">Lab. Hours	</th>
-						                	<th style="width: 5%">Cred. Units</th>
-						                	<th style="width: 30%">Schedule</th>
-						                	<th style="width: 5%">Action</th> 
-	                                       </tr>
-	                                   </thead>
-	                                   <tbody id="cmainBody">    
-									   <tr>
-									   		<td style="font-size:15px" colspan="7" ><center class="codeText"></center></td>
-									   </tr>
-	                                   </tbody>
-	                           	</table>
-		                    </div>
-		                </div>
+	                    Course
+             			<select id="shiftCourseDrp" class="populate" style="width:100%">
+                        	${shiftcourses}
+                        </select>  
+                        <div id="shiftBody">
+                        </div>
 	                </div>
 	                <div class="modal-footer">
-	                    <button data-dismiss="modal" class="btn btn-default" id="ShiftClose" type="button">Close</button>
-            	        <button class="btn btn-success " id="shiftBtn" type="button">Shift</button>
+	                    <button data-dismiss="modal" class="btn btn-default" id="enrollClose" type="button">Close</button>
+            	        <button class="btn btn-success " id="enrollBtn" type="button">Enroll</button>
 	                </div>
 	            </div>
 	        </div>
@@ -842,7 +645,7 @@
                                        <img alt="" src="../Assets/images/User/default.png">
                                    </a>
                                    <h1 id="studname">EKV</h1>
-                                   <p id="studnum">Consistent B</p>
+                                   <p id="studnum">Consistent Bobo</p>
                                </div>
 
                                <ul class="nav nav-pills nav-stacked">

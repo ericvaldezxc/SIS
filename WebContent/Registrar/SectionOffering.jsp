@@ -237,7 +237,7 @@
                     		<div class="col-lg-8">
                         		<h5 style="">Professor Name</h5>
 			                   	<select class="populate" id="professorDrp" >
-			                  	    <option value="default" selected="selected">TBA</option>                            	       	
+			                  	    <option value="default" selected="selected" disabled>Select a Faculty</option>                            	       	
 		                  			${professorDrp}      	
 		                		</select>  	                        		
                             </div>
