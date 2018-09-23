@@ -89,6 +89,13 @@ public class UploadGrade extends HttpServlet {
 				 stat = rs.getString("stat") ;
 			}
 
+			String acadyear = request.getParameter("acadyear");
+			acadyear  = ec.encrypt(ec.key, ec.initVector, acadyear);
+			String sem = request.getParameter("sem");
+			sem  = ec.encrypt(ec.key, ec.initVector, sem);
+			String section = request.getParameter("section");
+
+			
 			
 			for (Object o : studentlist) {
 				JSONObject jsonLineItem = (JSONObject) o;
@@ -114,12 +121,15 @@ public class UploadGrade extends HttpServlet {
 					sql = "SELECT DISTINCT count(*)  as cou,Student_Taken_Curriculum_Subject_ID  FROM `t_student_taken_curriculum_subject` inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_subject as t1  on Student_Taken_Curriculum_Subject_SubjectID =  t1.Subject_ID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join t_schedule on Schedule_CurriculumItemID = CurriculumItem_ID  left join r_professor on Schedule_ProfessorID = Professor_ID  left join r_subject as t2 on t1.Subject_Group = t2.Subject_ID inner join r_section on Student_Account_SectionID = Section_ID left join t_students_grade on Student_Taken_Curriculum_Subject_ID = Students_Grade_ID   where Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' and Schedule_ProfessorID = Professor_ID and Schedule_AcademicYearID = Academic_Year_ID and Professor_Code = '"+username+"'  and t1.Subject_Code = '"+subjectDrp+"' and Student_Account_Student_Number = '"+studnum+"'";
 				else
 					sql = "SELECT DISTINCT count(*)  as cou,Student_Taken_Curriculum_Subject_ID FROM `t_student_taken_curriculum_subject` inner join t_schedule on Student_Taken_Curriculum_Subject_SubjectID = Schedule_ChildrenID  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID left join r_professor on Schedule_ProfessorID = Professor_ID inner join  r_subject on Student_Taken_Curriculum_Subject_SubjectID =  Subject_ID inner join r_section on Student_Account_SectionID = Section_ID  where Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' and Schedule_ProfessorID = Professor_ID and Schedule_AcademicYearID = Academic_Year_ID and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Professor_Code = '"+username+"' and Subject_Code = '"+subjectDrp+"' and Student_Account_Student_Number = '"+studnum+"'";
-				*/
 				if(stat.equals("true"))
 					sql = "SELECT Student_Taken_Curriculum_Subject_ID  FROM `t_student_taken_curriculum_subject` inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_subject as t1  on Student_Taken_Curriculum_Subject_SubjectID =  t1.Subject_ID where t1.Subject_Code = '"+subjectDrp+"' and Student_Account_Student_Number = '"+studnum+"'";
 				else
 					sql = "SELECT Student_Taken_Curriculum_Subject_ID  FROM `t_student_taken_curriculum_subject` inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_subject as t1  on Student_Taken_Curriculum_Subject_SubjectID =  t1.Subject_ID where t1.Subject_Code = '"+subjectDrp+"' and Student_Account_Student_Number = '"+studnum+"'";
 
+*/			
+//		        sql = "SELECT Student_Taken_Curriculum_Subject_ID  FROM `t_student_taken_curriculum_subject` inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_subject as t1  on Student_Taken_Curriculum_Subject_SubjectID =  t1.Subject_ID  where t1.Subject_Code = '"+subjectDrp+"' and Student_Account_Student_Number = '"+studnum+"' and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Code = '"+acadyear+"' ) and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Code = '"+sem+"' ) and Student_Taken_Curriculum_Subject_SectionID = ( SELECT Section_ID FROM `r_section` WHERE Section_Code =  '"+section+"') ";
+		        sql = "SELECT Student_Taken_Curriculum_Subject_ID  FROM `t_student_taken_curriculum_subject` inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_subject as t1  on Student_Taken_Curriculum_Subject_SubjectID =  t1.Subject_ID  where t1.Subject_Code = '"+subjectDrp+"' and Student_Account_Student_Number = '"+studnum+"' and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Code = '"+acadyear+"' ) and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Code = '"+sem+"' ) and Student_Taken_Curriculum_Subject_SectionID = ( SELECT Section_ID FROM `r_section` WHERE Section_Code =  '"+section+"') ";
+		        out.print(sql);
 				rs = stmnt.executeQuery(sql);
 				while(rs.next()){
 					//cou = rs.getString("cou");

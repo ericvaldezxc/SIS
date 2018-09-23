@@ -175,7 +175,7 @@ var EditableTable = function () {
     				});
             	}
             	*/
-            	
+            	var gettotalunit = 0
             	if( $('#courseDrp').val() != 'default'){
             		var curcode =  $('#courseDrp').val()
             		$.ajax({
@@ -203,7 +203,9 @@ var EditableTable = function () {
    										sel += "<option value='"+sec+"'>"+sec+" - "+sched+"</option>"
 
    									});
-	       							$('#mainBody').append('<tr><td style="font-weight:bold;font-size:12px;color:#68a0b0;" class="subject"><center class="codeText" data-tuition="'+val.tuition+'" style="cursor: pointer;">'+val.code+'</center></td><td style="font-size:12px" ><center class="descText">'+val.desc+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lec+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lab+'</center></td><td style="font-size:12px" ><center class="unitTexts">'+val.units+'</center></td><td><select class="populate sectionselect"  >'+sel+'</td><td><center><input type="checkbox" class="form-control ckbox" style="width:20px;height:20px;" ></center></td></tr>')
+   									
+   									gettotalunit = parseFloat(gettotalunit) + parseFloat(val.units) 
+	       							$('#mainBody').append('<tr><td style="font-weight:bold;font-size:12px;color:#68a0b0;" class="subject"><center class="codeText" data-tuition="'+val.tuition+'" style="cursor: pointer;">'+val.code+'</center></td><td style="font-size:12px" ><center class="descText">'+val.desc+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lec+'</center></td><td style="font-size:12px" ><center class="unitText">'+val.lab+'</center></td><td style="font-size:12px" ><center class="unitTexts">'+val.units+'</center></td><td><select class="populate sectionselect"  >'+sel+'</td><td><center><input type="checkbox" class="form-control ckbox" checked style="width:20px;height:20px;" ></center></td></tr>')
        							}
            						else{
            							$('#mainBody').append('<tr><td colspan="7" style="font-weight:bold;font-style:italic;font-size:12px;" ><center class="codeText" style="text-align:center;font-weight:bold">'+val.code+'</center></td></tr>')
@@ -240,7 +242,7 @@ var EditableTable = function () {
        							
        						}
        						else{
-       							$('#mainBody').append('<tr><td style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px" colspan="7" id="totunit">Total: 0 Unit</td></tr>')
+       							$('#mainBody').append('<tr><td style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px" colspan="7" id="totunit">Total: '+gettotalunit+' Units</td></tr>')
        						}
     						
     						

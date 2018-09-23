@@ -300,6 +300,10 @@ var EditableTable = function () {
         	 
         	 $("#saveBtn").on('click', function() {
         		 var subjectDrp = $('#subjectDrp').val()
+         		 var acadyear = $('#acadyearDrp').val()
+        		 var sem = $('#semesterDrp').val()
+        		 var section = $('#sectionDrp').val()
+
         		 console.log(student)
         		 swal({
                      title: "Are you sure?",
@@ -316,7 +320,7 @@ var EditableTable = function () {
                      if (isConfirm) {
                  		$.ajax({
          					type:'POST',
-         					data:{subjectDrp:subjectDrp,student: JSON.stringify(student)},
+         					data:{acadyear:acadyear,sem:sem,section:section,subjectDrp:subjectDrp,student: JSON.stringify(student)},
          					url:'Controller/Faculty/Grading/UploadGrades',
          					success: function(result){
          						$('#lblimport').slideUp();

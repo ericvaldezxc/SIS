@@ -66,6 +66,28 @@ public class Payment extends HttpServlet {
 			sql = "update `t_payment` set Payment_Balance = (Payment_Balance - "+amount+")  WHERE Payment_Student_Account_ID = (SELECT Student_Account_ID FROM t_student_account WHERE Student_Account_Student_Number = '"+studentNumber+"')   ";			
 			out.print(sql);
 			stmnt.execute(sql);
+			
+			sql = "SELECT * FROM t_student_account inner join t_payment on Payment_Student_Account_ID = Student_Account_ID WHERE  Student_Account_Student_Number = '"+studentNumber+"'";
+			ResultSet rs = stmnt.executeQuery(sql);
+			String studnum = "";
+			String studid = "";
+			String yearlvl = "";
+			String balance = "";
+			while(rs.next()){
+				studnum = rs.getString("Student_Account_Student_Number");
+				studid = rs.getString("Student_Account_ID");
+				yearlvl = rs.getString("Student_Account_Year");
+				balance = rs.getString("Payment_Balance");
+				
+				
+			}
+
+			
+			
+			sql = "insert into t_payable_history (Payable_History_Student_Account_ID,Payable_History_Semester_ID,Payable_History_AcademicYearID,Payable_History_Year_Level,Payable_History_Description,Payable_History_Type,Payable_History_Amount,Payable_History_Balance) values ('"+studid+"',(SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active'),(SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'),'"+yearlvl+"','CASH - UPON ENROLLMENT','Payment','"+amount+"','"+balance+"')   ";
+			out.print(sql);
+			stmnt.execute(sql);
+			
 			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
