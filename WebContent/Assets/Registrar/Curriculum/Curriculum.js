@@ -6,6 +6,7 @@ var semTxt = '';
 var course = '';
 var yearlvl = '';
 var curyear = '';
+var maxcred = '';
 
 var unitTxt = '';
 var latcode = '';
@@ -124,6 +125,7 @@ var EditableTable = function () {
 				 semTxt = $('#SemesterDrp').val();
 				 yearlvl = $('#yearlvlDrp').val();
 				 curyear = $('#curyearDrp').val();
+				 maxcred = $('#maxcredTxt').val();
 				 
 				 var numyearlvl = '';
 				 if(yearlvl == 'First Year')
@@ -154,7 +156,7 @@ var EditableTable = function () {
                     if (isConfirm) {
                 		$.ajax({
         					type:'POST',
-        					data:{codeTxt: codeTxt, yearlvl:yearlvl,course:course,type:"Insert",latcode:latcode,semTxt:semTxt,curyear:curyear},
+        					data:{codeTxt: codeTxt, yearlvl:yearlvl,course:course,type:"Insert",latcode:latcode,semTxt:semTxt,curyear:curyear,maxcred:maxcred},
         					url:'Controller/Registrar/Curriculum/CurriculumController',
         					success: function(result){
 //        						$('#codeTxt').val('') ;
@@ -206,7 +208,7 @@ var EditableTable = function () {
             	unitTxt = $('#unitsTxt').val();				 
             	descTxt = $('#descUpdateTxt').val();
             	semTxt = $('#updSemesterDrp').val();
-
+            	maxcred = $('#updmaxcredTxt').val();
 				
                 swal({
                     title: "Are you sure?",
@@ -223,7 +225,7 @@ var EditableTable = function () {
                     if (isConfirm) {
                 		$.ajax({
         					type:'POST',
-        					data:{codeTxt: codeTxt, descTxt: descTxt,type:"Update",latcode:latcode,semTxt:semTxt},
+        					data:{codeTxt: codeTxt, descTxt: descTxt,type:"Update",latcode:latcode,semTxt:semTxt,maxcred:maxcred},
         					url:'Controller/Registrar/Curriculum/CurriculumController',
         					success: function(result){
         						 
@@ -480,6 +482,11 @@ var EditableTable = function () {
         		$("#updSemesterDrp").select2("val", $(this).data('semester'));
         		$("#updcourseDrp").select2("val", $(this).data('course'));
         		$("#updyearDrp").select2("val", $(this).data('yearlevel'));
+        		$("#updmaxcredTxt").val($(this).data('maxcred'));
+        		console.log($(this).data('maxcred'))
+        		
+        		
+        		
         		$('#viewmainBody').html('')
         		$.ajax({
 					type:'POST',

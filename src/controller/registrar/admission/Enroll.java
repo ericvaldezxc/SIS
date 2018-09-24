@@ -67,8 +67,13 @@ public class Enroll extends HttpServlet {
 		JSONArray subject = new JSONArray();
 		Object object = null;
 
+		JSONParser jsonParser2=new JSONParser();
+		JSONArray breakfee = new JSONArray();
+		Object object2 = null;
+
 		try {
 			object=jsonParser.parse(request.getParameter("subject"));
+			object2=jsonParser2.parse(request.getParameter("breakfee"));
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -94,8 +99,8 @@ public class Enroll extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		subject=(JSONArray) object;
-		
+		subject = (JSONArray) object;
+		breakfee = (JSONArray) object2;
 		try {
 			
 			sql = "insert into `t_student_account` (Student_Account_CampusID,Student_Account_Type,Student_Account_Student_Profile_ID,Student_Account_Student_Number,Student_Account_Scholastic_Status,Student_Account_Year,Student_Account_CourseID,Student_Account_SectionID,Student_Account_CurriculumYearID) values ((SELECT Campus_ID FROM r_campus WHERE Campus_Code = '"+ec.encrypt(ec.key, ec.initVector, campus)+"'),'"+type+"','"+studentid+"','"+studnum+"','Regular','First Year',(SELECT Course_ID FROM r_course WHERE Course_Code = '"+ec.encrypt(ec.key, ec.initVector, CourseDrp)+"'),'"+SectionDrp+"',(SELECT CurriculumYear_ID FROM `r_curriculumyear` WHERE CurriculumYear_Ative_Flag = 'Active'))";
@@ -122,9 +127,24 @@ public class Enroll extends HttpServlet {
 			out.print(sql);
 			stmnt.execute(sql);
 			
+			for (Object o : breakfee) {
+				JSONObject jsonLineItem = (JSONObject) o;
+				String desc = (String) jsonLineItem.get("desc");
+		        String feeamou = (String) jsonLineItem.get("amount");
+				sql = "insert into `t_breakdown_fee` (Breakdown_Fee_Student_Account_ID,Breakdown_Fee_Semester_ID,Breakdown_Fee_AcademicYearID,Breakdown_Fee_Description,Breakdown_Fee_Amount,Breakdown_Fee_Type) VALUES ((SELECT MAX(Student_Account_ID) FROM t_student_account),(SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active'),(SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'),'"+desc+"','"+feeamou+"','Enrollment') ";			
+				out.print(sql);
+				stmnt.execute(sql);
+
+
+			}
+			
+			
 			sql = "insert into `t_payment` (Payment_Student_Account_ID,Payment_Balance) VALUES ((SELECT MAX(Student_Account_ID) FROM t_student_account),'"+amount+"') ";			
 			out.print(sql);
 			stmnt.execute(sql);
+			
+			
+			
 			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

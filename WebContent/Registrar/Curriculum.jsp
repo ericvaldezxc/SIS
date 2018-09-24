@@ -37,7 +37,7 @@
 			if(rs.getString("Curriculum_Display_Status").equals("Active"))
 //				tablebody += "<center> <a class='btn btn-info view' href='javascript:;'><i class='fa fa-eye'></i></a> <a class='btn btn-success edit' data-toggle='modal' href='#CurriculumEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 //				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#CurriculumEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info fee' data-toggle='modal' href='#FeeEdit'><i class='fa fa-money'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
-				tablebody += "<center> <a class='btn btn-success edit' data-yearlevel='"+rs.getString("Curriculum_YearLevel")+"' data-course='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Code")) +"' data-semester='"+ ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Code"))+"' data-toggle='modal' href='#CurriculumEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
+				tablebody += "<center> <a class='btn btn-success edit' data-yearlevel='"+rs.getString("Curriculum_YearLevel")+"' data-course='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Code")) +"' data-maxcred='"+rs.getString("Curriculum_Max_Credited_Unit")+"' data-semester='"+ ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Code"))+"' data-toggle='modal' href='#CurriculumEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 			else
 				tablebody += "<center><a class='btn btn-info retrieve' href='javascript:;'><i class='fa fa-rotate-left'></i></a><center></td></tr>";
 			
@@ -372,6 +372,10 @@
                                       	  ${curyearDrp} 
                                     	</select>       			
 		                            </div>
+		                            <div class="col-lg-6" style="padding-top:10px">
+	                        			Maximum Credited Units to take
+	                        			<input type="number"  min="0" max="100" step="0" class="form-control" placeholder="ex. 26" id="maxcredTxt">
+		                            </div>
 		                            <div class="col-lg-12" style="padding-top:10px">
 		                            	Item/s:
 		                                <table class="table table-striped table-hover table-bordered" id="itemsTbl">
@@ -443,6 +447,11 @@
                                       	  ${yearlvlDrp} 
                                     	</select>       			
 		                            </div>
+		                            <div class="col-lg-6" style="padding-top:10px">
+	                        			Maximum Credited Units to take
+	                        			<input type="number"  min="0" max="100" step="0" class="form-control" placeholder="ex. 26" id="updmaxcredTxt">
+		                            </div>
+		                            
 		                            <div class="col-lg-12" style="padding-top:10px">
 		                            	Item/s:
 		                                <table class="table table-striped table-hover table-bordered" id="itemsTblEdit">

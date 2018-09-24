@@ -48,6 +48,8 @@ public class CurriculumController extends HttpServlet {
 		String semTxt = request.getParameter("semTxt");
 		String course = request.getParameter("course");
 		String curyear = request.getParameter("curyear");
+		String maxcred = request.getParameter("maxcred");
+		
 		
 		String yearlvl = request.getParameter("yearlvl");
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy");
@@ -77,13 +79,14 @@ public class CurriculumController extends HttpServlet {
 //				sql = "Update r_curriculum set Curriculum_Active_Flag = 'Inactive' where Curriculum_SemesterID = (SELECT Semester_ID from r_semester WHERE Semester_Code = '"+ec.encrypt(ec.key, ec.initVector, semTxt)+"') and Curriculum_CourseID = (SELECT Course_ID from r_course WHERE Course_Code = '"+ec.encrypt(ec.key, ec.initVector, course)+"') and Curriculum_YearLevel = '"+yearlvl+"'";
 				
 //				stmnt.execute(sql);
-				sql = "Insert into r_curriculum (Curriculum_Code,Curriculum_SemesterID,Curriculum_CourseID,Curriculum_YearLevel,Curriculum_CurriculumYearID) values ('"+ec.encrypt(ec.key, ec.initVector, year+"-"+code) +"',(SELECT Semester_ID from r_semester WHERE Semester_Code = '"+ec.encrypt(ec.key, ec.initVector, semTxt)+"'),(SELECT Course_ID from r_course WHERE Course_Code = '"+ec.encrypt(ec.key, ec.initVector, course)+"'),'"+yearlvl+"',(SELECT CurriculumYear_ID from r_curriculumyear WHERE CurriculumYear_Code = '"+ec.encrypt(ec.key, ec.initVector, curyear)+"'))";
+				sql = "Insert into r_curriculum (Curriculum_Code,Curriculum_SemesterID,Curriculum_CourseID,Curriculum_YearLevel,Curriculum_CurriculumYearID,Curriculum_Max_Credited_Unit) values ('"+ec.encrypt(ec.key, ec.initVector, year+"-"+code) +"',(SELECT Semester_ID from r_semester WHERE Semester_Code = '"+ec.encrypt(ec.key, ec.initVector, semTxt)+"'),(SELECT Course_ID from r_course WHERE Course_Code = '"+ec.encrypt(ec.key, ec.initVector, course)+"'),'"+yearlvl+"',(SELECT CurriculumYear_ID from r_curriculumyear WHERE CurriculumYear_Code = '"+ec.encrypt(ec.key, ec.initVector, curyear)+"'),'"+maxcred+"')";
 				out.print(sql);
 				stmnt.execute(sql);
 
 			}
 			else if(type.equals("Update")) {
-				sql = "Update r_curriculum set Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"',Curriculum_SemesterID = (SELECT Semester_ID from r_semester WHERE Semester_Code = '"+ec.encrypt(ec.key, ec.initVector, semTxt)+"') where Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"';";
+				sql = "Update r_curriculum set Curriculum_Max_Credited_Unit = '"+maxcred+"',Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"',Curriculum_SemesterID = (SELECT Semester_ID from r_semester WHERE Semester_Code = '"+ec.encrypt(ec.key, ec.initVector, semTxt)+"') where Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"';";
+				out.print(sql);
 				stmnt.execute(sql);
 				sql = " Update r_curriculumitem SET CurriculumItem_Display_Status = 'Inactive' where CurriculumItem_CurriculumID = (SELECT Curriculum_ID FROM r_curriculum WHERE Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"' );";
 				stmnt.execute(sql);

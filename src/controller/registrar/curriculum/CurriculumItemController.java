@@ -137,7 +137,9 @@ public class CurriculumItemController extends HttpServlet {
 				
 			}
 			else if(type.equals("Update")){
+				PrintWriter out = response.getWriter();	
 				sql = "SELECT COUNT(*) as cou FROM r_curriculumitem INNER JOIN r_subject ON CurriculumItem_SubjectID =  Subject_ID INNER JOIN r_curriculum ON CurriculumItem_CurriculumID  = Curriculum_ID WHERE Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"' AND Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, code)+"'";
+				out.print(sql);
 				stmnt.execute(sql);
 
 				ResultSet rs = stmnt.executeQuery(sql);
@@ -145,17 +147,17 @@ public class CurriculumItemController extends HttpServlet {
 					if(rs.getString("cou").equals("0")) {
 						
 						sql = "Insert into r_curriculumitem (CurriculumItem_CurriculumID,CurriculumItem_SubjectID) values ((SELECT Curriculum_ID FROM r_curriculum WHERE Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode) +"' ),(SELECT Subject_ID FROM `r_subject` WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, code) +"'))";
-						stmnt.execute(sql);
-						PrintWriter out = response.getWriter();	
+						
 						out.print(sql);
+						stmnt.execute(sql);
+						
 					}
 					else {
 						sql = "UPDATE `r_curriculumitem` SET CurriculumItem_Display_Status = 'Active' WHERE CurriculumItem_ID = (SELECT CurriculumItem_ID FROM (SELECT * FROM r_curriculumitem) AS A INNER JOIN r_curriculum ON Curriculum_ID = A.CurriculumItem_CurriculumID INNER JOIN r_subject ON Subject_ID = A.CurriculumItem_SubjectID  WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, code) +"' AND Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode) +"' LIMIT 1 )";
-						stmnt.execute(sql);
-						PrintWriter out = response.getWriter();	
+						
 						out.print(sql);
-						
-						
+						stmnt.execute(sql);
+					
 					}
 				}
 

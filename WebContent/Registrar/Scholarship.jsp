@@ -34,6 +34,9 @@
 <t:Registrar title="Scholarship" from="Scholarship" to="">
 
 	<jsp:attribute name="myscript">      
+		<script lang="javascript" src="../Assets/js/xlsx.full.min.js"></script>
+		<script lang="javascript" src="../Assets/js/FileSaver.min.js"></script>
+	
       	<script>
 			$(document).ready(function (){
 				EditableTable.init();
@@ -84,47 +87,15 @@
 					
 				})
 				
-				
-				function handleFiles(files) {
-		    		if (window.FileReader) {
-		    		   getAsText(files[0]);
-		    		}else {
-		    			alert('FileReader are not supported in this browser.');
-		    		}
-    			}
-				
-
-	    		function getAsText(fileToRead) {
-	    		  var reader = new FileReader();
-	    		  reader.readAsText(fileToRead);
-	    		  reader.onload = loadHandler;
-	    		  reader.onerror = errorHandler;
-	    		}
-
-	    		function loadHandler(event) {
-	    		  var csv = event.target.result;
-	    		  processData(csv);
-	    		}
-	    		
-	    		var student = []
-	    		function processData(csv) {
-	    		    var allTextLines = csv.split(/\r\n|\n/);
-	    		    console.log(allTextLines)
-	    		    student = []
-	    		    for (var i=1; i<allTextLines.length; i++) {
-	    		        var row = allTextLines[i].split(';');		
-	    		        for (var j=0; j<row.length; j++) {
-	    			        var col = row[j].split(',');
-	    			        if(col[0] != "" && col[2] != undefined){
-	    			        	var aiNew = table.fnAddData([col[0],col[1].replace('"','') + col[2].replace('"',''),col[3]]);
-	    	                    var nRow = table.fnGetNodes(aiNew[0]);
-//	    				        student.push({number:col[0],name:col[1].replace('"','') + col[2].replace('"',''),section:col[3]} );
-	    			        	
-	    			        }
-	    		        }
-	    		    }
-
-	    		}
+				var latscode = ''
+				$('#editable-sample').on('click','a.scholars',function(){
+					var table = $('#studentscholarship').DataTable();
+					jQuery(table.fnGetNodes()).each(function (index,elem) {
+	                	table.fnDeleteRow(0);
+	                });
+					latscode = $(this).closest('tr').children('td:eq(0)').text()
+					alert(latscode)					
+				})
 	    		
 	    		var oTable = $('#studentscholarship').dataTable({
 	                 "aLengthMenu": [
@@ -151,7 +122,7 @@
 	             jQuery('#studentscholarship_wrapper .dataTables_length select').addClass("form-control xsmall"); // modify table per page dropdown
 				
 				
-	             $('#uploadstudentScholarshipBtn').click(function(){
+	             $('#importBtn').on('change', function() {
 						var table = $('#studentscholarship').DataTable();
 						jQuery(table.fnGetNodes()).each(function (index,elem) {
 		                	table.fnDeleteRow(0);
@@ -161,45 +132,90 @@
 					 	handleFiles(this.files)
 
 						
-		                swal({
-		                    title: "Are you sure?",
-		                    text: "The record will be save and will be use for further transaction",
-		                    type: "warning",
-		                    showCancelButton: true,
-		                    confirmButtonColor: '#DD6B55',
-		                    confirmButtonText: 'Yes, do it!',
-		                    cancelButtonText: "No!",
-		                    closeOnConfirm: false,
-		                    closeOnCancel: false
-		                },
-		                function (isConfirm) {
-		                    if (isConfirm) {
-			             		$.ajax({
-			    					type:'POST',
-			    					data:{code: codeTxt, desc: descTxt, discount: discountTxt},
-			    					url:'Controller/Registrar/Scholarship/Scholarship',
-			    					success: function(result){
-			    						 swal("Record Added!", "The data is successfully added!", "success");
-			                             var aiNew = oTable.fnAddData([codeTxt, descTxt, "<center><a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit' ><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a></center>", '']);
-			                             var nRow = oTable.fnGetNodes(aiNew[0]);
-			                             document.getElementById("form-data").reset();
-			                             $("#addcloseBtn").click();
-			                             
-			    					},
-			                        error: function (response) {
-			                            swal("Error encountered while adding data", "Please try again", "error");
-			                            $("#editable-sample_new").click();
-			                        }
-			    				});
-		                    } else {
+				})
+				
+				
+					
+				function handleFiles(files) {
+		    		if (window.FileReader) {
+		    		   getAsText(files[0]);
+		    		}else {
+		    			alert('FileReader are not supported in this browser.');
+		    		}
+    			}
+				
 
-		                        swal("Cancelled", "The transaction is cancelled", "error");
-		                        $("#editable-sample_new").click();
-		                    }
+	    		function getAsText(fileToRead) {
+	    		  var reader = new FileReader();
+	    		  reader.readAsText(fileToRead);
+	    		  reader.onload = loadHandler;
+	    		  reader.onerror = errorHandler;
+	    		}
 
-		                });
-						
-					})
+	    		function loadHandler(event) {
+	    		  var csv = event.target.result;
+	    		  processData(csv);
+	    		}
+	    		function errorHandler(evt) {
+	      		  if(evt.target.error.name == "NotReadableError") {
+	      		      alert("Cannot read file!");
+	      		  }
+	      		}
+	    		
+	    		var student = []
+	    		function processData(csv) {
+	    			var table = $('#studentscholarship').DataTable();
+	    		    var allTextLines = csv.split(/\r\n|\n/);
+	    		    console.log(allTextLines)
+	    		    for (var i=1; i<allTextLines.length; i++) {
+	    		        var row = allTextLines[i].split(';');		
+	    		        for (var j=0; j<row.length; j++) {
+	    			        var col = row[j].split(',');
+	    			        if(col[0] != "" && col[2] != undefined){
+	    			        	var aiNew = table.fnAddData([col[0],col[1].replace('"','') + col[2].replace('"',''),col[3]]);
+	    	                    var nRow = table.fnGetNodes(aiNew[0]);
+	    				        student.push({number:col[0],name:col[1].replace('"','') + col[2].replace('"',''),section:col[3]} );
+	    			        	
+	    			        }
+	    		        }
+	    		    }
+
+	    		}
+	    		$('#uploadstudentScholarshipBtn').click(function(){
+	        		 swal({
+	                     title: "Are you sure?",
+	                     text: "The record will be save and will be use for further transaction",
+	                     type: "warning",
+	                     showCancelButton: true,
+	                     confirmButtonColor: '#DD6B55',
+	                     confirmButtonText: 'Yes, do it!',
+	                     cancelButtonText: "No!",
+	                     closeOnConfirm: false,
+	                     closeOnCancel: false
+	                 },
+	                 function (isConfirm) {
+	                     if (isConfirm) {
+	                 		$.ajax({
+	         					type:'POST',
+	         					data:{scholarship:latscode,student: JSON.stringify(student)},
+	         					url:'Controller/Scholarship/Scholarship/UploadStudent',
+	         					success: function(result){
+//	         						$('#lblimport').slideUp();
+	 	    						 swal("Record Added!", "The data is successfully added!", "success");
+	         					},
+	                             error: function (response) {
+	                                 swal("Error encountered while adding data", "Please try again", "error");
+	                             }
+	         				});
+
+	                     } else {
+
+	                         swal("Cancelled", "The transaction is cancelled", "error");
+	                         $("#editable-sample_new").click();
+	                     }
+
+	                 });
+	    		})
 				
 				
 			});
@@ -208,8 +224,6 @@
     
 	<jsp:attribute name="customImportedScript">      
 		<script type="text/javascript" src="../Assets/js/jquery-1.8.3.min.js"></script>
-		<script lang="javascript" src="../Assets/js/xlsx.full.min.js"></script>
-		<script lang="javascript" src="../Assets/js/FileSaver.min.js"></script>
 		
     </jsp:attribute>    
     

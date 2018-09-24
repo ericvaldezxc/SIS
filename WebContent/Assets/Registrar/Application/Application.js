@@ -291,7 +291,7 @@ var EditableTable = function () {
 					success: function(result){
 						var item = $.parseJSON(result);
 	                	$.each(item,function(key,val){
-							$('#feemainBody').append('<tr><td>'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')	                		
+							$('#feemainBody').append('<tr><td class="desc">'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')	                		
 	                	
 	                	})
 	                	fillcoursefee()
@@ -315,7 +315,7 @@ var EditableTable = function () {
 					success: function(result){
 						var item = $.parseJSON(result);
 	                	$.each(item,function(key,val){
-							$('#feemainBody').append('<tr><td>'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')
+							$('#feemainBody').append('<tr><td class="desc">'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')
 	                		
 	                	})
 	                	
@@ -361,7 +361,7 @@ var EditableTable = function () {
 							success: function(result){
 								var item = $.parseJSON(result);
 			                	$.each(item,function(key,val){
-									$('#feemainBody').append('<tr class="subj"><td>'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')	                		
+									$('#feemainBody').append('<tr class="subj"><td class="desc">'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')	                		
 			                		
 			                	})
 
@@ -388,7 +388,7 @@ var EditableTable = function () {
 		    					data:{Amount: acadamo},
 		    					url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
 		    					success: function(result2){
-									$('#feemainBody').append('<tr class="subj"><td>Academic ('+tottuitionunit+' Tuition Unit)</td><td class="amount">'+result2+'</td></tr>')	   
+									$('#feemainBody').append('<tr class="subj"><td class="desc">Academic ('+tottuitionunit+' Tuition Unit)</td><td class="amount">'+result2+'</td></tr>')	   
 									gettotamountfee()
 		 
 		                             
@@ -1206,6 +1206,17 @@ var EditableTable = function () {
                 if(amount != '' || amount != undefined )	{
                 	amount = amount.replace(",", "");
                 }
+                
+                
+                var breakfee = []
+            	$('#feemainBody tr').each(function(key,val){
+            		if($(this).find('.desc').html() != undefined ){
+            			breakfee.push({desc:$(this).find('.desc').html(),amount:$(this).find('.amount').html().replace(',','')})
+//            			alert($(this).find('.desc').html() + ' ' + $(this).find('.amount').html() + ' - ' + qwe)
+            			
+            		}
+            	})
+            	console.log(breakfee)
 //                alert(amount)
                 swal({
                     title: "Are you sure?",
@@ -1237,7 +1248,8 @@ var EditableTable = function () {
         						campus:campus,
         						typeDrp:typeDrp,
         						amount:amount,
-        						subject:JSON.stringify(sub)
+        						subject:JSON.stringify(sub),
+        						breakfee:JSON.stringify(breakfee),
         						},
         					url:'Controller/Registrar/Admission/Enroll',
         					success: function(result){
