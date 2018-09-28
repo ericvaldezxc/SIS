@@ -243,6 +243,24 @@ var EditableTable = function () {
        						}
        						else{
        							$('#mainBody').append('<tr><td style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px" colspan="7" id="totunit">Total: '+gettotalunit+' Units</td></tr>')
+       							$.ajax({
+       								type:'POST',
+       								data:{course:$('#courseDrp').val()},
+       								url: 'Controller/Registrar/Application/GetMaxUnit',
+       								async:true,
+       								success: function(getunit){
+       									maxunit = getunit
+       	       							$('#mainBody').append('<tr><td style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px" colspan="7" id="maxunit">Total Units allowed to take: '+getunit+' Units</td></tr>')
+       									
+       				                	
+
+       			                         
+       								},
+       			                    error: function (response) {
+       			                        swal("Error encountered while accessing the data", "Please try again", "error");
+       			                    }
+
+       							});
        						}
     						
     						
@@ -264,6 +282,7 @@ var EditableTable = function () {
            
             
         	$('#courseDrp').on('change',function(){
+        		
         		fillsec()
         		fillcurriculum()
         		$('#feemainBody').html('')
@@ -515,11 +534,11 @@ var EditableTable = function () {
                     }
 				});
         	}
-			
+			var maxunit = 0
             $('#mainBody').on('change','.ckbox',function(){
             	totunit = 0;
 				tottuitionunit = 0
-            	$('#mainBody tr').each(function(){
+				$('#mainBody tr').each(function(){
             		if($(this).find('.unitTexts').html() != undefined){
             			if($(this).find('input:checkbox').prop("checked") == true){            				
             				totunit += parseInt($(this).find('.unitTexts').html())
@@ -529,9 +548,33 @@ var EditableTable = function () {
             		}
             		
             	});
-            	$('#totunit').html('Total: ' + totunit + ' Units')
-            	fillsubjectfee()
-            	
+				if(maxunit < totunit){
+					$(this).attr('checked', false);
+					
+                    swal("Seems like you already reach the maximum units to take for this semester", "Please take a second look", "error");
+
+				}
+				else{
+					totunit = 0;
+					tottuitionunit = 0
+	            	$('#mainBody tr').each(function(){
+	            		if($(this).find('.unitTexts').html() != undefined){
+	            			if($(this).find('input:checkbox').prop("checked") == true){            				
+	            				totunit += parseInt($(this).find('.unitTexts').html())
+	            				tottuitionunit += parseInt($(this).find('.codeText').data("tuition"))
+	            				
+	            			}
+	            		}
+	            		
+	            	});
+					
+					
+					
+	            	$('#totunit').html('Total: ' + totunit + ' Units')
+	            	fillsubjectfee()
+	            	
+					
+				}
         		
             });
             

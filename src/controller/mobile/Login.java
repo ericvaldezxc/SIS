@@ -156,7 +156,7 @@ public class Login extends HttpServlet {
 			 res = "Incorrect Password";
 		 else 
 			 res = "Successful";
-		 out.print(res);	
+		 out.print(type);	
 	}
 
 }

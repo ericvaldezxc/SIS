@@ -34,6 +34,10 @@
     <link rel="stylesheet" href="../Assets/js/data-tables/DT_bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="../Assets/js/jquery-multi-select/css/multi-select.css" />
     <link rel="stylesheet" type="text/css" href="../Assets/js/jquery-tags-input/jquery.tagsinput.css" />
+	
+	<link href="../Assets/css/clndr.css" rel="stylesheet">
+    <link href="../Assets/js/css3clock/css/style.css" rel="stylesheet">
+
 
     <link rel="stylesheet" type="text/css" href="../Assets/js/select2/select2.css" />
 
@@ -57,8 +61,6 @@
     <link href="../Assets/js/iCheck/skins/flat/blue.css" rel="stylesheet">
     <link href="../Assets/js/iCheck/skins/flat/yellow.css" rel="stylesheet">
     <link href="../Assets/js/iCheck/skins/flat/purple.css" rel="stylesheet">
-
-
 
 
     <!-- Custom styles for this template -->
@@ -147,6 +149,12 @@
 	                <a href="Accounting.jsp" class="" id="AccountingBtn">
 	                    <i class="fa fa-money"></i>
 	                    <span>Accounting</span>
+	                </a>
+           		</li>
+           		<li>
+	                <a href="Calendar.jsp" class="" id="CalendarBtn">
+	                    <i class="fa fa-calendar"></i>
+	                    <span>Calendar</span>
 	                </a>
            		</li>
             </ul>            
@@ -269,6 +277,8 @@
 <!--Core js-->
     <jsp:invoke fragment="customImportedScript"/>
     
+
+	
     <script src="../Assets/js/jquery.js"></script>
     <script src="../Assets/bs3/js/bootstrap.min.js"></script>
     <script class="include" type="text/javascript" src="../Assets/js/jquery.dcjqaccordion.2.7.js"></script>
@@ -294,6 +304,8 @@
 	<script src="../Assets/js/flot-chart/jquery.flot.pie.resize.js"></script>
 	<script type="text/javascript" src="../Assets/js/jquery-multi-select/js/jquery.multi-select.js"></script>
 	<script type="text/javascript" src="../Assets/js/jquery-multi-select/js/jquery.quicksearch.js"></script>
+		
+	
 
     <script src="../Assets/js/scripts.js"></script>
     <!--icheck init -->
@@ -318,6 +330,8 @@
 			$("#ProfileBtn").addClass("active");
  		else if(title == "Accounting") 
 			$("#AccountingBtn").addClass("active");
+ 		else if(title == "Calendar") 
+			$("#CalendarBtn").addClass("active");
 		
 			
 		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering') 
