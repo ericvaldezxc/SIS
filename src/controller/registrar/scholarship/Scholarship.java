@@ -65,7 +65,13 @@ public class Scholarship extends HttpServlet {
 		try {
 			sql = "INSERT INTO r_scholarship (Scholarship_Code,Scholarship_Description,Scholarship_Percentage) VALUES ('"+code+"','"+desc+"','"+discount+"')";
 			out.print(sql);
+			
+			sql = "INSERT INTO t_scholar_account (Scholar_Account_ScholarshipID,Scholar_Account_Balance) VALUES ((SELECT max(Scholarship_ID) FROM `r_scholarship` ),'0')";
+			out.print(sql);
+			
+			
 			stmnt.execute(sql);
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

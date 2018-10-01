@@ -62,6 +62,10 @@ public class Login extends HttpServlet {
 		String lname = "";
 		String refid = "";
 
+		String section = "";
+		String course = "";
+		String studnumber = "";
+
 		Statement stmnt = null;
 		try {
 			stmnt = conn.createStatement();
@@ -113,26 +117,54 @@ public class Login extends HttpServlet {
 		
 		if(!type.equals("")) {
 			if(type.equals("Guard")) {
-//				sql = "SELECT * FROM `r_student_profile` inner join t_student_account on Student_Profile_ID = Student_Account_Student_Profile_ID where Student_Account_ID = '"+refid+"' ";
-//				try {
-//					ResultSet rs = stmnt.executeQuery(sql);
-//					while(rs.next()){
-//						fname = rs.getString("Student_Profile_First_Name");
-//						mname = rs.getString("Student_Profile_Middle_Name");
-//						lname = rs.getString("Student_Profile_Last_Name");
-//						if(mname.equals("")){
-//							Fullname = ec.decrypt(ec.key, ec.initVector, lname)  + ", " + ec.decrypt(ec.key, ec.initVector, fname);
-//							
-//						}
-//						else {
-//							Fullname = ec.decrypt(ec.key, ec.initVector, lname) + ", " + ec.decrypt(ec.key, ec.initVector, fname) + " " + ec.decrypt(ec.key, ec.initVector, mname);
-//							
-//						}
-//					}
-//				} catch (SQLException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				sql = "SELECT * FROM `r_school_guard` where School_Guard_ID = '"+refid+"' ";
+				try {
+					ResultSet rs = stmnt.executeQuery(sql);
+					while(rs.next()){
+						fname = rs.getString("School_Guard_First_Name");
+						mname = rs.getString("School_Guard_Middl_Name");
+						lname = rs.getString("School_Guard_Last_Name");
+						if(mname.equals("")){
+							Fullname = ec.decrypt(ec.key, ec.initVector, lname)  + ", " + ec.decrypt(ec.key, ec.initVector, fname);
+							
+						}
+						else {
+							Fullname = ec.decrypt(ec.key, ec.initVector, lname) + ", " + ec.decrypt(ec.key, ec.initVector, fname) + " " + ec.decrypt(ec.key, ec.initVector, mname);
+							
+						}
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+			if(type.equals("Student")) {
+				sql = "SELECT * FROM `r_student_profile` inner join t_student_account on Student_Profile_ID = Student_Account_Student_Profile_ID inner join r_section on Student_Account_SectionID = Section_ID inner join r_course on Course_ID = Student_Account_CourseID where Student_Account_ID = '"+refid+"' ";
+				try {
+					ResultSet rs = stmnt.executeQuery(sql);
+					while(rs.next()){
+						fname = rs.getString("Student_Profile_First_Name");
+						mname = rs.getString("Student_Profile_Middle_Name");
+						lname = rs.getString("Student_Profile_Last_Name");
+						if(mname.equals("")){
+							Fullname = ec.decrypt(ec.key, ec.initVector, lname)  + ", " + ec.decrypt(ec.key, ec.initVector, fname);
+							
+						}
+						else {
+							Fullname = ec.decrypt(ec.key, ec.initVector, lname) + ", " + ec.decrypt(ec.key, ec.initVector, fname) + " " + ec.decrypt(ec.key, ec.initVector, mname);
+							
+						}
+						course = ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Description"));
+						section = rs.getString("Section_Code");
+						
+						
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				
 			}
@@ -144,10 +176,8 @@ public class Login extends HttpServlet {
 		 JSONObject obj = new JSONObject();
 		 
 		 
-		 obj.put("type", type);
-		 obj.put("unexist", unexist);
-		 obj.put("pswrong", pswrong);	
-		 arr.add(obj);
+		 
+		 //arr.add(obj);
 		 
 		 String res = "";
 		 if(unexist.equals("0"))
@@ -156,7 +186,14 @@ public class Login extends HttpServlet {
 			 res = "Incorrect Password";
 		 else 
 			 res = "Successful";
-		 out.print(type);	
+		 obj.put("message", res);
+		 obj.put("type", type);
+		 obj.put("studentnumber", username);	
+		 obj.put("name", Fullname);	
+		 obj.put("course", course);	
+		 obj.put("section", section);	
+		 
+		 out.print(obj);	
 	}
 
 }

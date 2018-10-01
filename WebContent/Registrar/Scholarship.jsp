@@ -1,6 +1,6 @@
 <%@page import="java.sql.*"%>
 <%@page import="connection.DBConfiguration" %>
-<%@page import="configuration.EncryptandDecrypt" %>
+<%@page import="configuration.*" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags/Registrar" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -21,12 +21,15 @@
 			
 			tablebody += "<tr><td>" + rs.getString("Scholarship_Code")+ "</td><td>"+rs.getString("Scholarship_Description")+"</td><td>"+rs.getString("Scholarship_Percentage")+"%</td><td>"; 
 			if(rs.getString("Scholarship_Display_Status").equals("Active") )
-				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info scholars' data-toggle='modal' href='#scholarship'><i class='fa fa-upload'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
+				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info scholars' data-toggle='modal' href='#scholarship'><i class='fa fa-upload'></i></a> <a class='btn btn-warning scholarhistory' data-toggle='modal' href='#scholarshiphistory'><i class='fa fa-book'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 			else
 				tablebody += "<center><a class='btn btn-info retrieve' href='javascript:;'><i class='fa fa-rotate-left'></i></a><center></td></tr>";
 			
 		}
 	pageContext.setAttribute("tablebody", tablebody);
+	Dropdowns drp = new Dropdowns();
+	pageContext.setAttribute("acadyearDrp", drp.fillacadyearDrp2());
+	pageContext.setAttribute("semesterDrp", drp.fillsemesterDrp());
 
 
 %>    
@@ -94,7 +97,15 @@
 	                	table.fnDeleteRow(0);
 	                });
 					latscode = $(this).closest('tr').children('td:eq(0)').text()
-					alert(latscode)					
+					//alert(latscode)					
+				})
+				$('#editable-sample').on('click','a.scholarhistory',function(){
+					var table = $('#paymenthistory').DataTable();
+					jQuery(table.fnGetNodes()).each(function (index,elem) {
+	                	table.fnDeleteRow(0);
+	                });
+					scholarcode = $(this).closest('tr').children('td:eq(0)').text()
+					//alert(scholarcode)					
 				})
 	    		
 	    		var oTable = $('#studentscholarship').dataTable({
@@ -120,14 +131,42 @@
 
 	             jQuery('#studentscholarship_wrapper .dataTables_filter input').addClass("form-control medium"); // modify table search input
 	             jQuery('#studentscholarship_wrapper .dataTables_length select').addClass("form-control xsmall"); // modify table per page dropdown
+	             
+	             var latscode = ''
+ 			
+ 	    		
+ 	    		var oTable = $('#paymenthistory').dataTable({
+ 	                 "aLengthMenu": [
+ 	                     [5, 15, 20, -1],
+ 	                     [5, 15, 20, "All"] // change per page values here
+ 	                 ],
+ 	                 // set the initial value
+ 	                 "iDisplayLength": 5,
+ 	                 "sDom": "<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>",
+ 	                 "sPaginationType": "bootstrap",
+ 	                 "oLanguage": {
+ 	                     "sLengthMenu": "_MENU_ records per page",
+ 	                     "oPaginate": {
+ 	                         "sPrevious": "Prev",
+ 	                         "sNext": "Next"
+ 	                     }
+ 	                 },
+ 	                 "columnDefs": [
+ 	                     { "bSortable": false, "aTargets": [ 0 ] }
+ 	                 ], 
+ 	             });
+
+ 	             jQuery('#paymenthistory_wrapper .dataTables_filter input').addClass("form-control medium"); // modify table search input
+ 	             jQuery('#paymenthistory_wrapper .dataTables_length select').addClass("form-control xsmall"); // modify table per page dropdown
+	             
 				
-				
+				 $('#totalAmount').hide()
 	             $('#importBtn').on('change', function() {
 						var table = $('#studentscholarship').DataTable();
 						jQuery(table.fnGetNodes()).each(function (index,elem) {
 		                	table.fnDeleteRow(0);
 		                });
-						
+						$('#totalAmount').slideDown()
 						
 					 	handleFiles(this.files)
 
@@ -163,7 +202,10 @@
 	      		}
 	    		
 	    		var student = []
+	    		var studentnumber = []
+	    		var totalamounttopay = "0";
 	    		function processData(csv) {
+	    			studentnumber = []
 	    			var table = $('#studentscholarship').DataTable();
 	    		    var allTextLines = csv.split(/\r\n|\n/);
 	    		    console.log(allTextLines)
@@ -172,13 +214,49 @@
 	    		        for (var j=0; j<row.length; j++) {
 	    			        var col = row[j].split(',');
 	    			        if(col[0] != "" && col[2] != undefined){
-	    			        	var aiNew = table.fnAddData([col[0],col[1].replace('"','') + col[2].replace('"',''),col[3]]);
-	    	                    var nRow = table.fnGetNodes(aiNew[0]);
+	    			        	//var aiNew = table.fnAddData([col[0],col[1].replace('"','') + col[2].replace('"',''),col[3]]);
+	    	                    //var nRow = table.fnGetNodes(aiNew[0]);
+	    	                    studentnumber.push(col[0])
 	    				        student.push({number:col[0],name:col[1].replace('"','') + col[2].replace('"',''),section:col[3]} );
 	    			        	
 	    			        }
 	    		        }
 	    		    }
+	    		    console.log(studentnumber)
+	    		    
+	    		    $.ajax({
+     					type:'POST',
+     					data:{student: JSON.stringify(studentnumber)},
+     					url:'Controller/Scholarship/Scholarship/GetStudentPayment',
+     					success: function(result){
+     						var item =  $.parseJSON(result)
+     						totalamounttopay = "0"
+     						$.each(item, function (key, val) {
+     							totalamounttopay = parseFloat(totalamounttopay)  +  parseFloat(val.amount.replace(',',''))
+     							
+         						var aiNew = table.fnAddData([val.studnum,val.name,val.section,val.amount]);
+        	                    var nRow = table.fnGetNodes(aiNew[0]);
+        	                    $.ajax({
+    								type:'POST',
+    								data:{Amount: totalamounttopay},
+    								url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
+    								success: function(result2){
+    									totalamounttopay = result2
+    									console.log(result2)
+    									$('#totalAmount').html("Total Amount: "+result2)
+    								},
+    			                    error: function (response) {
+    			                        swal("Error encountered while accessing the data", "Please try again", "error");
+    			                    }
+    							});
+     						})
+//     						
+     					},
+                         error: function (response) {
+                             swal("Error encountered while adding data", "Please try again", "error");
+                         }
+     				});
+	    		    
 
 	    		}
 	    		$('#uploadstudentScholarshipBtn').click(function(){
@@ -216,7 +294,93 @@
 
 	                 });
 	    		})
-				
+	    		var scholarcode = ""
+	    		$("select#acadyearDrp").select2({width: '100%' });
+	    		$("select#semesterDrp").select2({width: '100%' });
+	    		$("#semesterDrp").on('change',function(){
+	    			var sem = $('#semesterDrp option:selected').val()
+	    			var acadyear = $('#acadyearDrp option:selected').val()
+	    			if(sem != 'default' && sem != 'default'){
+	    				var table = $('#paymenthistory').DataTable();
+	    				jQuery(table.fnGetNodes()).each(function (index,elem) {
+		                	table.fnDeleteRow(0);
+		                })
+	    				$.ajax({
+         					type:'POST',
+         					data:{scholar:scholarcode,semester:sem,acadyear:acadyear},
+         					url:'Controller/Scholarship/Scholarship/GetPaymentHistory',
+         					success: function(result){
+         						var item =  $.parseJSON(result)
+         						totalamounttopay = "0"
+            					$.each(item, function (key, val) {
+            	                    
+            						totalamounttopay = parseFloat(totalamounttopay)  +  parseFloat(val.amount.replace(',',''))
+             						var aiNew = table.fnAddData([val.studnum,val.name,val.section,val.amount,val.date]);
+            	                    var nRow = table.fnGetNodes(aiNew[0]);
+
+         						})
+         						$.ajax({
+     								type:'POST',
+     								data:{Amount: totalamounttopay},
+     								url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
+     								success: function(result2){
+     									totalamounttopay = result2
+     									console.log(result2)
+     									$('#paymenttotalAmount').html("Total Amount: "+result2)
+     								},
+     			                    error: function (response) {
+     			                        swal("Error encountered while accessing the data", "Please try again", "error");
+     			                    }
+     							});
+         						
+         					},
+                             error: function (response) {
+                                 swal("Error encountered while adding data", "Please try again", "error");
+                             }
+         				});
+	    			}
+	    			
+	    		})
+	    		$("#acadyearDrp").on('change',function(){
+	    			var sem = $('#semesterDrp option:selected').val()
+	    			var acadyear = $('#acadyearDrp option:selected').val()
+	    			if(sem != 'default' && sem != 'default'){
+	    				$.ajax({
+         					type:'POST',
+         					data:{scholar:scholarcode,semester:sem,acadyear:acadyear},
+         					url:'Controller/Scholarship/Scholarship/GetPaymentHistory',
+         					success: function(result){
+         						var item =  $.parseJSON(result)
+         						totalamounttopay = "0"
+                					$.each(item, function (key, val) {
+                						totalamounttopay = parseFloat(totalamounttopay)  +  parseFloat(val.amount.replace(',',''))
+                 						var aiNew = table.fnAddData([val.studnum,val.name,val.section,val.amount,val.date]);
+                	                    var nRow = table.fnGetNodes(aiNew[0]);
+                	                    
+             						})
+             						$.ajax({
+         								type:'POST',
+         								data:{Amount: totalamounttopay},
+         								url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
+         								success: function(result2){
+         									totalamounttopay = result2
+         									console.log(result2)
+         									$('#paymenttotalAmount').html("Total Amount: "+result2)
+         								},
+         			                    error: function (response) {
+         			                        swal("Error encountered while accessing the data", "Please try again", "error");
+         			                    }
+         							});
+        	                   
+
+         					},
+                             error: function (response) {
+                                 swal("Error encountered while adding data", "Please try again", "error");
+                             }
+         				});
+	    			}
+	    			
+	    		})
 				
 			});
 		</script>
@@ -309,6 +473,9 @@
 	                <div class="modal-body">
 	                	<div class="row">
 	                		<div class="col-lg-12">
+	                			<label class="btn btn-info" id="totalAmount"  >
+					            	Total Amount:
+						        </label>
 	                			<div class="adv-table editable-table ">
                                     <table class="table table-striped table-hover table-bordered" id="studentscholarship">
 	                                    <thead>
@@ -316,6 +483,7 @@
 	                                            <th style="width: 200px">Student Number</th>
 	                                            <th style="width: 100px">Name</th>
 	                                            <th style="width: 100px">Section</th>
+	                                            <th style="width: 100px">Amount</th>
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>    
@@ -327,6 +495,7 @@
 					            	<input id="importBtn" type="file" accept=".csv" style="display:none;">
 					                <i class="fa fa-upload"></i> Import
 						        </label>
+						        
 	                		</div>
 	                	</div>
 	                </div>
@@ -337,6 +506,63 @@
 	            </div>
 	        </div>
 	    </div>	
+	     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="scholarshiphistory" class="modal fade">
+	        <div class="modal-dialog" style="width:60%">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                    <h4 class="modal-title">Scholarhip Payment History</h4>
+	                </div>
+	                <div class="modal-body">
+	                	<div class="row">
+			            	<div class="col-lg-6" >
+		                    	Academic Year
+		                    	<br/>
+		                        <select class="populate " id="acadyearDrp">
+			                  	    <option value="default" selected="selected" disabled="disabled" >Select a Academic Year</option>                            	       	
+		                  			${acadyearDrp}      	
+		                		</select>
+			                </div>
+			            	<div class="col-lg-6">
+		                    	Semester
+		                    	<br/>
+		                        <select class="populate " id="semesterDrp">
+			                  	    <option value="default" selected="selected" disabled="disabled" >Select a Semester</option>                            	       	
+		                  			${semesterDrp}      	
+		                		</select>
+		                    </div>
+	                		<div class="col-lg-12">
+	                			
+	                			<div class="adv-table editable-table ">
+                                    <table class="table table-striped table-hover table-bordered" id="paymenthistory">
+	                                    <thead>
+	                                        <tr>
+	                                            <th style="width: 200px">Student Number</th>
+	                                            <th style="width: 100px">Name</th>
+	                                            <th style="width: 100px">Section</th>
+	                                            <th style="width: 100px">Amount</th>
+	                                            <th style="width: 100px">Date</th>
+	                                        </tr>
+	                                    </thead>
+	                                    <tbody>    
+	                                    </tbody>
+                                    </table>
+                                </div>
+                                <label class="btn btn-info" id="paymenttotalAmount"  >
+					            	Total Amount:
+						        </label>
+						        
+	                		</div>
+	                	</div>
+	                </div>
+	                <div class="modal-footer">
+	                    <button data-dismiss="modal" class="btn btn-default" id="" type="button"><u>C</u>lose</button>
+	                    <button class="btn btn-success " id="uploadstudentScholarshipBtn" type="button"><u>S</u>ave</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    
 	    </jsp:body>
 
 

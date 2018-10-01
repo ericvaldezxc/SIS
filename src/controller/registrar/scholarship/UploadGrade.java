@@ -142,14 +142,27 @@ public class UploadGrade extends HttpServlet {
 				out.print(sql+"\n");
 				stmnt.execute(sql);
 				
+				sql = "insert into t_scholarship_payment_history (Scholarship_Payment_History_StudentAccountID,Scholarship_Payment_History_ScholarshipID,Scholarship_Payment_History_SemesterID,Scholarship_Payment_History_AcademicYearID,Scholarship_Payment_History_Amount) values ((SELECT Student_Account_ID FROM t_student_account inner join t_payment on Payment_Student_Account_ID = Student_Account_ID WHERE  Student_Account_Student_Number = '"+studnum+"'),'"+schoid+"',(SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active'),(SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'),'"+efee+"')   ";
+				out.print(sql+"\n");
+				stmnt.execute(sql);
+				
 
 				sql = "update t_payment set Payment_Balance = '"+finalbal+"' where Payment_Student_Account_ID =  (SELECT Student_Account_ID FROM t_student_account WHERE  Student_Account_Student_Number = '"+studnum+"')  ";
 				out.print(sql+"\n");
 				stmnt.execute(sql);
 				
 				
-				
-				
+				sql = "SELECT * FROM `t_scholar_account` where Scholar_Account_ScholarshipID = '"+schoid+"' ";
+				rs = stmnt.executeQuery(sql);
+				String getcurbal = "";
+				while(rs.next()){
+					getcurbal = rs.getString("Scholar_Account_Balance");
+					
+				}
+				double newschobal = scholarpayment + Double.parseDouble(getcurbal);
+				sql = "update t_scholar_account set Scholar_Account_Balance = '"+newschobal+"' where Scholar_Account_ScholarshipID = '"+schoid+"'  ";
+				out.print(sql+"\n");
+				stmnt.execute(sql);
 
 					
 			}
