@@ -56,6 +56,7 @@
 				$("#curriculumDrp").select2( {width: '80%' });
 				$(".roomDrp").select2( {width: '80%' });
 				$(".dayDrp").select2( {width: '80%' });
+				$('#typeDrp').hide();
 				
 				$('#campusDrp').on('change',function(){
 					var camp = $(this).val()

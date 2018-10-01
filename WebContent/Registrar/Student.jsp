@@ -97,6 +97,7 @@
     				});
 				})
 				
+				
 				$('#curBody').on('click','a.enroll',function(){
 					$('#curriculum').modal('toggle')
 					var coucode = $(this).closest('tr').children('td:eq(0)').text()
@@ -136,9 +137,10 @@
 				$('#enrollClose').click(function(){
 					$('#curriculum').modal('toggle')
 				})
-				
+				var getlateststudnum = ""
 				$('#editable-sample').on('click','a.profile',function(){
 					var studentnumber = $(this).closest('tr').children('td:eq(0)').text()
+					getlateststudnum = studentnumber
 					var studentname = $(this).closest('tr').children('td:eq(1)').text()
 					$('#studnum').html(studentnumber)
 					$('#studname').html(studentname)
@@ -157,6 +159,28 @@
     						$('#genTxt').html(item.gender)
     						$('#csTxt').html(item.civil)
     						$('#addTxt').html(item.address)
+    						
+    						
+    					},
+                        error: function (response) {
+                            swal("Error encountered while accessing the data", "Please try again", "error");
+                        }
+    				});
+					$.ajax({
+    					type:'POST',
+    					data:{studentnumber: studentnumber},
+    					url: "Controller/Registrar/Student/GetEducationalAttainment",
+    					success: function(result){
+    						var item = JSON.parse(result)
+    						var ntbody = ""
+    						$('#educationalAttainmentTbl').html('')
+    						$(item).each(function(key,val){
+    							//alert(val.lvl)
+    							$('#educationalAttainmentTbl').append('<tr data-row="'+val.row+'"><td><input type="text" value="'+val.school+'" class="form-control schoolnameTxt" placeholder="ex. QCPU" ></td><td>'+schoolvl+'</td><td><input type="text"  value="'+val.course+'" class="form-control courseTxt" placeholder="ex. BSIT" ></td><td><input type="text" value="'+val.address+'" class="form-control addressTxt" placeholder="ex. San Bartolome, Novaliches, Quezon City" ></td><td><input type="text" class="form-control incyearTxt"  value="'+val.year+'" placeholder="ex. 2019" ></td></tr>')
+								$('#educationalAttainmentTbl').find("tr .schoollevel").last().val(val.lvl)
+    						})
+    						$('select.schoollevel').select2({width:"100%"})
+    						
     						
     						
     					},
@@ -649,12 +673,94 @@
 					
 				})
 				
+				$('#nextprofile').click(function(){
+					$("#studentmainprofile").slideUp()
+					$("#firstpagebtn").slideUp()
+					$("#secondpagebtn").slideDown()
+					$("#educationalAttainment").slideDown()
+					
+					
+				})
+				$('#backprofile').click(function(){
+					$("#secondpagebtn").slideUp()
+					$("#educationalAttainment").slideUp()
+					$("#studentmainprofile").slideDown()
+					$("#firstpagebtn").slideDown()
+					
+					
+				})
+				var schoolvl = '<select class="populate schoollevel"  ><option value="default" selected="selected" disabled>Select a School Level</option><option value="Elementary">Elementary</option><option value="High School">High School</option><option value="Senior High School">Senior High School</option><option value="Vocational Technology">Vocational Technology</option><option value="College">College</option></select>'
+				
+				$('#addrowBtn').click(function(){
+					var edubtbody = $('#educationalAttainmentTbl').text()
+					if(edubtbody.includes("No Data available")){
+						 $('#educationalAttainmentTbl').html('<tr data-row="None"><td><input type="text" class="form-control schoolnameTxt" placeholder="ex. QCPU" ></td><td>'+schoolvl+'</td><td><input type="text" class="form-control courseTxt" placeholder="ex. BSIT" ></td><td><input type="text" class="form-control addressTxt" placeholder="ex. San Bartolome, Novaliches, Quezon City" ></td><td><input type="text" class="form-control incyearTxt" placeholder="ex. 2019" ></td></tr>')
+					}else{
+						 $('#educationalAttainmentTbl').append('<tr data-row="None"><td><input type="text" class="form-control schoolnameTxt" placeholder="ex. QCPU" ></td><td>'+schoolvl+'</td><td><input type="text" class="form-control courseTxt" placeholder="ex. BSIT" ></td><td><input type="text" class="form-control addressTxt" placeholder="ex. San Bartolome, Novaliches, Quezon City" ></td><td><input type="text" class="form-control incyearTxt" placeholder="ex. 2019" ></td></tr>')
+						
+					}
+					$('select.schoollevel').select2({width:'100%'})
+					
+					
+					
+					
+					
+				})
+				var educattainmentlist = []
+				$('#saverowBtn').click(function(){
+					educattainmentlist = []
+					 $('#educationalAttainmentTbl tr').each(function(){
+						 var rowval = $(this).data('row').toString()
+						 var school = $(this).find('.schoolnameTxt').val()
+						 var schoollevel = $(this).find('.schoollevel option:selected').val()
+						 var course = $(this).find('.courseTxt').val()
+						 var address = $(this).find('.addressTxt').val()
+						 var incyear = $(this).find('.incyearTxt').val()
+						 
+						 educattainmentlist.push({studnum:getlateststudnum,type:rowval,school:school,schoollevel:schoollevel,course:course,address:address,incyear:incyear});
+					 })
+					 
+					 $.ajax({
+     					type:'POST',
+     					data:{educattainment: JSON.stringify(educattainmentlist)},
+     					url:'Controller/Registrar/Student/EducationalAttainment',
+     					success: function(result){
+     						swal({
+                                title: "Record Updated!"
+                                , text: "The data is successfully Updated!"
+                                , type: "success"
+                                , confirmButtonColor: '#88A755'
+                                , confirmButtonText: 'Okay'
+                                , closeOnConfirm: false
+                            }, function (isConfirm) {
+                                if (isConfirm) {
+                                    window.location.reload();
+                                }
+                            });
+//     						
+     					},
+                         error: function (response) {
+                             swal("Error encountered while adding data", "Please try again", "error");
+                         }
+     				});
+					 console.log(educattainmentlist)
+					
+					
+				})
+				
+				
+				
+			
+				$("#educationalAttainment").slideUp()
+				$("#secondpagebtn").slideUp()
+				
 			});
 		</script>
     </jsp:attribute>
     
 	<jsp:attribute name="customImportedScript">      
 		<script type="text/javascript" src="../Assets/js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="../Assets/js/jquery-ui.min.js"></script>
     </jsp:attribute>    
     
     <jsp:body>
@@ -845,7 +951,7 @@
                                    <p id="studnum">Consistent B</p>
                                </div>
 
-                               <ul class="nav nav-pills nav-stacked">
+                               <ul class="nav nav-pills nav-stacked" id="studentmainprofile">
                                    <li><a href="javascript:;"> <i class="fa fa-rss"></i> Email Address <span class="badge label-success pull-right r-activity" id="emailTxt">10</span></a></li>
                                    <li><a href="javascript:;"> <i class="fa fa-phone"></i> Contact Number <span class="badge label-success pull-right r-activity" id="cnTxt">10</span></a></li>
                                    <li><a href="javascript:;"> <i class="fa fa-phone-square"></i> Emergency Contact Number <span class="badge label-success pull-right r-activity" id="ecnTxt">03</span></a></li>
@@ -855,7 +961,35 @@
                                    <li><a href="javascript:;"> <i class="fa fa-location-arrow"></i> Place of Birth <span class="badge label-success pull-right r-activity" id="pobTxt">11</span></a></li>
                                    <li><a href="javascript:;"> <i class="fa fa-globe"></i> Address <span class="badge label-success pull-right r-activity" id="addTxt">11</span></a></li>
                                </ul>
-
+                               <div class="col-lg-12" style="margin-top:10px">
+								   <div id="educationalAttainment">
+									   	 <table class="table table-striped table-hover table-bordered" id="">
+			                            	<thead>
+			                                       <tr>	
+			                                       		<th style="width: 25%">School</th>
+									                	<th style="width: 20%">School Level</th>
+									                	<th style="width: 20%">Course</th>
+									                	<th style="width: 20%">Address</th>
+									                	<th style="width: 15%">Inclusive years</th>
+			                                       </tr>
+			                                   </thead>
+			                                   <tbody id="educationalAttainmentTbl">    
+											   <tr data-row="None" >
+											   		<td style="text-align:center;font-style:italic" colspan="5" >No Data available</td>
+											   </tr>
+			                                   </tbody>
+			                           	</table>
+								   </div>
+                               </div>
+                               <div id="firstpagebtn">
+                               		<a style="margin-left:95%" class='btn btn-info ' id="nextprofile" title="Educational Attainment" href='javascript:;'><i class='fa fa-arrow-circle-right'></i></a>
+                               </div>
+                               <div id="secondpagebtn" >
+                               		<a style="margin-left:2%" class='btn btn-success ' id="addrowBtn" title="Add row" href='javascript:;'><i class='fa fa-plus'></i></a>
+                               		<a class='btn btn-cancel tar' style="color:white" id="saverowBtn" title="Save" href='javascript:;'><i class='fa fa-save'></i></a>
+                               		<a style="margin-left:85%" class='btn btn-info ' id="backprofile" title="Student Profile" href='javascript:;'><i class='fa fa-arrow-circle-left'></i></a>
+                               </div>
+  
                            </section>
                        </aside>
 	                <div class="modal-footer">

@@ -44,7 +44,7 @@
 			        "</header>"+
 			        "<div class='panel-body' style='background-color:;'>";
 
-		body += "<table class='table table-hover' id='curTbl'>"+
+		body += "<table class='table table-striped table-hover table-bordered' id='curTbl'>"+
 				"<thead>"+
 				"<tr>"+
 			    	"<th style='width: 15%'>Code</th>"+
@@ -57,9 +57,13 @@
 			   	"</tr>"+
 			"</thead>"+
 			"<tbody id='mainBody'>   ";
-				sql ="SELECT Schedule_ProfessorID ,Students_Grade_FacultyID,  ifnull(Students_Grade_Grade,'0') grade,IFNULL(Professor_FirstName,0) AS FNAME ,IFNULL(Professor_MiddleName,0) AS MNAME,IFNULL(Professor_LastName,0) AS LNAME,Professor_Code,Subject_Code,Subject_Description,Subject_Credited_Units,Section_Code FROM `t_student_taken_curriculum_subject` inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_course on Course_ID = Student_Taken_Curriculum_Subject_CourseID inner join t_student_account on Student_Account_ID = Student_Taken_Curriculum_Subject_StudentAccountID inner join r_subject on Student_Taken_Curriculum_Subject_SubjectID = Subject_ID INNER JOIN r_section on Student_Taken_Curriculum_Subject_SectionID = Section_ID inner join r_curriculum on Curriculum_CourseID = Student_Taken_Curriculum_Subject_CourseID inner join r_curriculumitem on CurriculumItem_SubjectID = if(ifnull(Subject_Group,0)=0,Subject_ID,Subject_Group) left join t_schedule on Schedule_CurriculumItemID = CurriculumItem_ID left join t_students_grade on Students_Grade_StudentTakenCurriculumSubjectID = Student_Taken_Curriculum_Subject_ID INNER join r_professor on ifnull(Students_Grade_FacultyID,Schedule_ProfessorID ) = Professor_ID  where Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Curriculum_YearLevel = Student_Taken_Curriculum_Subject_YearLevel and if(Schedule_ChildrenID is null,'0',Schedule_ChildrenID) = if(Schedule_ChildrenID is null,'0',Subject_ID)  and Student_Account_Student_Number = '"+uname+"' and Course_ID = '"+course+"' and Student_Taken_Curriculum_Subject_SemesterID = '"+semester+"' and Student_Taken_Curriculum_Subject_AcademicIYearID = '"+acadyear+"' and Student_Taken_Curriculum_Subject_Display_Status = 'Active' and Student_Taken_Curriculum_Subject_SectionID = Section_ID and if(Schedule_SectionID is null,0,Schedule_SectionID) = if(Schedule_SectionID is null,0,Section_ID)  and Schedule_ProfessorID is not null and Course_ID = Curriculum_CourseID  and Curriculum_SemesterID = Student_Taken_Curriculum_Subject_SemesterID  ";				
+				sql ="SELECT Subject_Type,Schedule_ProfessorID ,Students_Grade_FacultyID,  ifnull(Students_Grade_Grade,'0') grade,IFNULL(Professor_FirstName,0) AS FNAME ,IFNULL(Professor_MiddleName,0) AS MNAME,IFNULL(Professor_LastName,0) AS LNAME,Professor_Code,Subject_Code,Subject_Description,Subject_Credited_Units,Section_Code FROM `t_student_taken_curriculum_subject` inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_course on Course_ID = Student_Taken_Curriculum_Subject_CourseID inner join t_student_account on Student_Account_ID = Student_Taken_Curriculum_Subject_StudentAccountID inner join r_subject on Student_Taken_Curriculum_Subject_SubjectID = Subject_ID INNER JOIN r_section on Student_Taken_Curriculum_Subject_SectionID = Section_ID inner join r_curriculum on Curriculum_CourseID = Student_Taken_Curriculum_Subject_CourseID inner join r_curriculumitem on CurriculumItem_SubjectID = if(ifnull(Subject_Group,0)=0,Subject_ID,Subject_Group) left join t_schedule on Schedule_CurriculumItemID = CurriculumItem_ID left join t_students_grade on Students_Grade_StudentTakenCurriculumSubjectID = Student_Taken_Curriculum_Subject_ID INNER join r_professor on ifnull(Students_Grade_FacultyID,Schedule_ProfessorID ) = Professor_ID  where Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Curriculum_YearLevel = Student_Taken_Curriculum_Subject_YearLevel and if(Schedule_ChildrenID is null,'0',Schedule_ChildrenID) = if(Schedule_ChildrenID is null,'0',Subject_ID)  and Student_Account_Student_Number = '"+uname+"' and Course_ID = '"+course+"' and Student_Taken_Curriculum_Subject_SemesterID = '"+semester+"' and Student_Taken_Curriculum_Subject_AcademicIYearID = '"+acadyear+"' and Student_Taken_Curriculum_Subject_Display_Status = 'Active' and Student_Taken_Curriculum_Subject_SectionID = Section_ID and if(Schedule_SectionID is null,0,Schedule_SectionID) = if(Schedule_SectionID is null,0,Section_ID)  and Schedule_ProfessorID is not null and Course_ID = Curriculum_CourseID  and Curriculum_SemesterID = Student_Taken_Curriculum_Subject_SemesterID  ";				
 //				out.print(sql);
 				rs2 = stmnt2.executeQuery(sql);
+
+				double gpa = 0;
+				int countgpa = 0;
+				String finalgpa = "0";
 				while(rs2.next()){
 					String grade = rs2.getString("grade");
 					String fname,mname,lname,fullname = "";
@@ -76,6 +80,11 @@
 					if(rs2.getString("grade").equals("0")){
 						grade = "";
 					}
+					else if(!rs2.getString("grade").equals("I") && !rs2.getString("grade").equals("Not S") && !rs2.getString("grade").equals("D") && !rs2.getString("Subject_Type").equals("Non-Academic")){
+						countgpa++;
+						gpa = gpa + Double.parseDouble(rs2.getString("grade"));
+					}
+					
 					body += "<tr>"+
 							"<td>"+ ec.decrypt(ec.key, ec.initVector, rs2.getString("Subject_Code"))+"</td>"+
 							"<td>"+ ec.decrypt(ec.key, ec.initVector, rs2.getString("Subject_Description"))+"</td>"+
@@ -87,6 +96,13 @@
 							"</tr>";
 							
 					
+				}
+				if(countgpa!=0){
+					double fgpa = gpa / countgpa;
+					body += "<tr style='text-align:right;font-style:italic'><td colspan='6'>GPA[Excluded Non-Academic Subjects]</td><td style='text-align:left'>"+fgpa+"</td></tr>";
+				}
+				else{
+					body += "<tr style='text-align:right;font-style:italic'><td colspan='6' > GPA [Excluded Non-Academic Subjects]</td><td></td></tr>";
 				}
 				
 		        body += "</tbody>"+
@@ -112,7 +128,7 @@
 			        "</header>"+
 			        "<div class='panel-body' style='background-color:;'>";
 
-			body += "<table class='table table-hover' id='curTbl'>"+
+			body += "<table class='table table-striped table-hover table-bordered' id='curTbl'>"+
 					"<thead>"+
 					"<tr>"+
 				    	"<th style='width: 15%'>Code</th>"+
