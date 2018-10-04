@@ -88,6 +88,63 @@
 					fillsec()
 				})
 				
+				$('#schedmainBody').on('change','.roomDrp',function(){
+					var timestart = $(this).closest('tr').find('.timeStart').val()
+					var timeend = $(this).closest('tr').find('.timeEnd').val()
+					var room = $(this).closest('tr').find('.roomDrp option:selected').val()
+					var day = $(this).closest('tr').find('.dayDrp option:selected').val()
+					timestart = timestart.replace(':','')
+					timeend = timeend.replace(':','')
+					timestart = timestart.substring(0,4)
+					timeend = timeend.substring(0,4)
+					var timedif = parseFloat(timeend) - parseFloat(timestart)
+					if(timedif > 0){
+						if(room!= 'default'){
+							timestart = $(this).closest('tr').find('.timeStart').val()
+							timeend = $(this).closest('tr').find('.timeEnd').val()
+							timestart = timestart.substring(0,5)
+							timeend = timeend.substring(0,5)
+							
+							$.ajax({
+		    					type:'POST',
+		    					data:{day: day,room:room,start:timestart,end:timeend},
+		    					url: "Controller/Registrar/Preenrollment/CheckSchedule",
+		    					success: function(result){
+		    						var item = $.parseJSON(result);
+		    						if(item.message == "Valid"){
+		    							swal("Theres no conflict in the schedule", "Okay", "success");
+		    						}
+		    						else{
+		    							var conflict = ""
+		    							$.each(item.sched,function(key,val){
+		    								conflict += val.day + " " + val.tstart + " " + val.tend + " " + val.room + "\n"
+		    								
+		    								
+		    		                		
+		    		                	})
+		    							swal("Seems theres a conflict in the time youre trying to use", conflict, "error");
+		    							
+		    						}
+		    						
+		                             
+		    					},
+		                        error: function (response) {
+		                            swal("Error encountered while accessing the data", "Please try again", "error");
+		                        }
+		    				});
+							
+							
+						}
+						
+					}
+					else
+						swal("The time difference seems to be invalid", "Please check the time schedule again", "error");
+					//alert(timedif +  " - " + timestart + " - " + timeend)
+					
+					
+					
+				})
+				
 				
 				function fillsec(){
 	        		var course = $('#courseDrp').val()
