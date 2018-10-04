@@ -55,8 +55,8 @@
 	                    text: "The record will be save and will be use for further transaction",
 	                    type: "warning",
 	                    showCancelButton: true,
-	                    confirmButtonColor: '#DD6B55',
-	                    confirmButtonText: 'Yes, do it!',
+	                    confirmButtonColor: '#228B22',
+	                    confirmButtonText: 'Yes!',
 	                    cancelButtonText: "No!",
 	                    closeOnConfirm: false,
 	                    closeOnCancel: false
@@ -265,8 +265,8 @@
 	                     text: "The record will be save and will be use for further transaction",
 	                     type: "warning",
 	                     showCancelButton: true,
-	                     confirmButtonColor: '#DD6B55',
-	                     confirmButtonText: 'Yes, do it!',
+	                     confirmButtonColor: '#228B22',
+	                     confirmButtonText: 'Yes!',
 	                     cancelButtonText: "No!",
 	                     closeOnConfirm: false,
 	                     closeOnCancel: false
@@ -432,7 +432,7 @@
 
          <!-- Modal -->
          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="FeeAdd" class="modal fade">
-	        <div class="modal-dialog" style="width:700px">
+	        <div class="modal-dialog" style="width:55%">
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

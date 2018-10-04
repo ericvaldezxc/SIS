@@ -97,7 +97,7 @@
          </div>
          <!-- Modal -->
          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="SubjectAdd" class="modal fade">
-	        <div class="modal-dialog" style="width:700px">
+	        <div class="modal-dialog" style="width:60%">
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -133,7 +133,7 @@
 	        </div>
 	    </div>
         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="SubjectEdit" class="modal fade">
-	        <div class="modal-dialog" style="width:700px">
+	        <div class="modal-dialog" style="width:60%">
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

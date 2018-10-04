@@ -95,8 +95,8 @@ var EditableTable = function () {
                     text: "The record will be save and will be use for further transaction",
                     type: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: '#DD6B55',
-                    confirmButtonText: 'Yes, do it!',
+                    confirmButtonColor: '#228B22',
+                    confirmButtonText: 'Yes!',
                     cancelButtonText: "No!",
                     closeOnConfirm: false,
                     closeOnCancel: false
@@ -145,8 +145,8 @@ var EditableTable = function () {
                     text: "The record will be save and will be use for further transaction",
                     type: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: '#DD6B55',
-                    confirmButtonText: 'Yes, do it!',
+                    confirmButtonColor: '#228B22',
+                    confirmButtonText: 'Yes!',
                     cancelButtonText: "No!",
                     closeOnConfirm: false,
                     closeOnCancel: false
@@ -201,8 +201,8 @@ var EditableTable = function () {
                         text: "The record will be save and will be use for further transaction",
                         type: "warning",
                         showCancelButton: true,
-                        confirmButtonColor: '#DD6B55',
-                        confirmButtonText: 'Yes, do it!',
+                        confirmButtonColor: '#228B22',
+                        confirmButtonText: 'Yes!',
                         cancelButtonText: "No!",
                         closeOnConfirm: false,
                         closeOnCancel: false
@@ -260,8 +260,8 @@ var EditableTable = function () {
                         text: "The record will be save and will be use for further transaction",
                         type: "warning",
                         showCancelButton: true,
-                        confirmButtonColor: '#DD6B55',
-                        confirmButtonText: 'Yes, do it!',
+                        confirmButtonColor: '#228B22',
+                        confirmButtonText: 'Yes!',
                         cancelButtonText: "No!",
                         closeOnConfirm: false,
                         closeOnCancel: false
