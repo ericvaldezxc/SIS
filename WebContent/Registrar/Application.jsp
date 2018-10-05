@@ -550,7 +550,7 @@
 
          <!-- Modal -->
          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="CurriculumAdd" class="modal fade">
-	        <div class="modal-dialog" style="width:700px">
+	        <div class="modal-dialog" style="width:55%">
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -620,7 +620,7 @@
 	        </div>
 	    </div>	
 	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="SectionEdit" class="modal fade">
-	        <div class="modal-dialog" style="width:700px">
+	        <div class="modal-dialog" style="width:55%">
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -670,7 +670,7 @@
 	       </div>
 	    </div>
 	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="Document" class="modal fade">
-	        <div class="modal-dialog" style="width:700px">
+	        <div class="modal-dialog" style="width:55%">
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
