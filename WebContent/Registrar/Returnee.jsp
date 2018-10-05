@@ -29,24 +29,15 @@
 	String status = "";	
 	String couid = "";
 	Statement stmnt = conn.createStatement();
-	ResultSet rs = stmnt.executeQuery("SELECT CurriculumYear_Code,Student_Account_CurriculumYearID,Course_Code,Student_Account_CourseID,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Student_Account_Student_Number,case when Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' then 'Enrolled' else 'Not Enrolled' end as status,IF((SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'))=0,'Not Enrolled','Enrolled') as enrolledba,ifnull((select Returnee_ID from t_returnee where Returnee_Display_Status = 'Active'),'Not Returnee') as retid FROM `t_student_taken_curriculum_subject`  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join r_section on Student_Account_SectionID = Section_ID inner join r_course on Student_Account_CourseID = Course_ID inner join r_curriculumyear on CurriculumYear_ID = Student_Account_CurriculumYearID  group by Student_Taken_Curriculum_Subject_StudentAccountID");
+	ResultSet rs = stmnt.executeQuery("SELECT Course_Code,Student_Account_CourseID,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Student_Account_Student_Number,case when Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' then 'Enrolled' else 'Not Enrolled' end as status,IF((SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'))=0,'Not Enrolled','Enrolled') as enrolledba FROM `t_student_taken_curriculum_subject`  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join r_section on Student_Account_SectionID = Section_ID inner join r_course on Student_Account_CourseID = Course_ID  group by Student_Taken_Curriculum_Subject_StudentAccountID");
 	while(rs.next()){
 		fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
 		mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
 		lname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Last_Name"));
 		couid = ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Code"));
-		String curcode = rs.getString("CurriculumYear_Code");
 		Fullname fn = new Fullname();
 		fullname = fn.fullname(fname, mname, lname);
-		String retid = rs.getString("retid");
-		if(retid.equals("Not Returnee")){
-			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+rs.getString("enrolledba")+"</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' href='#Profile'><i class='fa fa-eye'></i></a>  <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' href='#curriculum'><i class='fa fa-flag'></i></a> <a class='btn btn-danger addreturnee' title='Returnee'><i class='fa fa-rotate-right'></i></a> </td></tr>"; 
-			
-		}
-		else{
-			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+rs.getString("enrolledba")+"</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' href='#Profile'><i class='fa fa-eye'></i></a>  <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' href='#curriculum'><i class='fa fa-flag'></i></a> <a class='btn btn-info tar returnee' title='Returnee' data-toggle='modal' data-curriculum-code='"+curcode+"' href='#Returnee'><i class='fa fa-rotate-left'></i></a> </td></tr>"; 
-			
-		}
+		tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+rs.getString("enrolledba")+"</td><td style='text-align:center'> <a class='btn btn-info shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a></td></tr>"; 
 		
 	}
 	String shiftcourses = "<option value='default' selected disabled >Select a Course</option>";
@@ -146,58 +137,6 @@
 				$('#enrollClose').click(function(){
 					$('#curriculum').modal('toggle')
 				})
-				
-				$('#editable-sample').on('click','a.addreturnee',function(){
-					var studnum = $(this).closest('tr').children('td:eq(0)').text()
-
-					swal({
-	                    title: "Are you sure?",
-	                    text: "Do you really want to mark this student to file a leave of absence",
-	                    type: "warning",
-	                    showCancelButton: true,
-	                    confirmButtonColor: '#DD6B55',
-	                    confirmButtonText: 'Yes, do it!',
-	                    cancelButtonText: "No!",
-	                    closeOnConfirm: false,
-	                    closeOnCancel: false
-	                },
-		                function (isConfirm) {
-		                    if (isConfirm) {
-		    					$.ajax({
-		        					type:'POST',
-		        					data:{studnum: studnum},
-		        					url: "Controller/Registrar/Student/AddReturnee",
-		        					success: function(result){
-		        						swal({
-		                                    title: "Record Updated!"
-		                                    , text: "The data is successfully Updated!"
-		                                    , type: "success"
-		                                    , confirmButtonColor: '#88A755'
-		                                    , confirmButtonText: 'Okay'
-		                                    , closeOnConfirm: false
-		                                }, function (isConfirm) {
-		                                    if (isConfirm) {
-		                                        window.location.reload();
-		                                    }
-		                                });
-		
-		        					},
-		                            error: function (response) {
-		                                swal("Error encountered while accessing the data", "Please try again", "error");
-		                            }
-		        				});
-
-		                    } else {
-		
-		                        swal("Cancelled", "The transaction is cancelled", "error");
-		                    }
-		
-		                });
-
-					
-				})
-				
-				
 				var getlateststudnum = ""
 				$('#editable-sample').on('click','a.profile',function(){
 					var studentnumber = $(this).closest('tr').children('td:eq(0)').text()
@@ -999,76 +938,6 @@
 	            </div>
 	        </div>
 	    </div>
-	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="Returnee" class="modal fade">
-	        <div class="modal-dialog" style="width:70%">
-	            <div class="modal-content">
-	                <div class="modal-header">
-	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	                    <h4 class="modal-title" id="Subject-Title">Shift</h4>
-	                </div>
-	                <div class="modal-body" > 
-		                <div class="row">
-			                <div class="col-lg-6">
-			                    Course
-		             			<select id="shiftCourseDrp" class="populate" style="width:100%">
-		                        	${shiftcourses}
-		                        </select>  
-		                    </div>
-		                    <div class="col-lg-6">
-			                    Section
-		             			<select id="shiftsectionDrp" class="populate" style="width:100%">
-		             				<option value="default" selected disabled>Select a Section</option>
-		                        </select>  
-		                    </div>
-		                    <div class="col-lg-12" style="margin-top:20px">
-			                    Credited Subjects
-		                        <table class='table table-striped table-hover table-bordered'>
-	    	   						<thead>
-	    		   							<tr>
-	    		   						    	<th style='width: 20%'>Code</th>
-	    		   						        <th style='width: 25%'>Description</th>
-	    		   						        <th style='width: 15%'>Prerequisite</th>
-	    		   						        <th style='width: 5%'>Cred. Unit</th>
-	    		   						   	</tr>
-	    		   					</thead>
-	    		   					<tbody id="shiftBody">
-									   <tr>
-									   		<td style="font-size:15px" colspan="4" ><center class="codeText"></center></td>
-									   </tr>
-	    		   					</tbody>
-		           				</table>
-		                    </div>
-		                    <div class="col-lg-12" style="margin-top:20px">
-			                    Curriculum
-	                        	<table class="table table-striped table-hover table-bordered" id="itemsTbl">
-	                            	<thead>
-	                                       <tr>
-	                                           <th style="width: 20%">Code</th>
-						                	<th style="width: 30%">Description</th>
-						                	<th style="width: 5%">Lec. Hours</th>
-						                	<th style="width: 5%">Lab. Hours	</th>
-						                	<th style="width: 5%">Cred. Units</th>
-						                	<th style="width: 30%">Schedule</th>
-						                	<th style="width: 5%">Action</th> 
-	                                       </tr>
-	                                   </thead>
-	                                   <tbody id="cmainBody">    
-									   <tr>
-									   		<td style="font-size:15px" colspan="7" ><center class="codeText"></center></td>
-									   </tr>
-	                                   </tbody>
-	                           	</table>
-		                    </div>
-		                </div>
-	                </div>
-	                <div class="modal-footer">
-	                    <button data-dismiss="modal" class="btn btn-default" id="ShiftClose" type="button">Close</button>
-            	        <button class="btn btn-success " id="shiftBtn" type="button">Shift</button>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
-
 	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="Profile" class="modal fade">
 	        <div class="modal-dialog" style="width:70%">
 	            <div class="modal-content">
