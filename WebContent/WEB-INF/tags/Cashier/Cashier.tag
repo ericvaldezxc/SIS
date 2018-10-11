@@ -119,12 +119,16 @@
                      	<span>Dashboard</span>
                     </a> 
                 </li>
-                <li>
-	                <a href="Accounts.jsp" class="" id="AccountsBtn">
-	                    <i class="fa  fa-money"></i>
-	                    <span>Accounts</span>
-	                </a>
-           		</li>
+                 <li class="sub-menu">
+                    <a href="javascript:;" class="" id="AccountsBtn" >
+                        <i class="fa fa-money"></i>
+                        <span>Accounts</span>
+                    </a>
+                    <ul class="sub">
+                    	<li class="" id="StudentAccBtn"><a href="Accounts.jsp">Student</a></li>
+                    	<li class="" id="ScholarshipBtn"><a href="ScholarshipAccounts.jsp">Scholar</a></li>					   
+                    </ul>
+                </li>
             </ul>            
         </div>
         <!-- sidebar menu end-->
@@ -283,11 +287,13 @@
 
 		if(title == 'Dashboard') 
 			$("#DashboardBtn").addClass("active");
-		if(title == 'Accounts') 
-			$("#AccountsBtn").addClass("active");
-		
-		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee') 
-			$('#Pre-Enrollment').click();
+		if(title == 'Student Accounts') 
+			$("#StudentAccBtn").addClass("active");
+		if(title == 'Scholar Accounts') 
+			$("#ScholarshipBtn").addClass("active");
+		 		
+		if(title == 'Student Accounts' || title == 'Scholar Accounts' ) 
+			$('#AccountsBtn').click();
 		
 		
 		$('#logoutBtn').click(function(){

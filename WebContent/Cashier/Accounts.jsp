@@ -38,7 +38,7 @@
 
 %>    
 
-<t:Cashier title="Accounts" from="Accounts" to="">
+<t:Cashier title="Student Accounts" from="Student Accounts" to="">
 
 	<jsp:attribute name="myscript">      
       	<script>

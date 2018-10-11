@@ -341,6 +341,10 @@
 	    			}
 	    			
 	    		})
+	    		$('#printList').click(function(){
+	    			
+	    		})
+	    		
 	    		$("#acadyearDrp").on('change',function(){
 	    			var sem = $('#semesterDrp option:selected').val()
 	    			var acadyear = $('#acadyearDrp option:selected').val()
@@ -387,6 +391,8 @@
     </jsp:attribute>
     
 	<jsp:attribute name="customImportedScript">      
+		<script src="../Assets/js/html2canvas.js"></script>
+		<script src="../Assets/js/jspdf.js"></script>
 		<script type="text/javascript" src="../Assets/js/jquery-1.8.3.min.js"></script>
 		
     </jsp:attribute>    
@@ -548,9 +554,11 @@
 	                                    </tbody>
                                     </table>
                                 </div>
-                                <label class="btn btn-info" id="paymenttotalAmount"  >
+                                <a class="btn btn-info" id="paymenttotalAmount"  >
 					            	Total Amount:
-						        </label>
+						        </a>
+						        <a class="btn btn-info" id="printList" style="float:right;background-color:#33cc33;color:white" ><i class="fa fa-print"></i></a>
+						        
 						        
 	                		</div>
 	                	</div>

@@ -210,6 +210,199 @@
 	<jsp:attribute name="myscript">      
       	<script>
 			$(document).ready(function (){
+				$('#btnprint').click(function(){
+					var pdf = new jsPDF('p', 'pt', 'letter');
+					var breaker = '_______________________________________________________________________'
+					source = $('#feeTable')[0];
+					specialElementHandlers = {
+						'#bypassme': function(element, renderer){
+							return true
+						}
+					}
+					margins = {
+					    top: 50,
+					    left: 60,
+					    width: 545
+					  };
+					var campus = "Quezon City Polytechnic University (QC Branch)"
+					var address = "Quezon City Polytechnic University, Batasan Campus"
+					pdf.setFontType("bold");
+					pdf.setFontSize(14);
+					pdf.text(20,50,campus)
+					
+
+					
+					pdf.setFontType("bold");
+					pdf.setFontSize(14);
+					pdf.text(22,80,breaker)
+					
+					pdf.setFontType("italic");
+					pdf.setFontSize(12);
+					pdf.text(25,70,address)
+					
+					
+					
+					
+					$.ajax({
+						type:'POST',
+						async:false,
+						url: 'Controller/Student/Registration/Voucher',
+						success: function(result){
+							var item = $.parseJSON(result)
+							$.each(item, function (key, val) {
+								pdf.setFontType("bold");
+								pdf.setFontSize(12);
+								pdf.text(20,95,"School Year " + val.year + " " + val.sem.toUpperCase() + " TERM")
+
+								pdf.setFontType("italic");
+								pdf.setFontSize(12);
+								pdf.text(20,145,"Name")
+								pdf.setFontType("bold");
+								pdf.setFontSize(14);
+								pdf.text(120,145,":")
+								pdf.setFontType("bold");
+								pdf.setFontSize(14);
+								pdf.text(150,145,val.name)
+								pdf.setFontType("italic");
+								pdf.setFontSize(12);
+								pdf.text(20,165,"Student Number")
+								pdf.setFontType("bold");
+								pdf.setFontSize(14);
+								pdf.text(120,165,":")
+								pdf.setFontType("bold");
+								pdf.setFontSize(14);
+								pdf.text(150,165,val.accnum)
+								pdf.setFontType("italic");
+								pdf.setFontSize(12);
+								pdf.text(20,185,"Course")
+								pdf.setFontType("bold");
+								pdf.setFontSize(14);
+								pdf.text(120,185,":")
+								pdf.setFontType("bold");
+								pdf.setFontSize(14);
+								pdf.text(150,185,val.course)
+	                			
+	                		})
+	                		
+	                         
+						},
+	                    error: function (response) {
+	                        swal("Error encountered while accessing the data", "Please try again", "error");
+	                    }
+					});
+					var base = 200
+					
+					pdf.setFontType("bold");
+					pdf.setFontSize(14);
+					pdf.text(20,base+10,breaker)
+
+	        		pdf.setFontType("bold");
+					pdf.setFontSize(15);
+					pdf.text(25,base+30,"Enrolled Subjects")
+					$.ajax({
+						type:'POST',
+						async:false,
+						url: 'Controller/Student/Registration/GetSubjects',
+						success: function(result){
+							var item = $.parseJSON(result)
+							var sbody = '<table class="table table-striped table-hover table-bordered" id="itemsTbl"><thead><tr><th style="width: 200px">Subject Code</th><th style="width: 200px">Subject Description</th><th style="width:200px">Section</th></tr></thead><tbody>'    
+							$.each(item, function (key, val) {
+								sbody += "<tr><td>"+val.code+"</td><td>"+val.desc+"</td><td>"+val.section+"</td></tr>"
+								base += 30
+	                			
+	                		})
+//	                		alert(base)
+	                		sbody += "</tbody></table>"
+	                		pdf.fromHTML(
+							  	sbody // HTML string or DOM elem ref.
+							  	, margins.left // x coord
+							  	, 250 // y coord
+							  	, {
+							  		'width': margins.width // max width of content on PDF
+							  		, 'elementHandlers': specialElementHandlers
+							  	}
+							)
+	                		
+	                         
+						},
+	                    error: function (response) {
+	                        swal("Error encountered while accessing the data", "Please try again", "error");
+	                    }
+					});
+					
+					pdf.setFontType("bold");
+					pdf.setFontSize(14);
+					pdf.text(20,base+50,breaker)
+
+	        		pdf.setFontType("bold");
+					pdf.setFontSize(15);
+					pdf.text(25,base+70,"Breakdown of Tuition and Miscellaneous Fees")
+
+
+					pdf.fromHTML(
+					  	source // HTML string or DOM elem ref.
+					  	, margins.left // x coord
+					  	, base+90 // y coord
+					  	, {
+					  		'width': margins.width // max width of content on PDF
+					  		, 'elementHandlers': specialElementHandlers
+					  	}
+					  	//,
+					  	//function (dispose) {
+					  	  // dispose: object with X, Y of the last line add to the PDF
+					  	  //          this allow the insertion of new lines after html
+//					  	   pdf.output('dataurlnewwindow');
+					  		
+					  		
+//					  	   window.open(pdf.output('bloburl'))
+					        //pdf.Open('Voucher.pdf');
+					       
+					      //}
+					)
+					
+					var finamount = 0
+					
+					
+					pdf.fromHTML(
+						  	"<h2> AMOUNT DUE </h2>" // HTML string or DOM elem ref.
+						  	, 310 // x coord
+						  	, base+250 // y coord
+						  	, {
+						  		'width': margins.width // max width of content on PDF
+						  		, 'elementHandlers': specialElementHandlers
+						  	}
+						)
+						pdf.fromHTML(
+						  	"<h2> "+$('#feemainBody .TotalAmount').html()+" </h2>" // HTML string or DOM elem ref.
+						  	, 450 // x coord
+						  	, base+250 // y coord
+						  	, {
+						  		'width': margins.width // max width of content on PDF
+						  		, 'elementHandlers': specialElementHandlers
+						  	}
+						)
+					
+					  
+
+					var myImage = new Image();
+					myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
+					myImage.onload = function(){
+						pdf.addImage(myImage , 'png', 520, 30, 50, 50);
+						 var uri = pdf.output('dataurlstring');
+				  	   	 openDataUriWindow(uri);
+				  	};
+					
+				})
+				
+				function openDataUriWindow(url) {
+				    var html = '<html>' +
+				        '<style>html, body { padding: 0; margin: 0; } iframe { width: 100%; height: 100%; border: 0;}  </style>' +
+				        '<body>' +
+				        '<iframe src="' + url + '"></iframe>' +
+				        '</body></html>';
+				    a = window.open();
+				    a.document.write(html);
+				}
 				
 			});
 		</script>
@@ -220,6 +413,8 @@
     </jsp:attribute>    
     
     <jsp:body>
+		<script src="../Assets/js/html2canvas.js"></script>
+		<script src="../Assets/js/jspdf.js"></script>
     	<script src="../Assets/Student/Schedule/Schedule.js"></script>
     
         <div class="row">
@@ -232,6 +427,7 @@
 						        	<div class="panel-body">
 						            	<div class="row" style="text-align:center;color:#B33A3A">
 							            	<h4>You are already Enrolled for this current semester</h4>
+							            	<!--  <button class="btn btn-success " id="btnprint">Print Voucher <i class="fa fa-print"></i></button> -->
 				 		            	</div>
 						        	</div>
 						   		</section>
@@ -429,19 +625,51 @@
 		       					data:{subjects:JSON.stringify(enrollsubject)},
 		       					url:'Controller/Student/Registration/EnrollSubject',
 		       					success: function(result){
-		       						swal({
-		                                title: "Successfully Enrolled!"
-		                                , text: "You are successfully enrolled!"
-		                                , type: "success"
-		                                , confirmButtonColor: '#88A755'
-		                                , confirmButtonText: 'Okay'
-		                                , closeOnConfirm: false
-		                            }, function (isConfirm) {
-		                                if (isConfirm) {
-		                                    window.location.reload();
-		                                }
-		                            });
-		       						//console.log(result)
+		       						
+		       						var feebreakdown = []
+				            		var feetotalamount = 0
+				            		
+				            		$('#feemainBody tr').each(function(){
+										if($(this).data('type') == 'fee'){
+					            			var desc = $(this).children('td:eq(0)').html()
+					            			var myamo = $(this).children('td:eq(1)').html().replace(',','')
+					            			feebreakdown.push({desc:desc,amount:myamo})
+											
+										}
+										else{
+											feetotalamount = $(this).children('td:eq(1)').html().replace(',','')
+										}
+										
+				            		})
+				            		console.log(feebreakdown)
+									console.log(feetotalamount)
+		       						
+		       						
+		       						$.ajax({
+				       					type:'POST',
+				       					data:{breakdownfee:JSON.stringify(feebreakdown),totalamount:feetotalamount},
+				       					url:'Controller/Student/Registration/BreakdownFee',
+				       					success: function(result2){
+				       						
+				       						swal({
+				                                title: "Successfully Enrolled!"
+				                                , text: "You are successfully enrolled!"
+				                                , type: "success"
+				                                , confirmButtonColor: '#88A755'
+				                                , confirmButtonText: 'Okay'
+				                                , closeOnConfirm: false
+				                            }, function (isConfirm) {
+				                                if (isConfirm) {
+				                                    window.location.reload();
+				                                }
+				                            });
+				       						
+				       					},
+				                        error: function (response) {
+				                        	swal("Error encountered while adding data"+response, "Please try again", "error");
+				                       }
+				       				});
+		       						
 		       						
 		       						
 		       					},
@@ -449,6 +677,7 @@
 		                        	swal("Error encountered while adding data"+response, "Please try again", "error");
 		                       }
 		       				});
+		            		
                         } else {
                             swal("Cancelled", "The transaction is cancelled", "error");
                         }
@@ -558,7 +787,7 @@
 		                        
 		                    })
        						$.each(item,function(key,val){
-       							$('#feemainBody').append('<tr class="subj"><td>'+val.fee+'</td><td class="amo">'+val.amount+'</td></tr>')
+       							$('#feemainBody').append('<tr data-type="fee" class="subj"><td>'+val.fee+'</td><td class="amo">'+val.amount+'</td></tr>')
        							
        						})
        						
@@ -583,7 +812,7 @@
 				    					data:{Amount: acadamo},
 				    					url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
 				    					success: function(result3){
-											$('#feemainBody').append('<tr class="subj"><td>Academic ('+totalunit+' Tuition Unit)</td><td class="amo">'+result3+'</td></tr>')	   
+											$('#feemainBody').append('<tr data-type="fee" class="subj"><td>Academic ('+totalunit+' Tuition Unit)</td><td class="amo">'+result3+'</td></tr>')	   
 				 
 											 var totalamo = 0
 											 $('#feemainBody  tr').each(function(key,val){
@@ -600,7 +829,7 @@
 													data:{Amount: totalamo},
 													url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
 													success: function(result4){
-							       						$('#feemainBody').append('<tr class="totamount" style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px;"><td>Total Amount: </td><td style="text-align:left;font-weight: bold" class="TotalAmount">'+result4+'</td></tr>')
+							       						$('#feemainBody').append('<tr data-type="total" class="totamount" style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px;"><td>Total Amount: </td><td style="text-align:left;font-weight: bold" class="TotalAmount">'+result4+'</td></tr>')
 							       						$('#feemainBody').slideDown(100)
 
 													},
@@ -635,6 +864,32 @@
        				});
     				
     			}
+                
+                $.ajax({
+    				type:'POST',
+    				data:{},
+    				url: 'Controller/Student/Registration/FillMandatoryFee',
+    				async:true,
+    				success: function(result){
+    					var item = $.parseJSON(result);
+                    	$.each(item,function(key,val){
+    						$('#feemainBody').append('<tr data-type="fee"><td>'+val.fee+'</td><td class="amo">'+val.amount+'</td></tr>')	                		
+                    	
+                    	})
+                    	$('#feemainBody').append('<tr class="totamount" data-type="total" style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px;"><td>Total Amount: </td><td style="text-align:left;font-weight: bold" class="TotalAmount">0.00</td></tr>')	           
+                    	
+                    	
+
+                         
+    				},
+                    error: function (response) {
+                        swal("Error encountered while accessing the data", "Please try again", "error");
+                    }
+
+    			});
+                
+                
+        	
 
 			});
 		</script>
@@ -685,7 +940,7 @@
                	</section>
             </div>
             
-            <div class="col-sm-12">
+            <div class="col-lg-8">
 	        	<section class="panel">
 	         		<header class="panel-heading" >
 	            		Curriculum Subjects 
@@ -721,6 +976,36 @@
 			       	</div>
 		 	</section>
 	       </div>
+	       
+	 
+	        <div class="col-lg-4">
+	        	<section class="panel">
+	           		<header class="panel-heading" style="">
+	              	 		Breakdown of Tuition and Miscellaneous Fees <span class="tools pull-right">
+		            <a href="javascript:;" class="fa fa-chevron-down"></a>
+		            </span>
+		            </header>
+					<div class="panel-body" id="feeTable">
+		            	<table class="table table-striped table-hover table-bordered" id="itemsTbl">
+	                          	<thead>
+	                                     <tr>
+	                                         <th style="width: 200px">Fee</th>
+	                                         <th style="width: 100px">Amount</th>
+	                                     </tr>
+	                                 </thead>
+	                                 <tbody id="feemainBody">
+	                                 	
+	                                 </tbody>
+	                          </table>
+		            </div>
+	         		<div class="row" style="margin-left:10px">
+	          			<div class="col-lg-12">
+	          				<label>Full Payment</label> <input type="radio" id="fullpayment" checked="" name="payment">	
+	          				<label>Two Payment</label>  <input type="radio" id="twopayment" name="payment">
+	          			</div>
+	         		</div>
+				</section>
+	        </div>
 
          
          <!-- Modal -->

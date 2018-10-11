@@ -66,11 +66,11 @@ public class CurriculumViewItemController extends HttpServlet {
 		String sql = "";
 		String sql2 = "";
 		
-		sql = "SELECT Subject_Code,Subject_Description,Subject_Credited_Units FROM `r_curriculumitem` INNER JOIN r_subject ON CurriculumItem_SubjectID = Subject_ID INNER JOIN r_curriculum ON Curriculum_ID = CurriculumItem_CurriculumID WHERE Subject_Display_Stat = 'Active' and CurriculumItem_Display_Status = 'Active' and Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"' Order by Subject_Group asc";
+		sql = "SELECT Subject_Code,Subject_Description,Subject_Credited_Units FROM `r_curriculumitem` INNER JOIN r_subject ON CurriculumItem_SubjectID = Subject_ID INNER JOIN r_curriculum ON Curriculum_ID = CurriculumItem_CurriculumID inner join r_curriculumyear on CurriculumYear_ID = Curriculum_CurriculumYearID WHERE Subject_Display_Stat = 'Active' and CurriculumItem_Display_Status = 'Active' and Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"' Order by Subject_Group asc";
 		JSONArray arr = new JSONArray();
 		JSONArray grouplist = new JSONArray();
 		PrintWriter out = response.getWriter();	
-//		out.print(sql+"\n");
+		//out.print(sql+"\n");
 
 		
 		try {

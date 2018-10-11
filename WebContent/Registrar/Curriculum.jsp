@@ -30,10 +30,13 @@
 	String feefirstCol2 = "";
 	String secCol = "";
 	String thirdCol = "";
+	String curyeardesc = "";
 	Statement stmnt = conn.createStatement();
-	ResultSet rs = stmnt.executeQuery("Select * from r_Curriculum inner join r_semester on Curriculum_SemesterID = Semester_ID inner join r_course on Curriculum_CourseID = Course_ID ");
+	ResultSet rs = stmnt.executeQuery("Select * from r_Curriculum inner join r_curriculumyear on Curriculum_CurriculumYearID = CurriculumYear_ID inner join r_semester on Curriculum_SemesterID = Semester_ID inner join r_course on Curriculum_CourseID = Course_ID ");
 		while(rs.next()){ 
-			tablebody += "<tr><td>" + ec.decrypt(ec.key, ec.initVector, rs.getString("Curriculum_Code"))+ "</td><td>"+rs.getString("Curriculum_YearLevel")+"</td><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Description"))+"</td><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Description"))+"</td><td>"; 
+			curyeardesc = ec.decrypt(ec.key, ec.initVector, rs.getString("CurriculumYear_Description"));
+			
+			tablebody += "<tr><td>" + ec.decrypt(ec.key, ec.initVector, rs.getString("Curriculum_Code"))+ "</td><td>"+curyeardesc+"</td><td>"+rs.getString("Curriculum_YearLevel")+"</td><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Description"))+"</td><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Description"))+"</td><td>"; 
 			if(rs.getString("Curriculum_Display_Status").equals("Active"))
 //				tablebody += "<center> <a class='btn btn-info view' href='javascript:;'><i class='fa fa-eye'></i></a> <a class='btn btn-success edit' data-toggle='modal' href='#CurriculumEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 //				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#CurriculumEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info fee' data-toggle='modal' href='#FeeEdit'><i class='fa fa-money'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
@@ -281,11 +284,12 @@
                                  <table class="table table-striped table-hover table-bordered" id="editable-sample">
                                   <thead>
                                       <tr>
-                                          <th style="width: 20%">Code</th>
-                                          <th style="width: 20%">Year Level</th>
-                                          <th style="width: 20%">Course</th>
-                                          <th style="width: 25$">Semester</th>
-                                          <th style="width: 20%">Action</th>  
+                                          <th style="width: 15%">Code</th>
+                                          <th style="width: 15%">Curriculum Year</th>
+                                          <th style="width: 15%">Year Level</th>
+                                          <th style="width: 25%">Course</th>
+                                          <th style="width: 15$">Semester</th>
+                                          <th style="width: 15%">Action</th>  
                                       </tr>
                                   </thead>
                                   <tbody>    

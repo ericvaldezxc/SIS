@@ -105,7 +105,7 @@ public class GetMaxUnit extends HttpServlet {
 			
 			
 			
-			sql = "Select * from r_curriculum where Curriculum_CourseID = '"+course+"' and Curriculum_YearLevel = '"+yearlvl+"' and Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` WHERE Semester_Active_Flag = 'Active')  ";
+			sql = "Select * from r_curriculum where Curriculum_CourseID = '"+course+"' and Curriculum_YearLevel = '"+yearlvl+"' and Curriculum_CurriculumYearID = '"+curyear+"' and Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` WHERE Semester_Active_Flag = 'Active')  ";
 			
 			JSONArray arr = new JSONArray();
 			PrintWriter out = response.getWriter();	

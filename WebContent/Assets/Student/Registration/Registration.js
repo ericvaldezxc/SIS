@@ -16,6 +16,7 @@ var conTxt = '';
 var emailTxt = '';
 var latid='';
 
+
 var EditableTable = function () {
 
     return {
@@ -84,6 +85,7 @@ var EditableTable = function () {
                     }
                 }
             });
+            
 
 
             
@@ -126,6 +128,10 @@ var EditableTable = function () {
 //            });
             var totunit = 0;
             var tottuitionunit = 0;
+            
+            
+        	
+            
             
             function fillcurriculum(){
             	totunit = 0
@@ -197,32 +203,10 @@ var EditableTable = function () {
 				
 			})
 			
+			
 			//mandataory fee
 			//sub fee
-			//tui 
-			function fillmandatoryfee(){
-    			$.ajax({
-					type:'POST',
-					data:{},
-					url: 'Controller/Registrar/Admission/FillMandatoryFee',
-					async:true,
-					success: function(result){
-						var item = $.parseJSON(result);
-	                	$.each(item,function(key,val){
-							$('#feemainBody').append('<tr><td>'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')	                		
-	                	
-	                	})
-	                	fillcoursefee()
-	                	
-
-                         
-					},
-                    error: function (response) {
-                        swal("Error encountered while accessing the data", "Please try again", "error");
-                    }
-
-				});
-        	}
+		
         	
 			function fillcoursefee(){
 				var cou = $('#courseDrp').val()
@@ -233,7 +217,7 @@ var EditableTable = function () {
 					success: function(result){
 						var item = $.parseJSON(result);
 	                	$.each(item,function(key,val){
-							$('#feemainBody').append('<tr><td>'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')
+							$('#feemainBody').append('<tr data-type="fee"><td>'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')
 	                		
 	                	})
 	                	
@@ -261,6 +245,11 @@ var EditableTable = function () {
 					
 				})
 				
+				$('#feemainBody  tr.discount').each(function(key,val){
+					$(this).remove();
+					
+				})
+				
 				$('#mainBody  tr ').each(function(key,val){
 					var sub = $(this).find('.codeText').html()
 					var stat = $(this).find('.ckbox').is(':checked');
@@ -269,11 +258,11 @@ var EditableTable = function () {
 						$.ajax({
 							type:'POST',
 							data:{subj:sub},
-							url: 'Controller/Registrar/Admission/FillSubjectFee',
+							url: 'Controller/Student/Registration/FillSubjectFee',
 							success: function(result){
 								var item = $.parseJSON(result);
 			                	$.each(item,function(key,val){
-									$('#feemainBody').append('<tr class="subj"><td>'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')	                		
+									$('#feemainBody').append('<tr data-type="fee" class="subj"><td>'+val.fee+'</td><td class="amount">'+val.amount+'</td></tr>')	                		
 			                		
 			                	})
 
@@ -292,7 +281,7 @@ var EditableTable = function () {
 					$.ajax({
 						type:'POST',
 						data:{},
-						url: 'Controller/Registrar/Admission/GetTuitionUnit',
+						url: 'Controller/Student/Registration/GetTuitionUnit',
 						success: function(result){
 							var acadamo = parseFloat(tottuitionunit) * parseFloat(result);
 							$.ajax({
@@ -300,7 +289,7 @@ var EditableTable = function () {
 		    					data:{Amount: acadamo},
 		    					url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
 		    					success: function(result2){
-									$('#feemainBody').append('<tr class="subj"><td>Academic ('+tottuitionunit+' Tuition Unit)</td><td class="amount">'+result2+'</td></tr>')	   
+									$('#feemainBody').append('<tr data-type="fee" class="subj"><td>Academic ('+tottuitionunit+' Tuition Unit)</td><td class="amount">'+result2+'</td></tr>')	   
 									gettotamountfee()
 		 
 		                             
@@ -337,7 +326,7 @@ var EditableTable = function () {
 					data:{Amount: totamo},
 					url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
 					success: function(result){
-						$('#feemainBody').append('<tr class="totamount" style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px;"><td  >Total Amount: </td><td style="text-align:left;font-weight: bold" class="TotalAmount">'+result+'</td></tr>')
+						$('#feemainBody').append('<tr class="totamount" data-type="total" style="text-align:right;font-weight: bold;padding-top:10px;padding-bottom:10px;"><td  >Total Amount: </td><td style="text-align:left;font-weight: bold" class="TotalAmount">'+result+'</td></tr>')
 	                	
 
                          

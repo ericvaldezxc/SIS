@@ -45,6 +45,7 @@
       	<script>
 			$(document).ready(function (){
 				EditableTable.init();
+				$('#hidethis').hide()
 				$("#typeDrp").select2( {width: '50%' });
 				$("#campusDrp").select2( {width: '80%' });
 				$("#sectionDrp").select2( {width: '80%' });
@@ -191,7 +192,7 @@
             </span>
             </header>
             <div class="panel-body" style="align:center">
-            	<div class="row">
+            	<div class="row" id="hidethis">
             		<div class="col-lg-6">
                    		<h5 style="">Type</h5>
                     	<select class="populate" id="typeDrp" >

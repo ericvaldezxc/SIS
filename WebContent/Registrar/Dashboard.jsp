@@ -34,10 +34,104 @@
 %>    
 
 <t:Registrar title="Dashboard" from="Dashboard" to="">
+	<jsp:attribute name="myscript"> 
+		<script>
+			$(document).ready(function(){
+				$.ajax({
+					type:'POST',
+					data:{},
+					url: 'Controller/Registrar/Dashboard/Student',
+					dataType: 'json',
+					success: function(data){
+						var head = []
+						var firstseries = []
+						var firstseriesbody = []
+						var firstseriesfinalbody = []
+						
+						$.each(data, function(key, val) {
+							head.push({ name : val.year, y : parseFloat(val.total) , drilldown : val.year })
+							
+							$.each(val.body, function(key2, val2) {
+								firstseriesbody.push(val2.course,parseFloat(val2.cou));
+								
+							})
+							firstseriesfinalbody.push(firstseriesbody)
+							firstseries.push({ name : val.year, id : val.year, data : firstseriesfinalbody })
+							
+						})
+						console.log(JSON.stringify(head))
+						console.log(JSON.stringify(firstseries))
+						
+						
+						Highcharts.chart('student', {
+						    chart: {
+						        type: 'column'
+						    },
+						    title: {
+						        text: 'Student'
+						    },
+						    subtitle: {
+						        text: 'Click the columns to drilldown'
+						    },
+						    xAxis: {
+						        type: 'category'
+						    },
+						    yAxis: {
+						        title: {
+						            text: 'Number of Student'
+						        }
 
+						    },
+						    legend: {
+						        enabled: false
+						    },
+						    plotOptions: {
+						        series: {
+						            borderWidth: 0,
+						            dataLabels: {
+						                enabled: true,
+						                format: '{point.y:0f}'
+						            }
+						        }
+						    },
+
+						    tooltip: {
+						        headerFormat: '<span style="font-size:11px">{point.name} {series.name}s</span><br>',
+						        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:0f} Student</b> of total<br/>'
+						    },
+
+						    "series": [
+						        {
+						            "name": "Student",
+						            "colorByPoint": true,
+						            "data":head
+						        }
+						    ],
+						    "drilldown": {
+						        "series": firstseries
+						    }
+						});
+						
+	                	
+
+	                     
+					},
+	                error: function (response) {
+	                    swal("Error encountered while accessing the data", "Please try again", "error");
+	                }
+
+				});
+
+			})
+		</script>
+	</jsp:attribute>
     
 	<jsp:attribute name="customImportedScript">      
 		<script type="text/javascript" src="../Assets/js/jquery-1.8.3.min.js"></script>
+	    <script src="../Assets/js/highcharts.js"></script>
+	    <script src="../Assets/js/data.js"></script>
+	    <script src="../Assets/js/drilldown.js"></script>
+	    <script src="../Assets/js/exporting.js"></script>
     </jsp:attribute>    
     
     <jsp:body>
@@ -60,6 +154,13 @@
 	            </div>
 	        </div>
     	</div>
+    	<div class="col-md-12">
+            <section class="panel">
+                <div class="panel-body">
+                    <div id="student" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                </div>
+            </section>
+        </div> 
 
     </jsp:body>
 
