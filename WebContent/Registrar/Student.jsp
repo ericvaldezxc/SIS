@@ -29,7 +29,7 @@
 	String status = "";	
 	String couid = "";
 	Statement stmnt = conn.createStatement();
-	ResultSet rs = stmnt.executeQuery("SELECT CurriculumYear_Description,CurriculumYear_Code,Student_Account_CurriculumYearID,Course_Code,Student_Account_CourseID,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Student_Account_Student_Number,case when Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' then 'Enrolled' else 'Not Enrolled' end as status,IF((SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'))=0,'Not Enrolled','Enrolled') as enrolledba,ifnull((select Returnee_ID from t_returnee where Returnee_Display_Status = 'Active'),'Not Returnee') as retid FROM `t_student_taken_curriculum_subject`  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join r_section on Student_Account_SectionID = Section_ID inner join r_course on Student_Account_CourseID = Course_ID inner join r_curriculumyear on CurriculumYear_ID = Student_Account_CurriculumYearID  group by Student_Taken_Curriculum_Subject_StudentAccountID");
+	ResultSet rs = stmnt.executeQuery("SELECT CurriculumYear_Description,CurriculumYear_Code,Student_Account_CurriculumYearID,Course_Code,Student_Account_CourseID,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Student_Account_Student_Number,case when Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' then 'Enrolled' else 'Not Enrolled' end as status,IF((SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'))=0,'Not Enrolled','Enrolled') as enrolledba,ifnull((select Returnee_ID from t_returnee where Returnee_Display_Status = 'Active' and Returnee_StudentAccountID =  Student_Account_ID ),'Not Returnee') as retid FROM `t_student_taken_curriculum_subject`  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join r_section on Student_Account_SectionID = Section_ID inner join r_course on Student_Account_CourseID = Course_ID inner join r_curriculumyear on CurriculumYear_ID = Student_Account_CurriculumYearID  group by Student_Taken_Curriculum_Subject_StudentAccountID");
 	while(rs.next()){
 		fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
 		mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
@@ -45,7 +45,6 @@
 		if(enrollstat.equals("Enrolled")){
 			printregi = "<a class='btn printregi' title='Print Registration Card' style='background-color:#0080ff;color:white'><i class='fa fa-print'></i></a>";
 		}
-		
 		
 		if(retid.equals("Not Returnee")){
 			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' href='#Profile'><i class='fa fa-eye'></i></a> <a class='btn pedit' style='background-color:#33cc33;color:white' style='color:white' data-toggle='modal' href='#EditProfile'><i class='fa fa-edit'></i></a>  <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' href='#curriculum'><i class='fa fa-flag'></i></a> "+printregi+" <a class='btn btn-danger addreturnee' title='Returnee'><i class='fa fa-rotate-right'></i></a> </td></tr>"; 
@@ -75,6 +74,8 @@
 	
 	pageContext.setAttribute("tablebody", tablebody);
 	pageContext.setAttribute("curDrp", curDrp);
+	pageContext.setAttribute("courses", courseDrp);
+		
 	pageContext.setAttribute("courseDrp", "");	
 	pageContext.setAttribute("campusDrp", campusDrp);	
 	pageContext.setAttribute("shiftcourses", shiftcourses);	
@@ -96,6 +97,133 @@
 				$("select#returneeCurYearDrp").select2();
 				$("select#shiftsectionDrp").select2();	
 				$("select#retsectionDrp").select2();	
+				$("select#fstatusDrp").select2();
+				$("select#fcourseDrp").select2();
+				
+				$('#fstatusDrp').on('change',function(){
+					fillstud()
+				})
+				$('#fcourseDrp').on('change',function(){
+					fillstud()
+				})
+				function fillstud(){
+					var table = $('#editable-sample').DataTable();
+	                jQuery(table.fnGetNodes()).each(function () {
+	                	table.fnDeleteRow(0);
+	                });
+	                
+	                $.ajax({
+    					type:'POST',
+    					data:{status: $('#fstatusDrp option:selected').val(),course: $('#fcourseDrp option:selected').val()},
+    					dataType: "json",
+    					url: "Controller/Registrar/Student/GetStudent",
+    					success: function(result){
+    						$(result).each(function(key , val){
+    		                    var aiNew = table.fnAddData([val.Number ,val.Name ,val.CAS ,val.cur,val.status ,val.button ]);	
+    		                	var nRow = table.fnGetNodes(aiNew[0]);
+    		    				
+    		    			})
+    						
+                             
+    					},
+                        error: function (response) {
+                            swal("Error encountered while accessing the data", "Please try again", "error");
+                        }
+    				});
+				}
+				
+				$('#btnprint').click(function(){
+					var items = [];
+                   	var code = $('#drporg option:selected').val();
+                  	var rows = $('#editable-sample').dataTable()
+                       .$('tr', {
+                           "filter": "applied"
+                       });
+                  	var studbody = ""
+	                $(rows).each(function(index, el) {
+	                	var studnum = $(this).closest('tr').children('td:eq(0)').text();
+	                	var name = $(this).closest('tr').children('td:eq(1)').text();
+	                	var cas = $(this).closest('tr').children('td:eq(2)').text();
+	                	var cur = $(this).closest('tr').children('td:eq(3)').text();
+	                	var stat = $(this).closest('tr').children('td:eq(4)').text();
+	                    items.push({studnum:studnum,name:name,cas:cas,cur:cur,stat:stat});
+	                    studbody += "<tr><td>"+studnum+"</td><td>"+name+"</td><td>"+cas+"</td><td>"+cur+"</td><td>"+stat+"</td></tr>"
+	                    
+	
+	                })
+	                console.log(items)
+	                var sec = $('#fcourseDrp option:selected').text()
+	                var stat =  $('#fstatusDrp option:selected').text()
+	                
+	                
+	                var pdf = new jsPDF('p', 'pt', 'letter');
+	                var breaker = '_______________________________________________________________________'
+
+	                pdf.setFontType("normal");
+					pdf.setFontSize(14.5);
+					pdf.text(15,15,breaker)
+
+					pdf.setFontType("bold");
+					pdf.setFontSize(13);
+					pdf.text(15,40,"Quezon City Polytechnic University")
+
+					pdf.setFontType("italic");
+					pdf.setFontSize(7);
+					var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 230);
+					pdf.text(15,55,addre)
+					
+					pdf.setFontType("normal");
+					pdf.setFontSize(14.5);
+					pdf.text(15,70,breaker)
+					
+					pdf.setFontType("italic");
+					pdf.setFontSize(14);
+					pdf.text(270,110,"Student List")
+					
+					pdf.setFontType("italic");
+					pdf.setFontSize(11);
+					pdf.text(15,130,"Section:")
+					
+					pdf.setFontType("italic");
+					pdf.setFontSize(11);
+					pdf.text(55,130,sec)
+
+					pdf.setFontType("italic");
+					pdf.setFontSize(11);
+					pdf.text(15,150,"Status:")
+					
+					pdf.setFontType("italic");
+					pdf.setFontSize(11);
+					pdf.text(50,150,stat)
+					
+					specialElementHandlers = {
+						'#bypassme': function(element, renderer){
+							return true
+						}
+					}
+					
+					studbody = "<thead><th>Student Number</th><th>Student Name</th><th>Course and Section</th><th>Curriculum</th><th>Status</th></thead><tbody>"+studbody+"</tbody>"
+					$('#myHiddenTable').html(studbody)
+					console.log(studbody)
+					var res = pdf.autoTableHtmlToJson(document.getElementById("myHiddenTable"),true);
+				    pdf.autoTable(res.columns, res.data, {
+				      startY: 170
+				    });
+
+				   	
+					
+	                
+	                
+	                var myImage = new Image();
+					myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
+					myImage.onload = function(){
+						pdf.addImage(myImage , 'png', 520, 20, 50, 50);
+						 var uri = pdf.output('dataurlstring');
+				  	   	 openDataUriWindow(uri);
+				  	};
+					
+					
+				})
 				
 				var latstudnum = ''
 				var globsub = ''
@@ -852,7 +980,7 @@
  						
 	 					$.ajax({
 		   					type:'POST',
-		   					data:{curcode: retglobcourse,curyeardesc:curyeardesc},
+		   					data:{studentnumber: retglobstudnum,curcode: retglobcourse,curyeardesc:curyeardesc},
 		   					url:'Controller/Registrar/Student/ReturneeNewCur',
 		   					success: function(result2){
 		   						var item = $.parseJSON(result2)
@@ -1817,14 +1945,19 @@
     </jsp:attribute>
     
 	<jsp:attribute name="customImportedScript">      
+	
 		<script src="../Assets/js/html2canvas.js"></script>
 		<script src="../Assets/js/jspdf.js"></script>
+		
+		<script src="../Assets/js/jspdf.debug.js"></script>
+		<script src="../Assets/js/jspdf.plugin.autotable.js"></script>
 		<script type="text/javascript" src="../Assets/js/jquery-1.8.3.min.js"></script>
 		<script type="text/javascript" src="../Assets/js/jquery-ui.min.js"></script>
     </jsp:attribute>    
     
     <jsp:body>
     	<script src="../Assets/Registrar/Student/Student.js"></script>
+    	
     
         <div class="row">
                 <div class="col-sm-12">
@@ -1833,10 +1966,30 @@
                                 <div class="adv-table editable-table ">
                                     <div class="clearfix">
                                         <div class="btn-group pull-right">
-                                            <button class="btn btn-default " id="btnprint">Print <i class="fa fa-print"></i></button>
+                                            <button class="btn btn-success " id="btnprint">Print <i class="fa fa-print"></i></button>
                                         </div>
                                     </div>
                                     <div class="space15"></div>
+                                    <div class="col-lg-6'">
+	                                    Status
+	                                    <br/>
+	                                    <select id="fstatusDrp" class="populate" style="width:40%">
+				                        	<option value="Both">Both</option>
+				                        	<option value="Enrolled">Enrolled</option>
+				                        	<option value="Not Enrolled">Not Enrolled</option>
+				                        </select>
+                                    </div>
+                                    <div class="col-lg-6'">
+	                                    Course
+	                                    <br/>
+	                                    <select id="fcourseDrp" class="populate" style="width:40%">
+				                        	<option value="All">All</option>
+				                        	${courses}
+				                        </select>
+                                    </div>
+                                    
+                                    <table class="hidden" id="myHiddenTable">
+                                    </table>
                                     
                                     <table class="table table-striped table-hover table-bordered" id="editable-sample">
 	                                    <thead>

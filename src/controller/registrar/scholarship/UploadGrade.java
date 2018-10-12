@@ -100,7 +100,7 @@ public class UploadGrade extends HttpServlet {
 				while(rs.next()){
 					studid = rs.getString("Student_Account_ID");
 					yearlvl = rs.getString("Student_Account_Year");
-					
+					balance = rs.getString("Payment_Balance"); 
 					
 				}
 				
@@ -123,11 +123,16 @@ public class UploadGrade extends HttpServlet {
 					
 					
 				}
-				double scholarpayment = (Double.parseDouble(discount) / Double.parseDouble("100.00")) ;//* Double.parseDouble(efee) ;
+				double scholarpayment = 0;
+				scholarpayment = (Double.parseDouble(discount) / Double.parseDouble("100.00")) ;//* Double.parseDouble(efee) ;
 				scholarpayment = scholarpayment * Double.parseDouble(efee);
 				out.print(scholarpayment+"-"+efee);
-				double rembal = Double.parseDouble(efee)  - scholarpayment;
-				
+				double rembal = 0 ;
+				rembal = Double.parseDouble(efee)  - scholarpayment;
+
+				double rembal2 = 0 ;
+				rembal2 = Double.parseDouble(balance)  - scholarpayment;
+
 				sql = "select * from t_payment where Payment_Student_Account_ID = '"+studid+"' ";
 				rs = stmnt.executeQuery(sql);
 				String curbal = "";
@@ -136,9 +141,10 @@ public class UploadGrade extends HttpServlet {
 					
 				}
 				
-				double finalbal = Double.parseDouble(curbal) - scholarpayment;
+				double finalbal = 0;
+				finalbal = Double.parseDouble(curbal) - scholarpayment;
 				
-				sql = "insert into t_payable_history (Payable_History_Student_Account_ID,Payable_History_Semester_ID,Payable_History_AcademicYearID,Payable_History_Year_Level,Payable_History_Description,Payable_History_Type,Payable_History_Amount,Payable_History_Balance,Payable_History_ScholarshipID) values ((SELECT Student_Account_ID FROM t_student_account inner join t_payment on Payment_Student_Account_ID = Student_Account_ID WHERE  Student_Account_Student_Number = '"+studnum+"'),(SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active'),(SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'),(SELECT Student_Account_Year FROM t_student_account inner join t_payment on Payment_Student_Account_ID = Student_Account_ID WHERE  Student_Account_Student_Number = '"+studnum+"'),'SCHOLARSHIP PAYMENT','Payment','"+scholarpayment+"','"+rembal+"','"+schoid+"')   ";
+				sql = "insert into t_payable_history (Payable_History_Student_Account_ID,Payable_History_Semester_ID,Payable_History_AcademicYearID,Payable_History_Year_Level,Payable_History_Description,Payable_History_Type,Payable_History_Amount,Payable_History_Balance,Payable_History_ScholarshipID) values ((SELECT Student_Account_ID FROM t_student_account inner join t_payment on Payment_Student_Account_ID = Student_Account_ID WHERE  Student_Account_Student_Number = '"+studnum+"'),(SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active'),(SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'),(SELECT Student_Account_Year FROM t_student_account inner join t_payment on Payment_Student_Account_ID = Student_Account_ID WHERE  Student_Account_Student_Number = '"+studnum+"'),'SCHOLARSHIP PAYMENT','Payment','"+scholarpayment+"','"+rembal2+"','"+schoid+"')   ";
 				out.print(sql+"\n");
 				stmnt.execute(sql);
 				
@@ -159,7 +165,9 @@ public class UploadGrade extends HttpServlet {
 					getcurbal = rs.getString("Scholar_Account_Balance");
 					
 				}
-				double newschobal = scholarpayment + Double.parseDouble(getcurbal);
+				out.print(scholarpayment);
+				double newschobal = 0;
+				newschobal = scholarpayment + Double.parseDouble(getcurbal);
 				sql = "update t_scholar_account set Scholar_Account_Balance = '"+newschobal+"' where Scholar_Account_ScholarshipID = '"+schoid+"'  ";
 				out.print(sql+"\n");
 				stmnt.execute(sql);

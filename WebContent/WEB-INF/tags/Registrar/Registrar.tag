@@ -183,10 +183,27 @@
                     	<li class="" id="GradesBtn"><a href="Grade.jsp">Grade</a></li>
                     </ul>
                 </li>
+                <li class="sub-menu">
+                    <a href="javascript:;" class="" id="CEBtn" >
+                        <i class="fa fa-crosshairs"></i>
+                        <span>Cross Enrollee</span>
+                    </a>
+                    <ul class="sub">
+                    	<li class="" id="CreditSubjectBtn"><a href="CreditSubject.jsp">Credit Subject</a></li>
+                    	<!-- <li class="" id="EnrollStudentBtn"><a href="CrossEnrollStudent.jsp">Cross Enroll Student</a></li>  -->
+                    </ul>
+                </li>
+                
                 <li>
 	                <a href="Scholarship.jsp" class="" id="ScholarBtn">
 	                    <i class="fa fa-group"></i>
 	                    <span>Scholarship</span>
+	                </a>
+           		</li>
+           		<li>
+	                <a href="AcademicAwards.jsp" class="" id="AcadBtn">
+	                    <i class="fa fa-group"></i>
+	                    <span>Academic Award</span>
 	                </a>
            		</li>
                 <li>
@@ -408,6 +425,13 @@
 			$("#GuardBtn").addClass("active");
  		else if(title == "Scholarship" ) 
 			$("#ScholarBtn").addClass("active");
+ 		else if(title == "Credit Subject" ) 
+			$("#CreditSubjectBtn").addClass("active");
+ 		else if(title == "Cross Enroll Student" ) 
+			$("#EnrollStudentBtn").addClass("active");
+ 		else if(title == "Academic Awards" ) 
+			$("#AcadBtn").addClass("active");
+		
 		
 		
 		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering' || title == 'Registration Opening' || title == 'Academic Year' || title == 'Semester') 
@@ -420,6 +444,8 @@
 			$('#GraduationBtn').click();
 		if(title == 'Faculty' || title == "Guard") 
 			$('#FacultyheadBtn').click();
+		if(title == 'Credit Subject' || title == "Cross Enroll Student") 
+			$('#CEBtn').click();
 				
 		$('#logoutBtn').click(function(){
     		$.ajax({

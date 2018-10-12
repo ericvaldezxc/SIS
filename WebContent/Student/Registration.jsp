@@ -322,6 +322,88 @@
 							  		, 'elementHandlers': specialElementHandlers
 							  	}
 							)
+							
+							
+							$.ajax({
+								type:'POST',
+								async:false,
+								url: 'Controller/Student/Registration/GetBreakdownFee',
+								success: function(result2){
+									var item = $.parseJSON(result2)
+									var totamount = 0
+									var sbody = '<table class="table table-striped table-hover table-bordered" id="itemsTbl"><thead><tr><th style="width: 200px">Description</th><th style="width:200px">Amount</th></tr></thead><tbody>'    
+									$.each(item, function (key, val) {
+										sbody += "<tr><td>"+val.desc+"</td><td>"+val.amount+"</td></tr>"
+										totamount = totamount + parseFloat(val.amount)
+										base += 30
+			                			
+			                		})
+//			                		alert(base)
+			                		sbody += "</tbody></table>"
+			                		pdf.fromHTML(
+									  	sbody // HTML string or DOM elem ref.
+									  	, margins.left // x coord
+									  	, base + 100 // y coord
+									  	, {
+									  		'width': margins.width // max width of content on PDF
+									  		, 'elementHandlers': specialElementHandlers
+									  	}
+									)
+									
+									pdf.setFontType("bold");
+									pdf.setFontSize(15);
+									pdf.text(25,base+100,"Breakdown of Tuition and Miscellaneous Fees")
+				
+				
+									pdf.fromHTML(
+									  	source // HTML string or DOM elem ref.
+									  	, margins.left // x coord
+									  	, base+120 // y coord
+									  	, {
+									  		'width': margins.width // max width of content on PDF
+									  		, 'elementHandlers': specialElementHandlers
+									  	}
+									)
+									
+									var finamount = 0
+									
+									
+									pdf.fromHTML(
+										  	"<h2> AMOUNT DUE </h2>" // HTML string or DOM elem ref.
+										  	, 310 // x coord
+										  	, base+250 // y coord
+										  	, {
+										  		'width': margins.width // max width of content on PDF
+										  		, 'elementHandlers': specialElementHandlers
+										  	}
+										)
+		 								$.ajax({
+		    								type:'POST',
+		    								data:{Amount: totamount},
+		    								url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
+		    								success: function(result3){
+												pdf.fromHTML(
+												  	"<h2> "+result3+" </h2>" // HTML string or DOM elem ref.
+												  	, 450 // x coord
+												  	, base+250 // y coord
+												  	, {
+												  		'width': margins.width // max width of content on PDF
+												  		, 'elementHandlers': specialElementHandlers
+												  	}
+												)
+		    								},
+		    			                    error: function (response) {
+		    			                        swal("Error encountered while accessing the data", "Please try again", "error");
+		    			                    }
+		    							});										
+										
+			                		
+			                         
+								},
+			                    error: function (response) {
+			                        swal("Error encountered while accessing the data", "Please try again", "error");
+			                    }
+							});
 	                		
 	                         
 						},
@@ -330,57 +412,14 @@
 	                    }
 					});
 					
+				
+					
+					/*
 					pdf.setFontType("bold");
 					pdf.setFontSize(14);
 					pdf.text(20,base+50,breaker)
+					*/
 
-	        		pdf.setFontType("bold");
-					pdf.setFontSize(15);
-					pdf.text(25,base+70,"Breakdown of Tuition and Miscellaneous Fees")
-
-
-					pdf.fromHTML(
-					  	source // HTML string or DOM elem ref.
-					  	, margins.left // x coord
-					  	, base+90 // y coord
-					  	, {
-					  		'width': margins.width // max width of content on PDF
-					  		, 'elementHandlers': specialElementHandlers
-					  	}
-					  	//,
-					  	//function (dispose) {
-					  	  // dispose: object with X, Y of the last line add to the PDF
-					  	  //          this allow the insertion of new lines after html
-//					  	   pdf.output('dataurlnewwindow');
-					  		
-					  		
-//					  	   window.open(pdf.output('bloburl'))
-					        //pdf.Open('Voucher.pdf');
-					       
-					      //}
-					)
-					
-					var finamount = 0
-					
-					
-					pdf.fromHTML(
-						  	"<h2> AMOUNT DUE </h2>" // HTML string or DOM elem ref.
-						  	, 310 // x coord
-						  	, base+250 // y coord
-						  	, {
-						  		'width': margins.width // max width of content on PDF
-						  		, 'elementHandlers': specialElementHandlers
-						  	}
-						)
-						pdf.fromHTML(
-						  	"<h2> "+$('#feemainBody .TotalAmount').html()+" </h2>" // HTML string or DOM elem ref.
-						  	, 450 // x coord
-						  	, base+250 // y coord
-						  	, {
-						  		'width': margins.width // max width of content on PDF
-						  		, 'elementHandlers': specialElementHandlers
-						  	}
-						)
 					
 					  
 
@@ -427,7 +466,7 @@
 						        	<div class="panel-body">
 						            	<div class="row" style="text-align:center;color:#B33A3A">
 							            	<h4>You are already Enrolled for this current semester</h4>
-							            	<!--  <button class="btn btn-success " id="btnprint">Print Voucher <i class="fa fa-print"></i></button> -->
+							            	  <button class="btn btn-success " id="btnprint">Print Voucher <i class="fa fa-print"></i></button> 
 				 		            	</div>
 						        	</div>
 						   		</section>

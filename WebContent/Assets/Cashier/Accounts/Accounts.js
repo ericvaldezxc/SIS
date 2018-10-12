@@ -365,6 +365,72 @@ var EditableTable = function () {
 
                 
             });
+            
+            $('#editable-sample').on('click','a.offset', function (e) {
+                e.preventDefault();
+                $('#amountTxt').val('')
+                var studentNumber = $(this).data("student-number")
+                finalstudentNumber = studentNumber
+                var studentName = $(this).data("student-name")
+                finalstudentName = studentName
+                var studentBalance = $(this).data("student-balance") 
+                finalstudentBalance = studentBalance.replace(",", "");
+                
+                swal({
+
+                    title: "Are you sure",
+                    text: "Do you want to offset this account?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#228B22',
+                    confirmButtonText: 'Yes!',
+                    cancelButtonText: "No!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                    	$.ajax({
+                            type: 'post',
+                            url: 'Controller/Cashier/Account/Offset',
+                            data: {
+                            	amount: finalstudentBalance, studentNumber: studentNumber
+                            },
+                            success: function (response) {
+                                swal({
+
+                                        title: "Record Updated!",
+                                        text: "The data is successfully Updated!",
+                                        type: "success",
+                                        confirmButtonColor: '#86CCEB',
+                                        confirmButtonText: 'Okay',
+                                        closeOnConfirm: false
+                                    },
+                                    function (isConfirm) {
+                                        if (isConfirm) {
+                                            window.location.reload();
+
+                                        } else
+                                            swal("Cancelled", "The transaction is cancelled", "error");
+
+                                    });
+                            },
+                            error: function (response) {
+                                swal("Error encountered while adding data", "Please try again", "error");
+                            }
+
+                        });
+
+                    } else
+                        swal("Cancelled", "The transaction is cancelled", "error");
+
+                });
+                
+                
+                
+
+                
+            });
         }
 
     };

@@ -20,7 +20,7 @@
 	String lname = "";	
 
 	Statement stmnt = conn.createStatement();
-	ResultSet rs = stmnt.executeQuery("SELECT *,FORMAT(Payment_Balance,2) AS AMOU  FROM `t_payment` inner join t_student_account on Payment_Student_Account_ID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID WHERE Payment_Display_Status = 'Active' and Student_Account_Display_Status = 'Active' and Student_Profile_Display_Status = 'Active'");
+	ResultSet rs = stmnt.executeQuery("SELECT *,FORMAT(Payment_Balance,2) AS AMOU ,if(FORMAT(Payment_Balance,2) < 0 , 'Yes','No') as offset FROM `t_payment` inner join t_student_account on Payment_Student_Account_ID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID WHERE Payment_Display_Status = 'Active' and Student_Account_Display_Status = 'Active' and Student_Profile_Display_Status = 'Active'");
 		while(rs.next()){
 			fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
 			mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
@@ -29,8 +29,13 @@
 				fullname = lname + ", " + fname;
 			else	
 				fullname = lname + ", " + fname + " " +  mname;
+			String offsetstat = rs.getString("offset");
+			String offsetbtn = "";
+			if(offsetstat.equals("Yes")){
+				offsetbtn = "<a class='btn btn-info offset' data-student-name='"+fullname+"' data-student-number="+rs.getString("Student_Account_Student_Number")+" data-student-balance="+rs.getString("AMOU")+" ><i class='fa fa-reply'></i></a>";
+			}
 			tablebody += "<tr><td>" + rs.getString("Student_Account_Student_Number")+ "</td><td>"+fullname+"</td><td>"+rs.getString("AMOU")+"</td><td>"; 
-			tablebody += "<center> <a class='btn btn-success payment' data-toggle='modal' data-student-name='"+fullname+"' data-student-number="+rs.getString("Student_Account_Student_Number")+" data-student-balance="+rs.getString("AMOU")+" href='#Payment'><i class='fa fa-book'></i></a><center></td></tr>";
+			tablebody += "<center> <a class='btn btn-success payment' data-toggle='modal' data-student-name='"+fullname+"' data-student-number="+rs.getString("Student_Account_Student_Number")+" data-student-balance="+rs.getString("AMOU")+" href='#Payment'><i class='fa fa-book'></i></a> "+offsetbtn+" <center></td></tr>";
 			
 		}
 	pageContext.setAttribute("tablebody", tablebody);

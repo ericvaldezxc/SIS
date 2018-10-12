@@ -51,6 +51,7 @@ public class ReturneeNewCur extends HttpServlet {
 		response.setContentType("plain/text");
 		EncryptandDecrypt ec = new EncryptandDecrypt();
 		String curcode = request.getParameter("curcode");
+		String studentnumber = request.getParameter("studentnumber");
 		String curyeardesc = request.getParameter("curyeardesc");
 		curyeardesc = ec.encrypt(ec.key, ec.initVector,  curyeardesc);
 //		String semester = request.getParameter("semester");
@@ -94,9 +95,19 @@ public class ReturneeNewCur extends HttpServlet {
 				sem = rs.getString("Semester_ID");
 //			sem = ec.decrypt(ec.key, ec.initVector, sem);
 			
+			String curyearlvl = "";
+			sql = "SELECT * FROM `t_student_account` where Student_Account_Student_Number = '"+studentnumber+"'";
 			
-			sql = "SELECT * FROM `r_curriculumitem` inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  INNER JOIN r_curriculumyear ON CurriculumYear_ID = Curriculum_CurriculumYearID  INNER JOIN r_subject as t1 ON CurriculumItem_SubjectID = Subject_ID WHERE Curriculum_CourseID = (SELECT Course_ID from r_course where Course_Code = '"+ec.encrypt(ec.key, ec.initVector, curcode)+"') and Curriculum_SemesterID = '"+sem+"' and Curriculum_YearLevel = 'First Year' and CurriculumItem_Display_Status = 'Active' and (select CurriculumYear_ID from r_curriculumyear where CurriculumYear_Code = '"+curyeardesc+"') = CurriculumYear_ID  order by (select count(*) from r_subject as er where er.Subject_Group = t1.Subject_ID) asc ";
-			//out.print(sql+"\n");
+			rs = stmnt.executeQuery(sql);
+			while(rs.next())
+			{
+				curyearlvl = rs.getString("Student_Account_Year");
+			}
+			
+			
+			
+			sql = "SELECT * FROM `r_curriculumitem` inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  INNER JOIN r_curriculumyear ON CurriculumYear_ID = Curriculum_CurriculumYearID  INNER JOIN r_subject as t1 ON CurriculumItem_SubjectID = Subject_ID WHERE Curriculum_CourseID = (SELECT Course_ID from r_course where Course_Code = '"+ec.encrypt(ec.key, ec.initVector, curcode)+"') and Curriculum_SemesterID = '"+sem+"' and Curriculum_YearLevel = '"+curyearlvl+"'    and CurriculumItem_Display_Status = 'Active' and (select CurriculumYear_ID from r_curriculumyear where CurriculumYear_Code = '"+curyeardesc+"') = CurriculumYear_ID  order by (select count(*) from r_subject as er where er.Subject_Group = t1.Subject_ID) asc ";
+//			out.print(sql+"\n");
 			rs = stmnt.executeQuery(sql);
 			ResultSet rs2,rs3,rs4;
 			
@@ -129,7 +140,7 @@ public class ReturneeNewCur extends HttpServlet {
 			 
 				 
 				 
-				 sql2 = "SELECT Section_Code,Schedule_ID from r_curriculumitem inner join t_schedule on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID INNER JOIN r_curriculumyear ON CurriculumYear_ID = Curriculum_CurriculumYearID  inner join r_section on Schedule_SectionID = Section_ID where Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Schedule_AcademicYearID = '"+acadyear+"' and Schedule_Display_Status = 'Active' and CurriculumItem_SubjectID = '"+subid+"' and CurriculumItem_Display_Status = 'Active'  ";
+				 sql2 = "SELECT Section_Code,Schedule_ID from r_curriculumitem inner join t_schedule on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID INNER JOIN r_curriculumyear ON CurriculumYear_ID = Curriculum_CurriculumYearID  inner join r_section on Schedule_SectionID = Section_ID where Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Schedule_AcademicYearID = '"+acadyear+"' and Schedule_Display_Status = 'Active' and CurriculumItem_SubjectID = '"+subid+"' and CurriculumItem_Display_Status = 'Active' ";
 				 rs2 = stmnt2.executeQuery(sql2);
 				 //out.print(sql2+"\n");
 				 String schedid = "";

@@ -16,14 +16,63 @@
 	String tablebody = "";
 
 	Statement stmnt = conn.createStatement();
-	ResultSet rs = stmnt.executeQuery("Select * from r_scholarship");
+	Statement stmnt2 = conn.createStatement();
+	String fullname = "";	
+	String fname = "";	
+	String mname = "";	
+	String lname = "";	
+	String couid = "";
+	Fullname fn = new Fullname();	
+	String student = "";
+	ResultSet rs = stmnt.executeQuery("SELECT CurriculumYear_Description,CurriculumYear_Code,Student_Account_CurriculumYearID,Course_Code,Student_Account_CourseID,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Student_Account_Student_Number,case when Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' then 'Enrolled' else 'Not Enrolled' end as status,IF((SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'))=0,'Not Enrolled','Enrolled') as enrolledba,ifnull((select Returnee_ID from t_returnee where Returnee_Display_Status = 'Active' and Returnee_StudentAccountID =  Student_Account_ID ),'Not Returnee') as retid FROM `t_student_taken_curriculum_subject`  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join r_section on Student_Account_SectionID = Section_ID inner join r_course on Student_Account_CourseID = Course_ID inner join r_curriculumyear on CurriculumYear_ID = Student_Account_CurriculumYearID  and IF((SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'))=0,'Not Enrolled','Enrolled') = 'Enrolled' group by Student_Taken_Curriculum_Subject_StudentAccountID ");
 		while(rs.next()){
+			fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
+			mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
+			lname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Last_Name"));
+			couid = ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Code"));
+			fullname = fn.fullname(fname, mname, lname);
 			
-			tablebody += "<tr><td>" + rs.getString("Scholarship_Code")+ "</td><td>"+rs.getString("Scholarship_Description")+"</td><td>"+rs.getString("Scholarship_Percentage")+"%</td><td>"; 
-			if(rs.getString("Scholarship_Display_Status").equals("Active") )
-				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info scholars' data-toggle='modal' href='#scholarship'><i class='fa fa-upload'></i></a> <a class='btn btn-warning scholarhistory' data-toggle='modal' href='#scholarshiphistory'><i class='fa fa-book'></i></a> <a class='btn genex' style='background-color:#33cc33;color:white' title='Generate Excel' ><i class='fa fa-th-list'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
-			else
-				tablebody += "<center><a class='btn btn-info retrieve' href='javascript:;'><i class='fa fa-rotate-left'></i></a><center></td></tr>";
+			
+			String uname = rs.getString("Student_Account_Student_Number");
+			String sql2 = "SELECT Subject_Type,Schedule_ProfessorID ,Students_Grade_FacultyID,  ifnull(Students_Grade_Grade,'0') grade,IFNULL(Professor_FirstName,0) AS FNAME ,IFNULL(Professor_MiddleName,0) AS MNAME,IFNULL(Professor_LastName,0) AS LNAME,Professor_Code,Subject_Code,Subject_Description,Subject_Credited_Units,Section_Code FROM `t_student_taken_curriculum_subject` inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_course on Course_ID = Student_Taken_Curriculum_Subject_CourseID inner join t_student_account on Student_Account_ID = Student_Taken_Curriculum_Subject_StudentAccountID inner join r_subject on Student_Taken_Curriculum_Subject_SubjectID = Subject_ID INNER JOIN r_section on Student_Taken_Curriculum_Subject_SectionID = Section_ID inner join r_curriculum on Curriculum_CourseID = Student_Taken_Curriculum_Subject_CourseID inner join r_curriculumitem on CurriculumItem_SubjectID = if(ifnull(Subject_Group,0)=0,Subject_ID,Subject_Group) left join t_schedule on Schedule_CurriculumItemID = CurriculumItem_ID left join t_students_grade on Students_Grade_StudentTakenCurriculumSubjectID = Student_Taken_Curriculum_Subject_ID INNER join r_professor on ifnull(Students_Grade_FacultyID,Schedule_ProfessorID ) = Professor_ID  where Student_Account_CurriculumYearID = Curriculum_CurriculumYearID and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Curriculum_YearLevel = Student_Taken_Curriculum_Subject_YearLevel and if(Schedule_ChildrenID is null,'0',Schedule_ChildrenID) = if(Schedule_ChildrenID is null,'0',Subject_ID)  and Student_Account_Student_Number = '"+uname+"' and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present') and Student_Taken_Curriculum_Subject_Display_Status = 'Active' and Student_Taken_Curriculum_Subject_SectionID = Section_ID and if(Schedule_SectionID is null,0,Schedule_SectionID) = if(Schedule_SectionID is null,0,Section_ID)  and Schedule_ProfessorID is not null and Course_ID = Curriculum_CourseID  and Curriculum_SemesterID = Student_Taken_Curriculum_Subject_SemesterID  and Schedule_AcademicYearID = (SELECT myt1.Academic_Year_ID FROM `r_academic_year` as myt1 where myt1.Academic_Year_Active_Flag = 'Present')  ";				
+			ResultSet rs2 = stmnt2.executeQuery(sql2);
+			double gpa = 0;
+			int countgpa = 0;
+			double fgpa = 0;
+			String finalgpa = "0";
+			int f = 0;
+			while(rs2.next()){
+				String grade = rs2.getString("grade");
+				if(rs2.getString("grade").equals("0")){
+					grade = "";
+				}
+				else if(!rs2.getString("grade").equals("I") && !rs2.getString("grade").equals("Not S") && !rs2.getString("grade").equals("D") && !rs2.getString("Subject_Type").equals("Non-Academic")){
+					countgpa++;
+					gpa = gpa + Double.parseDouble(rs2.getString("grade"));
+				}
+				else{
+					 f = 1;
+				}
+				
+			}
+			if(countgpa!=0){
+				fgpa = gpa / countgpa;
+			}
+			else{
+				fgpa = 0;
+			}
+			if(f == 0 && fgpa != 0 ){
+				tablebody += "<tr><td>" + uname+ "</td><td>"+fullname+"</td><td>"+rs.getString("Section_Code")+"</td><td>"+fgpa+"</td><td></td><td></td></tr>"; 
+				student += "<option value='"+uname+"'>"+fullname+"</option>";
+				
+			}
+			
+			
+		}
+		stmnt.executeQuery("SELECT * from r_awards where Awards_Display_Status = 'Active'");
+		while(rs.next()){
+			student += "<option value='"+rs.getString("Awards_Code")+"'>"+rs.getString("Awards_Description")+"</option>";
+			
 			
 		}
 	pageContext.setAttribute("tablebody", tablebody);
@@ -91,6 +140,7 @@
 				})
 				
 				$('#editable-sample').on('click','a.genex',function(){
+					alert('asd')
 					var wb = XLSX.utils.book_new();
 		             wb.Props = {
 		                     Title: "Student Grades",
@@ -549,10 +599,12 @@
                                     <table class="table table-striped table-hover table-bordered" id="editable-sample">
 	                                    <thead>
 	                                        <tr>
-	                                            <th style="width: 200px">Code</th>
-	                                            <th style="width: 100px">Description</th>
-	                                            <th style="width: 100px">Discount</th>
-	                                            <th style="width: 120px">Action</th>  
+	                                            <th style="width: 200px">Student Number</th>
+	                                            <th style="width: 100px">Student Name</th>
+	                                            <th style="width: 100px">Course and Section</th>
+	                                            <th style="width: 120px">GPA</th>  
+	                                            <th style="width: 120px">Current Award</th>  
+	                                            <th style="width: 120px">Term</th>  
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>    
@@ -577,17 +629,19 @@
 	                <div class="modal-body">
 	                    <form method="post" id="form-data">
 	                        <div class="row" style="padding-left:15px;padding-top:10px">
-	                        	<div class="col-lg-12">
-	                        		<div class="col-lg-6">
-		                                Code <input type="text" class="form-control" placeholder="ex. SYDP" id="codeTxt" >
-		                            </div>
-		                            <div class="col-lg-6">
-		                                Discount in percentage<input type="number" min="0.00" max="100.00" step="0.01" class="form-control" placeholder="ex. 100" id="discountTxt">
-		                            </div>
-		                            
-		                        	<div class="col-lg-12" style="padding-top:10px">
-		                                Description<textarea class="form-control" placeholder="ex. Scholarship and Youth Development Program" rows="3" style="margin: 0px 202.5px 0px 0px;resize:none" id="descTxt"></textarea>
-		                            </div>		                        	
+	                        	<div class="col-lg-6">
+	                        		Student
+	                        		<select class="populate " id="acadyearDrp">
+				                  	    <option value="default" selected="selected" disabled="disabled" >Select a Student</option>                            	       	
+			                  			${student}      	
+			                		</select>      	
+	                        	</div>
+	                        	<div class="col-lg-6">
+	                        		Award
+	                        		<select class="populate " id="acadyearDrp">
+				                  	    <option value="default" selected="selected" disabled="disabled" >Select a Award</option>                            	       	
+			                  			${award}      	
+			                		</select>      	
 	                        	</div>
 	                        </div>
 	                    </form>
@@ -599,111 +653,6 @@
 	            </div>
 	        </div>
 	    </div>	
-        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="scholarship" class="modal fade">
-	        <div class="modal-dialog" style="width:60%">
-	            <div class="modal-content">
-	                <div class="modal-header">
-	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	                    <h4 class="modal-title">Scholarhip</h4>
-	                </div>
-	                <div class="modal-body">
-	                	<div class="row">
-	                		<div class="col-lg-12">
-	                			<label class="btn btn-info" id="totalAmount"  >
-					            	Total Amount:
-						        </label>
-	                			<div class="adv-table editable-table ">
-                                    <table class="table table-striped table-hover table-bordered" id="studentscholarship">
-	                                    <thead>
-	                                        <tr>
-	                                            <th style="width: 200px">Student Number</th>
-	                                            <th style="width: 100px">Name</th>
-	                                            <th style="width: 100px">Section</th>
-	                                            <th style="width: 100px">Amount</th>
-	                                        </tr>
-	                                    </thead>
-	                                    <tbody>    
-	                                    </tbody>
-                                    </table>
-                                </div>
-	                		
-	                			<label class="btn btn-info" id="lblimport" for="importBtn" >
-					            	<input id="importBtn" type="file" accept=".csv" style="display:none;">
-					                <i class="fa fa-upload"></i> Import
-						        </label>
-						        
-	                		</div>
-	                	</div>
-	                </div>
-	                <div class="modal-footer">
-	                    <button data-dismiss="modal" class="btn btn-default" id="" type="button"><u>C</u>lose</button>
-	                    <button class="btn btn-success " id="uploadstudentScholarshipBtn" type="button"><u>S</u>ave</button>
-	                </div>
-	            </div>
-	        </div>
-	    </div>	
-	     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="scholarshiphistory" class="modal fade">
-	        <div class="modal-dialog" style="width:60%">
-	            <div class="modal-content">
-	                <div class="modal-header">
-	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	                    <h4 class="modal-title">Scholarhip Payment History</h4>
-	                </div>
-	                <div class="modal-body">
-	                	<div class="row">
-			            	<div class="col-lg-6" >
-		                    	Academic Year
-		                    	<br/>
-		                        <select class="populate " id="acadyearDrp">
-			                  	    <option value="default" selected="selected" disabled="disabled" >Select a Academic Year</option>                            	       	
-		                  			${acadyearDrp}      	
-		                		</select>
-			                </div>
-			            	<div class="col-lg-6">
-		                    	Semester
-		                    	<br/>
-		                        <select class="populate " id="semesterDrp">
-			                  	    <option value="default" selected="selected" disabled="disabled" >Select a Semester</option>                            	       	
-		                  			${semesterDrp}      	
-		                		</select>
-		                    </div>
-		                      
-                            <table class="hidden" id="myHiddenTable">
-                            </table>
-		                    
-	                		<div class="col-lg-12">
-	                			
-	                			<div class="adv-table editable-table ">
-                                    <table class="table table-striped table-hover table-bordered" id="paymenthistory">
-	                                    <thead>
-	                                        <tr>
-	                                            <th style="width: 200px">Student Number</th>
-	                                            <th style="width: 100px">Name</th>
-	                                            <th style="width: 100px">Section</th>
-	                                            <th style="width: 100px">Amount</th>
-	                                            <th style="width: 100px">Date</th>
-	                                        </tr>
-	                                    </thead>
-	                                    <tbody>    
-	                                    </tbody>
-                                    </table>
-                                </div>
-                                <a class="btn btn-info" id="paymenttotalAmount"  >
-					            	Total Amount:
-						        </a>
-						        <a class="btn btn-info" id="printList" style="float:right;background-color:#33cc33;color:white" ><i class="fa fa-print"></i></a>
-						        
-						        
-	                		</div>
-	                	</div>
-	                </div>
-	                <div class="modal-footer">
-	                    <button data-dismiss="modal" class="btn btn-default" id="" type="button"><u>C</u>lose</button>
-	                    <button class="btn btn-success " id="uploadstudentScholarshipBtn" type="button"><u>S</u>ave</button>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
 	    
 	    </jsp:body>
 
