@@ -6,6 +6,9 @@
     pageEncoding="ISO-8859-1"%>
 
 <% 
+	response.sendRedirect("http://"+request.getServerName()+":"+request.getServerPort()+"/SIS/Student/" +"Profile.jsp");
+
+
 	DBConfiguration db = new DBConfiguration();
 	Connection conn = db.getConnection();
 	if(conn == null)

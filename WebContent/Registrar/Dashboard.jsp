@@ -71,7 +71,7 @@
 						        text: 'Student'
 						    },
 						    subtitle: {
-						        text: 'Click the columns to drilldown'
+						        text: 'Per academic year'
 						    },
 						    xAxis: {
 						        type: 'category'
@@ -121,6 +121,92 @@
 	                }
 
 				});
+				
+				$.ajax({
+					type:'POST',
+					data:{},
+					url: 'Controller/Registrar/Dashboard/GetEnrolledPerCur',
+					dataType: 'json',
+					success: function(data){
+						var head = []
+						var firstseries = []
+						var firstseriesbody = []
+						var firstseriesfinalbody = []
+						
+						$.each(data, function(key, val) {
+							head.push({ name : val.year, y : parseFloat(val.total) , drilldown : val.year })
+							
+							$.each(val.body, function(key2, val2) {
+								firstseriesbody.push(val2.course,parseFloat(val2.cou));
+								
+							})
+							firstseriesfinalbody.push(firstseriesbody)
+							firstseries.push({ name : val.year, id : val.year, data : firstseriesfinalbody })
+							
+						})
+						console.log(JSON.stringify(head))
+						console.log(JSON.stringify(firstseries))
+						
+						
+						Highcharts.chart('curyear', {
+						    chart: {
+						        type: 'column'
+						    },
+						    title: {
+						        text: 'Student'
+						    },
+						    subtitle: {
+						        text: 'Per curriculum year'
+						    },
+						    xAxis: {
+						        type: 'category'
+						    },
+						    yAxis: {
+						        title: {
+						            text: 'Number of Student'
+						        }
+
+						    },
+						    legend: {
+						        enabled: false
+						    },
+						    plotOptions: {
+						        series: {
+						            borderWidth: 0,
+						            dataLabels: {
+						                enabled: true,
+						                format: '{point.y:0f}'
+						            }
+						        }
+						    },
+
+						    tooltip: {
+						        headerFormat: '<span style="font-size:11px">{point.name} {series.name}s</span><br>',
+						        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:0f} Student</b> of total<br/>'
+						    },
+
+						    "series": [
+						        {
+						            "name": "Student",
+						            "colorByPoint": true,
+						            "data":head
+						        }
+						    ],
+						    "drilldown": {
+						        "series": firstseries
+						    }
+						});
+						
+	                	
+
+	                     
+					},
+	                error: function (response) {
+	                    swal("Error encountered while accessing the data", "Please try again", "error");
+	                }
+
+				});
+				
 
 			})
 		</script>
@@ -158,6 +244,13 @@
             <section class="panel">
                 <div class="panel-body">
                     <div id="student" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                </div>
+            </section>
+        </div> 
+    	<div class="col-md-12">
+            <section class="panel">
+                <div class="panel-body">
+                    <div id="curyear" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
                 </div>
             </section>
         </div> 

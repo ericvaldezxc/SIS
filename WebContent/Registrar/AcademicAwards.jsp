@@ -69,9 +69,30 @@
 			
 			
 		}
-		stmnt.executeQuery("SELECT * from r_awards where Awards_Display_Status = 'Active'");
+		tablebody = "";
+		
+		 rs = stmnt.executeQuery("SELECT * from t_student_awards inner join  r_awards on Awards_ID = Student_Awards_AwardsID inner join t_student_account on Student_Awards_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Awards_AcademicYearID inner join r_semester on Student_Awards_SemesterID = Semester_ID inner join r_section on Student_Account_SectionID = Section_ID inner join r_course on Student_Account_CourseID = Course_ID   ");
+			while(rs.next()){
+				fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
+				mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
+				lname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Last_Name"));
+				couid = ec.decrypt(ec.key, ec.initVector, rs.getString("Course_Code"));
+				fullname = fn.fullname(fname, mname, lname);
+				
+				
+				String uname = rs.getString("Student_Account_Student_Number");
+				
+				tablebody += "<tr><td>" + uname+ "</td><td>"+fullname+"</td><td>"+rs.getString("Section_Code")+"</td><td>"+rs.getString("Awards_Description")+"</td><td>"+ec.decrypt(ec.key, ec.initVector, rs.getString("Academic_Year_Description")) + " " + ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Description"))  + " Term"+"</td></tr>"; 
+				
+				
+				
+			}
+		
+		
+		String award = "";
+		rs = stmnt.executeQuery("SELECT * from r_awards where Awards_Display_Status = 'Active'");
 		while(rs.next()){
-			student += "<option value='"+rs.getString("Awards_Code")+"'>"+rs.getString("Awards_Description")+"</option>";
+			award += "<option value='"+rs.getString("Awards_Code")+"' data-mingwa='"+rs.getString("Awards_MinimunGWA")+"' data-mingrade='"+rs.getString("Awards_MinimunGrade")+"'>"+rs.getString("Awards_Description")+"</option>";
 			
 			
 		}
@@ -79,11 +100,13 @@
 	Dropdowns drp = new Dropdowns();
 	pageContext.setAttribute("acadyearDrp", drp.fillacadyearDrp2());
 	pageContext.setAttribute("semesterDrp", drp.fillsemesterDrp());
+	pageContext.setAttribute("award", award);
+	pageContext.setAttribute("student", student);
 
 
 %>    
 
-<t:Registrar title="Scholarship" from="Scholarship" to="">
+<t:Registrar title="Academic Awards" from="Academic Awards" to="">
 
 	<jsp:attribute name="myscript">      
 		<script lang="javascript" src="../Assets/js/xlsx.full.min.js"></script>
@@ -92,6 +115,84 @@
       	<script>
 			$(document).ready(function (){
 				EditableTable.init();
+				$('#awardDrp').on("change",function(){
+					var mingwa = $('#awardDrp option:selected').data("mingwa")
+					var mingrade = $('#awardDrp option:selected').data("mingrade")
+					console.log(mingwa + ' ' + mingrade)
+					$.ajax({
+    					type:'POST',
+    					data:{minGWA: mingwa, minGrade: mingrade},
+    					dataType:'json',
+    					url:'Controller/Registrar/AcademicAwards/GetStudent',
+    					success: function(result){
+    						var studdrp = ""
+    						$(result).each(function(key,val){
+    							studdrp += "<option value='"+val.studnum+"'>"+val.studname+"</option>"
+    							
+    						})
+    						$('#studentDrp').html(studdrp)
+    						$('#studentDrp').multiSelect('refresh');
+    						$('.ms-container').css("width", "100%"); 
+    						
+                             
+    					},
+                        error: function (response) {
+                            swal("Error encountered while adding data", "Please try again", "error");
+                            $("#editable-sample_new").click();
+                        }
+    				});
+					
+				})
+				$('#SaveAcadwemicAwards').click(function(){
+					var awards =  $('#awardDrp').val()
+					var stud = $('#studentDrp').val()
+	                swal({
+	                    title: "Are you sure?",
+	                    text: "The record will be save and will be use for further transaction",
+	                    type: "warning",
+	                    showCancelButton: true,
+	                    confirmButtonColor: '#228B22',
+	                    confirmButtonText: 'Yes!',
+	                    cancelButtonText: "No!",
+	                    closeOnConfirm: false,
+	                    closeOnCancel: false
+	                },
+	                function (isConfirm) {
+	                    if (isConfirm) {
+		             		$.ajax({
+		    					type:'POST',
+		    					data:{code: awards, student: JSON.stringify(stud)},
+		    					url:'Controller/Registrar/AcademicAwards/AddStudentAwards',
+		    					success: function(result){
+		    						 swal({
+	                                    title: "Record Updated!"
+		                                    , text: "The data is successfully Updated!"
+		                                    , type: "success"
+		                                    , confirmButtonColor: '#88A755'
+		                                    , confirmButtonText: 'Okay'
+		                                    , closeOnConfirm: false
+		                                }, function (isConfirm) {
+		                                    if (isConfirm) {
+		                                        window.location.reload();
+		                                    }
+		                                });
+		                             
+		    					},
+		                        error: function (response) {
+		                            swal("Error encountered while adding data", "Please try again", "error");
+		                            $("#editable-sample_new").click();
+		                        }
+		    				});
+	                    } else {
+
+	                        swal("Cancelled", "The transaction is cancelled", "error");
+	                        $("#editable-sample_new").click();
+	                    }
+
+	                });
+				})
+				
+				
 				$('#addScholarshipBtn').click(function(){
 					 var codeTxt = $('#codeTxt').val();
 					 var descTxt = $('#descTxt').val();
@@ -387,7 +488,7 @@
 	                 });
 	    		})
 	    		var scholarcode = ""
-	    		$("select#acadyearDrp").select2({width: '100%' });
+	    		$("select#awardDrp").select2({width: '100%' });
 	    		$("select#semesterDrp").select2({width: '100%' });
 	    		$("#semesterDrp").on('change',function(){
 	    			var sem = $('#semesterDrp option:selected').val()
@@ -560,6 +661,44 @@
 				    a.document.write(html);
 				}
 				
+	    		$('#studentDrp').multiSelect({
+					
+				    selectableHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+				    selectionHeader: "<input type='text' class='form-control search-input' autocomplete='off' placeholder='search...'>",
+				    afterInit: function (ms) {
+				        var that = this,
+				            $selectableSearch = that.$selectableUl.prev(),
+				            $selectionSearch = that.$selectionUl.prev(),
+				            selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+				            selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+
+				        that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+				            .on('keydown', function (e) {
+				                if (e.which === 40) {
+				                    that.$selectableUl.focus();
+				                    return false;
+				                }
+				            });
+
+				        that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+				            .on('keydown', function (e) {
+				                if (e.which == 40) {
+				                    that.$selectionUl.focus();
+				                    return false;
+				                }
+				            });
+				    },
+				    afterSelect: function () {
+				        this.qs1.cache();
+				        this.qs2.cache();
+				    },
+				    afterDeselect: function () {
+				        this.qs1.cache();
+				        this.qs2.cache();
+				    }
+				});
+	    		$('.ms-container').css("width", "100%"); 
+	    		
 			});
 		</script>
     </jsp:attribute>
@@ -601,9 +740,8 @@
 	                                        <tr>
 	                                            <th style="width: 200px">Student Number</th>
 	                                            <th style="width: 100px">Student Name</th>
-	                                            <th style="width: 100px">Course and Section</th>
-	                                            <th style="width: 120px">GPA</th>  
-	                                            <th style="width: 120px">Current Award</th>  
+	                                            <th style="width: 100px">Course and Section</th>  
+	                                            <th style="width: 120px">Award</th>  
 	                                            <th style="width: 120px">Term</th>  
 	                                        </tr>
 	                                    </thead>
@@ -624,31 +762,31 @@
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	                    <h4 class="modal-title">Add Scholarhip</h4>
+	                    <h4 class="modal-title">Add Academic Awards</h4>
 	                </div>
 	                <div class="modal-body">
 	                    <form method="post" id="form-data">
 	                        <div class="row" style="padding-left:15px;padding-top:10px">
-	                        	<div class="col-lg-6">
-	                        		Student
-	                        		<select class="populate " id="acadyearDrp">
-				                  	    <option value="default" selected="selected" disabled="disabled" >Select a Student</option>                            	       	
-			                  			${student}      	
-			                		</select>      	
-	                        	</div>
-	                        	<div class="col-lg-6">
+	                        	<div class="col-lg-12">
 	                        		Award
-	                        		<select class="populate " id="acadyearDrp">
+	                        		<select class="populate " id="awardDrp">
 				                  	    <option value="default" selected="selected" disabled="disabled" >Select a Award</option>                            	       	
 			                  			${award}      	
-			                		</select>      	
+			                		</select>  
 	                        	</div>
+	                        	<br/>
+	                        	<div class="col-lg-12">
+		                			Student
+					                <select class="multi-select" multiple="" id="studentDrp" style="width: 100%;" >
+					                   
+					                </select>
+					           </div>
 	                        </div>
 	                    </form>
 	                </div>
 	                <div class="modal-footer">
 	                    <button data-dismiss="modal" class="btn btn-default" id="addcloseBtn" type="button"><u>C</u>lose</button>
-	                    <button class="btn btn-success " id="addScholarshipBtn" type="button"><u>S</u>ave</button>
+	                    <button class="btn btn-success " id="SaveAcadwemicAwards" type="button">Save</button>
 	                </div>
 	            </div>
 	        </div>

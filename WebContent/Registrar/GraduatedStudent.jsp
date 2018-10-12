@@ -57,12 +57,251 @@
       	<script>
 			$(document).ready(function (){
 				EditableTable.init();
+				$('#btnprint').click(function(){
+					var pdf = new jsPDF('p', 'pt', 'letter');
+		            var breaker = '_______________________________________________________________________'
+		           
+					var mybase = 190;
+		            specialElementHandlers = {
+							'#bypassme': function(element, renderer){
+								return true
+							}
+						}
+		        	$.ajax({
+    					type:'POST',
+    					data:{stnum:"2018-00006-CM-0"},
+    					url: "Controller/Registrar/GraduatedStudents/GetProfile",
+    					success: function(result2){
+    						var item2 = $.parseJSON(result2)
+    						$.ajax({
+		    					type:'POST',
+		    					data:{stnum:"2018-00006-CM-0"},
+		    					url: "Controller/Registrar/GraduatedStudents/TranscriptofRecord",
+		    					success: function(result){
+		    						var item = $.parseJSON(result)
+		    						var title = ''
+		    						var torbody = ''
+		    						var i = 0
+		    						$(item).each(function(key,val){
+		    							pdf.setFontType("normal");
+		    							pdf.setFontSize(14);
+		    							pdf.text(35,mybase-5,breaker)
+		    							
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(33,mybase+10,"|")
+										
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(33,mybase+13,"|")
+										
+		    							
+		       							title =  val.acadyear + " " + val.sem
+		        						pdf.setFontType("italic");
+		        						pdf.setFontSize(11);
+		        						pdf.text(50 , mybase + 10 , title)
+		        						
+		        						pdf.setFontType("normal");
+		    							pdf.setFontSize(14);
+		    							pdf.text(35,mybase + 15,breaker)
+		    							
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(33,mybase+30,"|")
+										
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(33,mybase+33,"|")
+										
+										pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(585,mybase+10,"|")
+										
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(585,mybase+13,"|")
+		        						
+		        						pdf.setFontType("italic");
+		         						pdf.setFontSize(11);
+		         						pdf.text(50 , mybase + 30 , "Code")
+		         							
+		         						pdf.setFontType("italic");
+		         						pdf.setFontSize(11);
+		         						pdf.text(150 , mybase + 30 , "Description")
+		         							
+		         						pdf.setFontType("italic");
+		         						pdf.setFontSize(11);
+		         						pdf.text(400 , mybase + 30 , "Grade")
+		         							
+		         						pdf.setFontType("italic");
+		         						pdf.setFontSize(11);
+		         						pdf.text(500 , mybase + 30 , "Credit")
+		         						
+		         						pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(585,mybase+30,"|")
+										
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(585,mybase+33,"|")
+		         						
+		         						pdf.setFontType("normal");
+		    							pdf.setFontSize(14);
+		    							pdf.text(35,mybase + 35,breaker)
+		        						
+		    							$(val.grades).each(function(key2,val2){
+		    								
+		    								pdf.setFontType("italic");
+											pdf.setFontSize(19);
+											pdf.text(33,mybase+46,"|")
+		    								
+		    								pdf.setFontType("italic");
+											pdf.setFontSize(17);
+											pdf.text(33,mybase+48,"|")
+											
+			    							pdf.setFontType("italic");
+											pdf.setFontSize(19);
+											pdf.text(33,mybase+54,"|")
+		    								
+		    								pdf.setFontType("italic");
+		           							pdf.setFontSize(9);
+		           							pdf.text(50 , mybase + 50 , val2.subjcode)
+		           							
+		           							pdf.setFontType("italic");
+		           							pdf.setFontSize(8);
+		           							var desc = pdf.splitTextToSize(val2.subjdesc, 230);
+		           							pdf.text(150 , mybase + 50 , desc)
+		           							
+		           							pdf.setFontType("italic");
+		           							pdf.setFontSize(9);
+		           							pdf.text(400 , mybase + 50 , val2.grade)
+		           							
+		           							pdf.setFontType("italic");
+		           							pdf.setFontSize(9);
+		           							pdf.text(500 , mybase + 50 , val2.subcredunit)
+		           							
+		           							pdf.setFontType("normal");
+			    							pdf.setFontSize(14);
+			    							pdf.text(35,mybase + 55,breaker)
+			    							
+			    							pdf.setFontType("italic");
+											pdf.setFontSize(19);
+											pdf.text(585,mybase+46,"|")
+		    								
+		    								pdf.setFontType("italic");
+											pdf.setFontSize(17);
+											pdf.text(585,mybase+48,"|")
+											
+			    							pdf.setFontType("italic");
+											pdf.setFontSize(19);
+											pdf.text(585,mybase+54,"|")
+		    								
+		        							mybase =  mybase + 25
+		
+		    							})
+		    							
+		    							i++
+		    							
+		    						})
+		    						
+									
+									
+		    						
+		    								
+						            pdf.setFontType("normal");
+									pdf.setFontSize(14.5);
+									pdf.text(15,15,breaker)
+				
+									pdf.setFontType("bold");
+									pdf.setFontSize(13);
+									pdf.text(15,40,"Quezon City Polytechnic University")
+									
+									pdf.setFontType("italic");
+									pdf.setFontSize(7);
+									var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 230);
+									pdf.text(15,55,addre)
+									
+									pdf.setFontType("normal");
+									pdf.setFontSize(14.5);
+									pdf.text(15,70,breaker)
+									 
+									pdf.setFontType("italic");
+									pdf.setFontSize(14);
+									pdf.text(240,110,"Transcript of Records")
+									 
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,130,"Student Number")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,130,item2.studnum)
+									
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,140,"Student Name")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,140,item2.name)
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,150,"Year of Admission")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,150,item2.year)
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,160,"Address")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,160,item2.address)
+		    						
+									var myImage = new Image();
+				   					myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
+				   					myImage.onload = function(){
+				   						pdf.addImage(myImage , 'png', 520, 20, 50, 50);
+				   						var uri = pdf.output('dataurlstring');
+				   					  	openDataUriWindow(uri);
+				   					};
+		    					}
+		    				})
+    						
+    						
+    					}
+    				})
+		            
+				
+   						
+   						
+   					
+				})	
+
+					
+				
+				function openDataUriWindow(url) {
+				    var html = '<html>' +
+				        '<style>html, body { padding: 0; margin: 0; } iframe { width: 100%; height: 100%; border: 0;}  </style>' +
+				        '<body>' +
+				        '<iframe src="' + url + '"></iframe>' +
+				        '</body></html>';
+				    a = window.open();
+				    a.document.write(html);
+				}
 				
 			});
 		</script>
     </jsp:attribute>
     
 	<jsp:attribute name="customImportedScript">      
+		<script src="../Assets/js/html2canvas.js"></script>
+		<script src="../Assets/js/jspdf.js"></script>
+		<script src="../Assets/js/jspdf.debug.js"></script>
+		<script src="../Assets/js/jspdf.plugin.autotable.js"></script>
 		<script type="text/javascript" src="../Assets/js/jquery-1.8.3.min.js"></script>
 		<script type="text/javascript" src="../Assets/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
 		<script type="text/javascript" src="../Assets/js/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>

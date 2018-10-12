@@ -115,12 +115,20 @@
         <!-- sidebar menu start-->
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
-            	<li > 
+            	<li class="hidden"> 
             		<a href="Dashboard.jsp" class="" id="DashboardBtn">
                      	<i class ="fa fa-dashboard" ></i>
                      	<span>Dashboard</span>
                     </a> 
                 </li>
+                   
+               <li>
+	                <a href="Profile.jsp" class="" id="ProfileBtn">
+	                    <i class="fa fa-smile-o"></i>
+	                    <span>Profile</span>
+	                </a>
+           		</li>
+                
            		<li>
 	                <a href="Schedule.jsp" class="" id="ScheduleBtn">
 	                    <i class="fa  fa-calendar"></i>
@@ -139,12 +147,7 @@
 	                    <span>Grade</span>
 	                </a>
            		</li>
-           		<li>
-	                <a href="Profile.jsp" class="" id="ProfileBtn">
-	                    <i class="fa fa-smile-o"></i>
-	                    <span>Profile</span>
-	                </a>
-           		</li>
+
            		<li>
 	                <a href="Accounting.jsp" class="" id="AccountingBtn">
 	                    <i class="fa fa-money"></i>
