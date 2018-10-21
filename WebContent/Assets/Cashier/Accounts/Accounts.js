@@ -114,99 +114,168 @@ var EditableTable = function () {
         					data:{amount: payment, studentNumber:finalstudentNumber},
         					url:'Controller/Cashier/Account/Payment',
         					success: function(result){
-        		                var pdf = new jsPDF('p', 'mm', [110, 80]);
-        		                var breaker = '_______________________________________________________________________'
+        						$.ajax({
+                					type:'POST',
+                					data:{studentNumber:finalstudentNumber},
+                					url:'Controller/Cashier/Print/GetBreakdownFee',
+                					success: function(result2){
+                						var pdf = new jsPDF('p', 'mm', [110, 90]);
+                		                var breaker = '_______________________________________________________________________'
 
-        		                pdf.setFontType("normal");
-        						pdf.setFontSize(7);
-        						pdf.text(3,3,breaker)
+                		                pdf.setFontType("normal");
+                						pdf.setFontSize(7);
+                						pdf.text(3,3,breaker)
 
-        						pdf.setFontType("bold");
-        						pdf.setFontSize(8);
-        						pdf.text(3,7,"Quezon City Polytechnic University")
+                						pdf.setFontType("bold");
+                						pdf.setFontSize(8);
+                						pdf.text(3,7,"Quezon City Polytechnic University")
 
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(5);
-        						var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 45);
-        						pdf.text(3,9,addre)
-        						
-        						pdf.setFontType("normal");
-        						pdf.setFontSize(7);
-        						pdf.text(3,13,breaker)
-        						
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(11);
-        						pdf.text(33,23,"Payment")
+                						pdf.setFontType("italic");
+                						pdf.setFontSize(5);
+                						var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 45);
+                						pdf.text(3,9,addre)
+                						
+                						pdf.setFontType("normal");
+                						pdf.setFontSize(7);
+                						pdf.text(3,13,breaker)
+                						
+                						pdf.setFontType("italic");
+                						pdf.setFontSize(7);
+                						pdf.text(3,30,sname)
 
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(7);
-        						pdf.text(3,30,sname)
+                						pdf.setFontType("italic");
+                						pdf.setFontSize(6);
+                						pdf.text(5,33,snum)
 
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(6);
-        						pdf.text(5,33,snum)
+            							pdf.setFontType("italic");
+                						pdf.setFontSize(7);
+                						pdf.text(5,40,balance + " Total Amount Due")
+                						
+                						pdf.setFontType("bold");
+                						pdf.setFontSize(6);
+                						pdf.text(3,43,"-")
 
-    							pdf.setFontType("italic");
-        						pdf.setFontSize(7);
-        						pdf.text(33,40,balance + "")
-        						
-        						pdf.setFontType("bold");
-        						pdf.setFontSize(6);
-        						pdf.text(30,43,"-")
+                						pdf.setFontType("italic");
+                						pdf.setFontSize(6);
+                						pdf.text(5,43,payment + " Amount Paid")
 
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(6);
-        						pdf.text(33,43,payment + "")
+                						pdf.setFontType("bold");
+                						pdf.setFontSize(6);
+                						pdf.text(5,44,"_________")
 
-        						pdf.setFontType("bold");
-        						pdf.setFontSize(6);
-        						pdf.text(33,44,"_________")
+                						pdf.setFontType("italic");
+                						pdf.setFontSize(6);
+                						pdf.text(5,47,rembalance + " Balance Due")
+                						        						
+                						pdf.setFontType("normal");
+                						pdf.setFontSize(7);
+                						pdf.text(3,105,breaker)
 
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(6);
-        						pdf.text(33,47,rembalance + " Remaining Balance")
-        						        						
-        						pdf.setFontType("normal");
-        						pdf.setFontSize(7);
-        						pdf.text(3,105,breaker)
+                						
+                						/*
+                						 var payment = $('#amountTxt').val()
+        				            	 var sname = $('#student-name').text()
+        				            	 var snum = $('#student-number').text()
+        				            	 var balance = $('#student-balance').text()
+        				            	 var rembalance = $('#remaining-balance').text()
+                						*/
 
-        						
-        						/*
-        						 var payment = $('#amountTxt').val()
-				            	 var sname = $('#student-name').text()
-				            	 var snum = $('#student-number').text()
-				            	 var balance = $('#student-balance').text()
-				            	 var rembalance = $('#remaining-balance').text()
-        						*/
+                						specialElementHandlers = {
+        									'#bypassme': function(element, renderer){
+        										return true
+        									}
+        								}
+                						
+                						var base = 35
+                						var item = $.parseJSON(result2)
+    									var totamount = 0
+    									var sbody = '';   
+                						pdf.setFontSize(5);
+    									pdf.setFontType("bold");
+                						pdf.text(40,base-4,"Breakdown of Tuition and Miscellaneous Fees")
+    									pdf.setFontType("bold");
+                						pdf.text(50,base-2,"Description")
+										pdf.text(70,base-2,"Amount")
+    									$.each(item, function (key, val) {
+        									pdf.setFontType("normal");
+    										pdf.setFontSize(5);
+    										pdf.text(50,base,val.desc)
+    										pdf.text(70,base,val.amount)
+    										totamount = totamount + parseFloat(val.amount.replace(',',''))
+    										base += 2
+    			                			
+    			                		})
+    									pdf.setFontType("italic");
+   										pdf.setFontSize(5);
+   										pdf.text(50,base,"Total Amount")
+   										$.ajax({
+		    								type:'POST',
+		    								data:{Amount: totamount},
+		    								url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'MoneyConvertion',
+		    								success: function(result3){
+		    									pdf.text(70,base,result3)
+		    									
+	    										$.ajax({
+				                					type:'POST',
+				                					url:'Controller/Cashier/Print/GetRecentPayment',
+				                					success: function(result4){
+				                						var myImage = new Image();
+				                						myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
+				                						myImage.onload = function(){
+				                							pdf.addImage(myImage , 'png', 70, 4, 8, 8);
+				                							 var uri = pdf.output('dataurlstring');
+				                					  	   	 openDataUriWindow(uri);
+				                					  	};
+				                					  	var item2 = $.parseJSON(result4)
+				                					  	pdf.setFontSize(5);
+				                						pdf.setFontType("italic");
+				                						pdf.text(65,16,"Type")
+				                						pdf.setFontType("bold");
+				                						pdf.text(70,16,"Payment")
 
-        						specialElementHandlers = {
-									'#bypassme': function(element, renderer){
-										return true
-									}
-								}
-        		                
-        		                var myImage = new Image();
-        						myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
-        						myImage.onload = function(){
-        							pdf.addImage(myImage , 'png', 70, 4, 8, 8);
-        							 var uri = pdf.output('dataurlstring');
-        					  	   	 openDataUriWindow(uri);
-        					  	};
-        						
+				                						pdf.setFontType("italic");
+				                						pdf.text(65,18,"Date")
+				                						pdf.setFontType("bold");
+				                						pdf.text(70,18,item2.date)
 
-	                             $("#addcloseBtn").click();
-	    						 swal({
-                                     title: "Successful!"
-                                     , text: "The payment is successfully assess!"
-                                     , type: "success"
-                                     , confirmButtonColor: '#88A755'
-                                     , confirmButtonText: 'Okay'
-                                     , closeOnConfirm: false
-                                 }, function (isConfirm) {
-                                     if (isConfirm) {
-                                         window.location.reload();
-                                     }
-                                 });
+				                						pdf.setFontType("italic");
+				                						pdf.text(65,20,"Time")
+				                						pdf.setFontType("bold");
+				                						pdf.text(70,20,item2.time)
+				                						
+				                						pdf.setFontType("italic");
+				                						pdf.text(65,22,"OR#")
+				                						pdf.setFontType("bold");
+				                						pdf.text(70,22,item2.ornumber)
+				                						
+
+				        	                             $("#addcloseBtn").click();
+				        	    						 swal({
+				                                             title: "Successful!"
+				                                             , text: "The payment is successfully assess!"
+				                                             , type: "success"
+				                                             , confirmButtonColor: '#88A755'
+				                                             , confirmButtonText: 'Okay'
+				                                             , closeOnConfirm: false
+				                                         }, function (isConfirm) {
+				                                             if (isConfirm) {
+				                                                 window.location.reload();
+				                                             }
+				                                         });
+				                					}
+				                				})
+	    									
+		        	    						 
+		    								},
+		    			                    error: function (response) {
+		    			                        swal("Error encountered while accessing the data", "Please try again", "error");
+		    			                    }
+		    							});	
+   										
+   									
+    									
+                					}
+                				})
 	                             
         					},
                             error: function (response) {
@@ -493,90 +562,160 @@ var EditableTable = function () {
                             	amount: finalstudentBalance, studentNumber: studentNumber
                             },
                             success: function (response) {
-        		                var pdf = new jsPDF('p', 'mm', [110, 80]);
-        		                var breaker = '_______________________________________________________________________'
-
-        		                pdf.setFontType("normal");
-        						pdf.setFontSize(7);
-        						pdf.text(3,3,breaker)
-
-        						pdf.setFontType("bold");
-        						pdf.setFontSize(8);
-        						pdf.text(3,7,"Quezon City Polytechnic University")
-
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(5);
-        						var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 45);
-        						pdf.text(3,9,addre)
-        						
-        						pdf.setFontType("normal");
-        						pdf.setFontSize(7);
-        						pdf.text(3,13,breaker)
-        						
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(11);
-        						pdf.text(33,23,"Offset")
-
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(7);
-        						pdf.text(3,30,studentName)
-
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(6);
-        						pdf.text(5,33,studentNumber)
-
-    							pdf.setFontType("italic");
-        						pdf.setFontSize(7);
-        						pdf.text(33,40,studentBalance + "")
-        						
-        						pdf.setFontType("bold");
-        						pdf.setFontSize(6);
-        						pdf.text(30,43,"-")
-
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(6);
-        						pdf.text(33,43,studentBalance + "")
-
-        						pdf.setFontType("bold");
-        						pdf.setFontSize(6);
-        						pdf.text(33,44,"_________")
-
-        						pdf.setFontType("italic");
-        						pdf.setFontSize(6);
-        						pdf.text(33,47,0 + " Remaining Balance")
-        						        						
-        						pdf.setFontType("normal");
-        						pdf.setFontSize(7);
-        						pdf.text(3,105,breaker)
-
-        		                var myImage = new Image();
-        						myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
-        						myImage.onload = function(){
-        							pdf.addImage(myImage , 'png', 70, 4, 8, 8);
-        							 var uri = pdf.output('dataurlstring');
-        					  	   	 openDataUriWindow(uri);
-        					  	};
-        						
-
-                            	
-                            	
-                            	swal({
-
-                                        title: "Record Updated!",
-                                        text: "The data is successfully Updated!",
-                                        type: "success",
-                                        confirmButtonColor: '#86CCEB',
-                                        confirmButtonText: 'Okay',
-                                        closeOnConfirm: false
+                            	$.ajax({
+                                    type: 'post',
+                                    url: 'Controller/Cashier/Print/GetRecentAccounts',
+                                    data: {
+                                    	studentNumber: studentNumber
                                     },
-                                    function (isConfirm) {
-                                        if (isConfirm) {
-                                            window.location.reload();
+                                    success: function (res) {
+                                    	var pdf = new jsPDF('p', 'mm', [110, 90]);
+                 		                var breaker = '_______________________________________________________________________'
 
-                                        } else
-                                            swal("Cancelled", "The transaction is cancelled", "error");
+                 		                pdf.setFontType("normal");
+                 						pdf.setFontSize(7);
+                 						pdf.text(3,3,breaker)
 
-                                    });
+                 						pdf.setFontType("bold");
+                 						pdf.setFontSize(8);
+                 						pdf.text(3,7,"Quezon City Polytechnic University")
+
+                 						pdf.setFontType("italic");
+                 						pdf.setFontSize(5);
+                 						var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 45);
+                 						pdf.text(3,9,addre)
+                 						
+                 						pdf.setFontType("normal");
+                 						pdf.setFontSize(7);
+                 						pdf.text(3,13,breaker)
+
+                 						pdf.setFontType("italic");
+                 						pdf.setFontSize(7);
+                 						pdf.text(3,30,studentName)
+
+                 						pdf.setFontType("italic");
+                 						pdf.setFontSize(6);
+                 						pdf.text(5,33,studentNumber)
+                 						
+                 						var base = 60
+                						var item = $.parseJSON(res)
+                						item = item.reverse();
+    									var totamount = 0
+    									var sbody = '';   
+                						pdf.setFontSize(4);
+    									pdf.setFontType("bold");
+                						pdf.text(5,base-4,"Student Accounting")
+    									pdf.setFontType("bold");
+                						pdf.text(5,base-2,"Semester")
+										pdf.text(15,base-2,"Year Level")
+										pdf.text(25,base-2,"Description")
+										pdf.text(35,base-2,"Date")
+										pdf.text(45,base-2,"Scholarship")
+										pdf.text(55,base-2,"Assessment")
+										pdf.text(65,base-2,"Payment")
+										pdf.text(75,base-2,"Balance")
+    									$.each(item, function (key, val) {
+        									pdf.setFontType("normal");
+    										pdf.setFontSize(3);
+    										pdf.text(5,base,val.yearlvl)
+    										pdf.text(15,base,val.sem)
+    										pdf.setFontSize(3);
+    										pdf.text(25,base,val.desc)
+    										pdf.setFontSize(4);
+    										pdf.text(35,base,val.date)
+    										pdf.text(45,base,val.scho)
+    										pdf.text(55,base,val.assessment)
+    										pdf.text(65,base,val.payment)
+    										pdf.text(75,base,val.bal)
+    										base += 5
+    			                			
+    			                		})
+
+                 						
+             							pdf.setFontType("italic");
+                 						pdf.setFontSize(6);
+                 						pdf.text(5,40,studentBalance + "Total Balance")
+                 						
+                 						pdf.setFontType("bold");
+                 						pdf.setFontSize(6);
+                 						pdf.text(3,43,"-")
+
+                 						pdf.setFontType("italic");
+                 						pdf.setFontSize(6);
+                 						pdf.text(5,43,studentBalance + "Offset Amount")
+
+                 						pdf.setFontType("bold");
+                 						pdf.setFontSize(6);
+                 						pdf.text(5,44,"_________")
+
+                 						pdf.setFontType("italic");
+                 						pdf.setFontSize(6);
+                 						pdf.text(5,47,0 + " Remaining Balance")
+                 						        						
+                 						pdf.setFontType("normal");
+                 						pdf.setFontSize(7);
+                 						pdf.text(3,105,breaker)
+                 						
+                 						$.ajax({
+                         					type:'POST',
+                         					url:'Controller/Cashier/Print/GetRecentOffset',
+                         					success: function(result4){
+                         						var myImage = new Image();
+                         						myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
+                         						myImage.onload = function(){
+                         							pdf.addImage(myImage , 'png', 70, 4, 8, 8);
+                         							 var uri = pdf.output('dataurlstring');
+                         					  	   	 openDataUriWindow(uri);
+                         					  	};
+                         					  	var item2 = $.parseJSON(result4)
+                         					  	pdf.setFontSize(5);
+                         						pdf.setFontType("italic");
+                         						pdf.text(65,16,"Type")
+                         						pdf.setFontType("bold");
+                         						pdf.text(70,16,"Offset")
+
+                         						pdf.setFontType("italic");
+                         						pdf.text(65,18,"Date")
+                         						pdf.setFontType("bold");
+                         						pdf.text(70,18,item2.date)
+
+                         						pdf.setFontType("italic");
+                         						pdf.text(65,20,"Time")
+                         						pdf.setFontType("bold");
+                         						pdf.text(70,20,item2.time)
+                         						
+                         						pdf.setFontType("italic");
+                         						pdf.text(65,22,"OR#")
+                         						pdf.setFontType("bold");
+                         						pdf.text(70,22,item2.ornumber)
+                         					
+                                             	
+                                             	swal({
+
+                                                     title: "Record Updated!",
+                                                     text: "The data is successfully Updated!",
+                                                     type: "success",
+                                                     confirmButtonColor: '#86CCEB',
+                                                     confirmButtonText: 'Okay',
+                                                     closeOnConfirm: false
+                                                 },
+                                                 function (isConfirm) {
+                                                     if (isConfirm) {
+                                                         window.location.reload();
+
+                                                     } else
+                                                         swal("Cancelled", "The transaction is cancelled", "error");
+
+                                                 });
+                         					}
+                         				})
+                                    	
+                                    }
+                                })
+        		               
+        						
+
+        		               
                             },
                             error: function (response) {
                                 swal("Error encountered while adding data", "Please try again", "error");

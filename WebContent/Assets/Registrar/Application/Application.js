@@ -1270,10 +1270,14 @@ var EditableTable = function () {
                     confirmButtonText: 'Yes!',
                     cancelButtonText: "No!",
                     closeOnConfirm: false,
-                    closeOnCancel: false
+                    closeOnCancel: false,
+                    showLoaderOnConfirm: true
                 },
                 function (isConfirm) {
                     if (isConfirm) {
+                    	setTimeout(function () {
+                    	
+                    	
                     	var sub = []
                     	$('#subjectBody tr').each(function(key,val){
                     		if($(this).find('.subject2 option:selected').val() != 'default' && $(this).find('.grade option:selected').val() != 'default')
@@ -1355,10 +1359,11 @@ var EditableTable = function () {
                                     , closeOnConfirm: false
                                 }, function (isConfirm) {
                                     if (isConfirm) {
+                                    	getpdf();
                                         window.location.reload();
                                     }
                                 });	
-        						getpdf();
+        						
         						
 	                             
         					},
@@ -1366,6 +1371,9 @@ var EditableTable = function () {
                                 swal("Error encountered while adding data", "Please try again", "error");
                             }
         				});
+                    	
+                        
+                    	}, 2000);
 
                     } else {
                         swal("Cancelled", "The transaction is cancelled", "error");

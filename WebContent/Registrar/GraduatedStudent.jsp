@@ -39,7 +39,7 @@
 		String sem = ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Description"));
 		String student = rs.getString("Student_Account_Student_Number");
 
-		tablebody += "<tr><td>"+ student +"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+year+"</td><td>"+sem+"</td></tr>"; 
+		tablebody += "<tr><td>"+ student +"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+year+"</td><td>"+sem+"</td><td style='text-align:center'><a title='Print Transcript of records' class='btn btn-success tor' data-studnum='"+student+"' ><i class='fa fa-print'></i></a></td></tr>"; 
 		
 		
 		
@@ -57,11 +57,11 @@
       	<script>
 			$(document).ready(function (){
 				EditableTable.init();
-				$('#btnprint').click(function(){
+				$('#editable-sample').on('click','a.tor',function(){
 					var pdf = new jsPDF('p', 'pt', 'letter');
 		            var breaker = '_______________________________________________________________________'
-		           
-					var mybase = 190;
+		            var studnums = $(this).data('studnum')
+					var mybase = 210;
 		            specialElementHandlers = {
 							'#bypassme': function(element, renderer){
 								return true
@@ -69,19 +69,88 @@
 						}
 		        	$.ajax({
     					type:'POST',
-    					data:{stnum:"2018-00006-CM-0"},
+    					data:{stnum:studnums},
     					url: "Controller/Registrar/GraduatedStudents/GetProfile",
     					success: function(result2){
     						var item2 = $.parseJSON(result2)
+    						pdf.addPage();
+    						pdf.addPage();
+    						pdf.addPage();
+			    			
     						$.ajax({
 		    					type:'POST',
-		    					data:{stnum:"2018-00006-CM-0"},
+		    					data:{stnum:studnums},
 		    					url: "Controller/Registrar/GraduatedStudents/TranscriptofRecord",
 		    					success: function(result){
 		    						var item = $.parseJSON(result)
 		    						var title = ''
 		    						var torbody = ''
 		    						var i = 0
+		    						pdf.setPage(1)
+		    						
+		    						var myImage = new Image();
+				   					myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
+				   					myImage.onload = function(){
+				   						pdf.setPage(1)
+				   						pdf.addImage(myImage , 'png', 520, 20, 50, 50);
+				   						var uri = pdf.output('dataurlstring');
+				   					  	openDataUriWindow(uri);
+				   					};
+		    						
+		    						pdf.setFontType("normal");
+									pdf.setFontSize(14.5);
+									pdf.text(15,15,breaker)
+				
+									pdf.setFontType("bold");
+									pdf.setFontSize(13);
+									pdf.text(15,40,"Quezon City Polytechnic University")
+									
+									pdf.setFontType("italic");
+									pdf.setFontSize(7);
+									var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 230);
+									pdf.text(15,55,addre)
+									
+									pdf.setFontType("normal");
+									pdf.setFontSize(14.5);
+									pdf.text(15,70,breaker)
+									 
+									pdf.setFontType("italic");
+									pdf.setFontSize(14);
+									pdf.text(240,110,"Transcript of Records")
+									 
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,130,"Student Number")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,130,item2.studnum)
+									
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,140,"Student Name")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,140,item2.name)
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,150,"Year of Admission")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,150,item2.year)
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,160,"Address")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,160,item2.address)
+		    						
+		    						
 		    						$(item).each(function(key,val){
 		    							pdf.setFontType("normal");
 		    							pdf.setFontSize(14);
@@ -199,8 +268,23 @@
 		        							mybase =  mybase + 25
 		
 		    							})
-		    							
+		    							mybase =  mybase + 70
 		    							i++
+		    							if(i == 4 ){
+		    								pdf.setPage(2)
+		    								mybase = 40			    						
+		    								
+		    							}
+		    							if(i == 7 ){
+		    								pdf.setPage(3)
+		    								mybase = 40			    						
+		    								
+		    							}
+		    							if(i == 10 ){
+		    								pdf.setPage(4)
+		    								mybase = 40			    						
+		    								
+		    							}
 		    							
 		    						})
 		    						
@@ -208,66 +292,9 @@
 									
 		    						
 		    								
-						            pdf.setFontType("normal");
-									pdf.setFontSize(14.5);
-									pdf.text(15,15,breaker)
-				
-									pdf.setFontType("bold");
-									pdf.setFontSize(13);
-									pdf.text(15,40,"Quezon City Polytechnic University")
-									
-									pdf.setFontType("italic");
-									pdf.setFontSize(7);
-									var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 230);
-									pdf.text(15,55,addre)
-									
-									pdf.setFontType("normal");
-									pdf.setFontSize(14.5);
-									pdf.text(15,70,breaker)
-									 
-									pdf.setFontType("italic");
-									pdf.setFontSize(14);
-									pdf.text(240,110,"Transcript of Records")
-									 
-									pdf.setFontType("normal");
-									pdf.setFontSize(8);
-									pdf.text(15,130,"Student Number")
-				
-									pdf.setFontType("normal");
-									pdf.setFontSize(8);
-									pdf.text(110,130,item2.studnum)
-									
-									pdf.setFontType("normal");
-									pdf.setFontSize(8);
-									pdf.text(15,140,"Student Name")
-				
-									pdf.setFontType("normal");
-									pdf.setFontSize(8);
-									pdf.text(110,140,item2.name)
-				
-									pdf.setFontType("normal");
-									pdf.setFontSize(8);
-									pdf.text(15,150,"Year of Admission")
-				
-									pdf.setFontType("normal");
-									pdf.setFontSize(8);
-									pdf.text(110,150,item2.year)
-				
-									pdf.setFontType("normal");
-									pdf.setFontSize(8);
-									pdf.text(15,160,"Address")
-				
-									pdf.setFontType("normal");
-									pdf.setFontSize(8);
-									pdf.text(110,160,item2.address)
+						            
 		    						
-									var myImage = new Image();
-				   					myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
-				   					myImage.onload = function(){
-				   						pdf.addImage(myImage , 'png', 520, 20, 50, 50);
-				   						var uri = pdf.output('dataurlstring');
-				   					  	openDataUriWindow(uri);
-				   					};
+									
 		    					}
 		    				})
     						
@@ -325,7 +352,7 @@
                                     </button>
                                         </div>
                                         <div class="btn-group pull-right">
-                                            <button class="btn btn-default " id="btnprint">Print <i class="fa fa-print"></i></button>
+                                            <a class="btn btn-default " id="btnprint"  >Print <i class="fa fa-print"></i></a>
                                         </div>
                                     </div>
                                     <div class="space15"></div>
@@ -335,8 +362,10 @@
 	                                            <th style="width: 20%">Student Number</th>
 	                                            <th style="width: 20%">Name</th>
 	                                            <th style="width: 20%">Course and Section</th>
-	                                            <th style="width: 20%">Year</th>  
-	                                            <th style="width: 20%">Semester</th>  
+	                                            <th style="width: 15%">Year</th>  
+	                                            <th style="width: 15%">Semester</th> 
+	                                            <th style="width: 10%">Action</th>
+	                                             
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>    

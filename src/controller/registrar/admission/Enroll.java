@@ -19,7 +19,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import configuration.EncryptandDecrypt;
+import configuration.RandomCharacter;
 import connection.DBConfiguration;
+import controller.mobile.SendMail;
 
 /**
  * Servlet implementation class AdmissionEnrollController
@@ -106,6 +108,9 @@ public class Enroll extends HttpServlet {
 			sql = "insert into `t_student_account` (Student_Account_CampusID,Student_Account_Type,Student_Account_Student_Profile_ID,Student_Account_Student_Number,Student_Account_Scholastic_Status,Student_Account_Year,Student_Account_CourseID,Student_Account_SectionID,Student_Account_CurriculumYearID) values ((SELECT Campus_ID FROM r_campus WHERE Campus_Code = '"+ec.encrypt(ec.key, ec.initVector, campus)+"'),'"+type+"','"+studentid+"','"+studnum+"','Regular','First Year',(SELECT Course_ID FROM r_course WHERE Course_Code = '"+ec.encrypt(ec.key, ec.initVector, CourseDrp)+"'),'"+SectionDrp+"',(SELECT CurriculumYear_ID FROM `r_curriculumyear` WHERE CurriculumYear_Ative_Flag = 'Active'))";
 			stmnt.execute(sql);
 			out.print(sql);
+			
+			 
+		      
 
 			for (Object o : subject) {
 				JSONObject jsonLineItem = (JSONObject) o;
@@ -122,8 +127,22 @@ public class Enroll extends HttpServlet {
 
 			}
 
+			String to = "";
+			 ResultSet rs = stmnt.executeQuery("SELECT * FROM r_student_profile WHERE Student_Profile_ID = (select max(Student_Profile_ID) from r_student_profile)");
+			 while(rs.next()){
+				 to = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Email_Address")) ;
+		 	 }
 			
-			sql = "insert into `r_user_account` (User_Account_Reference,User_Account_Type,User_Account_Username,User_Account_Password) VALUES ((SELECT MAX(Student_Account_ID) FROM t_student_account),'Student','"+ec.encrypt(ec.key, ec.initVector, studnum)+"','"+ec.encrypt(ec.key, ec.initVector, studnum)+"') ";			
+			 RandomCharacter ran = new RandomCharacter();
+			 String userpass = ran.showPassword();
+			  String subject2 = "Confirmation";
+		      String message =  "<html><body><h4>The username is "+studnum+" and the password is "+userpass+"</h4></body></html>";
+		      String user = "sisbsit41@gmail.com";
+		      String pass = "passwordsis";
+		      SendMail.send(to,subject2, message, user, pass);
+	      
+			
+			sql = "insert into `r_user_account` (User_Account_Reference,User_Account_Type,User_Account_Username,User_Account_Password) VALUES ((SELECT MAX(Student_Account_ID) FROM t_student_account),'Student','"+ec.encrypt(ec.key, ec.initVector, studnum)+"','"+ec.encrypt(ec.key, ec.initVector, userpass)+"') ";			
 			out.print(sql);
 			stmnt.execute(sql);
 			

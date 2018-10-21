@@ -1,4 +1,4 @@
-package controller.student.registration;
+package controller.cashier.account;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,19 +18,20 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import configuration.EncryptandDecrypt;
+import configuration.Fullname;
 import connection.DBConfiguration;
 
 /**
  * Servlet implementation class GetDocument
  */
-@WebServlet("/Student/Controller/Student/Registration/GetBreakdownFee")
-public class GetBreakdownFee extends HttpServlet {
+@WebServlet("/Cashier/Controller/Cashier/Print/GetRecentOffset")
+public class GetRecentOffset extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetBreakdownFee() {
+    public GetRecentOffset() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -49,51 +50,38 @@ public class GetBreakdownFee extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/plain");
 		EncryptandDecrypt ec = new EncryptandDecrypt();
-
-
+		Fullname fn = new Fullname();
 		DBConfiguration db = new DBConfiguration(); 
 		Connection conn = db.getConnection();
-		
+
 		Statement stmnt = null;
+		Statement stmnt2 = null;
 		try {
 			stmnt = conn.createStatement();
+			stmnt2 = conn.createStatement();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		HttpSession session = request.getSession();
-		String username = session.getAttribute("username").toString();
+		String sql = "";
 		
-		String sql = "select *,format(Breakdown_Fee_Amount,2) as bamo from t_breakdown_fee where Breakdown_Fee_Student_Account_ID = (SELECT Student_Account_ID FROM `t_student_account` where Student_Account_Student_Number = '"+username+"' ) and Breakdown_Fee_AcademicYearID = (select Academic_Year_ID from r_academic_year where Academic_Year_Active_Flag = 'Present') and Breakdown_Fee_Semester_ID = (select Semester_ID from r_semester where Semester_Active_Flag = 'Active' ) ";
+		sql = "SELECT Payment_Log_OR_Number,TIME_FORMAT(Payment_Log_Date_Added, '%h:%i %p') as gtime,TIME_FORMAT(Payment_Log_Date_Added, '%M %d, %Y') as gdate FROM `t_payment_log` WHERE Payment_Log_Display_Status = 'Active' and Payment_Log_Type = 'Offset' order by Payment_Log_ID desc limit 1";
 		JSONArray arr = new JSONArray();
 		PrintWriter out = response.getWriter();	
-//		out.print(sql);
+		
 		
 		try {
 			ResultSet rs = stmnt.executeQuery(sql);
-			JSONObject fee = new JSONObject();
+			JSONObject obj = new JSONObject();
 			while(rs.next()){
-				 JSONObject obj = new JSONObject();
-				 obj.put("desc", rs.getString("Breakdown_Fee_Description"));
-				 obj.put("amount", rs.getString("bamo"));
-				 arr.add(obj);
-			      
+				
+				obj.put("date",  rs.getString("gdate"));
+				obj.put("time", rs.getString("gtime") );				 
+				obj.put("ornumber", rs.getString("Payment_Log_OR_Number"));		 
+				 
+				  
 			}
-			String totamo = "";
-			/*sql = "select format(Breakdown_Fee_Amount,2) as bamo from t_breakdown_fee where Breakdown_Fee_Student_Account_ID = (SELECT Student_Account_ID FROM `t_student_account` where Student_Account_Student_Number = '"+username+"' ) ";
-			while(rs.next()){
-				 JSONObject obj = new JSONObject();
-				 obj.put("desc", ec.decrypt(ec.key, ec.initVector, rs.getString("Breakdown_Fee_Description")));
-				 obj.put("amount", ec.decrypt(ec.key, ec.initVector, rs.getString("bamo")));
-				 arr.add(obj);
-			      
-			}
-			*/
-			
-			fee.put("items", arr);
-			
-			out.print(arr);	
+			out.print(obj);	
 
 			conn.close();
 

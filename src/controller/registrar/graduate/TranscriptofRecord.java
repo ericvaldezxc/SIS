@@ -70,7 +70,7 @@ public class TranscriptofRecord extends HttpServlet {
 		JSONArray arr = new JSONArray();
 		Fullname fn = new Fullname();
 		try {
-			sql = "SELECT distinct Semester_ID,Academic_Year_ID,Semester_Description,Academic_Year_Description,Course_Code,Course_ID,Course_Description FROM `t_student_taken_curriculum_subject` inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_course on Course_ID = Student_Taken_Curriculum_Subject_CourseID inner join t_student_account on Student_Account_ID = Student_Taken_Curriculum_Subject_StudentAccountID where Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Student_Account_Student_Number = '"+uname+"' and Student_Taken_Curriculum_Subject_Display_Status = 'Active' order by Student_Taken_Curriculum_Subject_Date_Added desc";
+			sql = "SELECT distinct Semester_ID,Academic_Year_ID,Semester_Description,Academic_Year_Description,Course_Code,Course_ID,Course_Description FROM `t_student_taken_curriculum_subject` inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_course on Course_ID = Student_Taken_Curriculum_Subject_CourseID inner join t_student_account on Student_Account_ID = Student_Taken_Curriculum_Subject_StudentAccountID where Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Student_Account_Student_Number = '"+uname+"' and Student_Taken_Curriculum_Subject_Display_Status = 'Active' order by Student_Taken_Curriculum_Subject_Date_Added asc";
 			ResultSet rs = stmnt.executeQuery(sql);
 			//out.print(sql);
 			while(rs.next()){

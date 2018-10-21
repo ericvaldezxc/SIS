@@ -102,7 +102,8 @@
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	                    <h4 class="modal-title">Payment</h4>
+	                    <h4 class="modal-title">Payment<br/>Note that we only accept php currency*</h4>
+	                    
 	                </div>
 	                <div class="modal-body">
 	                    <form method="post" id="form-data">

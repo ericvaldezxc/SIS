@@ -266,17 +266,19 @@
             	<table class="table table-hover" id="curTbl">
                 	<thead>
                     	<tr>
-                        	<th style="width: 15%">Code</th>
-                            <th style="width: 25%">Description</th>
-                            <th style="width: 10%">Units</th>
-                            <th style="width: 20%">Faculty Name</th>
+                        	<th style="width: 13%">Code</th>
+                            <th style="width: 22%">Description</th>
+                            <th style="width: 7%">Units</th>
+                            <th style="width: 7%">Slots</th>
+                            <th style="width: 7%">Slots Available</th>
+                            <th style="width: 14%">Faculty Name</th>
                             <th style="width: 20%">Schedule</th>
                             <th style="width: 10%">Action</th>
                        	</tr>
                     </thead>
                     <tbody id="mainBody">   
                     	<tr>
-                        	<td colspan="5" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>
+                        	<td colspan="6" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>
                         </tr> 
                     </tbody>
                </table>
@@ -299,6 +301,10 @@
 			                  	    <option value="default" selected="selected" disabled>Select a Faculty</option>                            	       	
 		                  			${professorDrp}      	
 		                		</select>  	                        		
+                            </div>
+                            <div class="col-lg-4">
+                            	<h5 style="">Slot</h5>
+                            <input type="number" style="" min="0" max="100" step="0" class="form-control" placeholder="ex. 50" id="slotTxt">
                             </div>
                     	</div>
                         <div class="row">

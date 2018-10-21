@@ -24,14 +24,14 @@ import connection.DBConfiguration;
 /**
  * Servlet implementation class AdmissionCurriculumItemViewController
  */
-@WebServlet("/Student/Controller/Student/Registration/CurriculumItems")
-public class CurriculumItems extends HttpServlet {
+@WebServlet("/Student/Controller/Student/Registration/CurriculumItems3begorev")
+public class CurriculumItems3begorev extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CurriculumItems() {
+    public CurriculumItems3begorev() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -158,7 +158,7 @@ public class CurriculumItems extends HttpServlet {
 			 
 				 
 				 
-				 sql2 = "SELECT Section_Code,Schedule_ID from r_curriculumitem inner join t_schedule on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  inner join r_section on Schedule_SectionID = Section_ID where Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM `r_curriculumyear` where CurriculumYear_Ative_Flag = 'Active' ) and Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Schedule_AcademicYearID = '"+acadyear+"' and Schedule_Display_Status = 'Active' and CurriculumItem_SubjectID = '"+subid+"' and CurriculumItem_Display_Status = 'Active' and Schedule_Slot > (SELECT count(*) FROM `t_student_taken_curriculum_subject` as mytbl1 WHERE mytbl1.Student_Taken_Curriculum_Subject_SemesterID = (SELECT semtbl.Semester_ID FROM `r_semester` as semtbl where semtbl.Semester_Active_Flag = 'Active') and mytbl1.Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT yeartbl.Academic_Year_ID FROM `r_academic_year` as yeartbl where yeartbl.Academic_Year_Active_Flag = 'Present' )  and mytbl1.Student_Taken_Curriculum_Subject_SubjectID = '"+subid+"' and mytbl1.Student_Taken_Curriculum_Subject_Taken_Status = 'true' and mytbl1.Student_Taken_Curriculum_Subject_Display_Status = 'Active') ";
+				 sql2 = "SELECT Section_Code,Schedule_ID from r_curriculumitem inner join t_schedule on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  inner join r_section on Schedule_SectionID = Section_ID where Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM `r_curriculumyear` where CurriculumYear_Ative_Flag = 'Active' ) and Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Schedule_AcademicYearID = '"+acadyear+"' and Schedule_Display_Status = 'Active' and CurriculumItem_SubjectID = '"+subid+"' and CurriculumItem_Display_Status = 'Active'  ";
 				 rs2 = stmnt2.executeQuery(sql2);
 				 //out.print(sql2+"\n");
 				 String schedid = "";
@@ -226,7 +226,7 @@ public class CurriculumItems extends HttpServlet {
 					 
 					 String subid2 = rs2.getString("Subject_ID");
 				
-					 String sql3 = "SELECT Section_Code,Schedule_ID from r_curriculumitem inner join t_schedule on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  inner join r_section on Schedule_SectionID = Section_ID inner join r_subject on Subject_Group =  CurriculumItem_SubjectID  where Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM `r_curriculumyear` where CurriculumYear_Ative_Flag = 'Active' ) and Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Schedule_AcademicYearID = '"+acadyear+"' and Schedule_Display_Status = 'Active' and CurriculumItem_SubjectID = '"+subid+"' and CurriculumItem_Display_Status = 'Active' and Schedule_ChildrenID = '"+subid2+"' and Schedule_Slot > (SELECT count(*) FROM `t_student_taken_curriculum_subject` as mytbl1 WHERE mytbl1.Student_Taken_Curriculum_Subject_SemesterID = (SELECT semtbl.Semester_ID FROM `r_semester` as semtbl where semtbl.Semester_Active_Flag = 'Active') and mytbl1.Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT yeartbl.Academic_Year_ID FROM `r_academic_year` as yeartbl where yeartbl.Academic_Year_Active_Flag = 'Present' )  and mytbl1.Student_Taken_Curriculum_Subject_SubjectID = '"+subid2+"' and mytbl1.Student_Taken_Curriculum_Subject_Taken_Status = 'true' and mytbl1.Student_Taken_Curriculum_Subject_Display_Status = 'Active')  group by Section_Code ";
+					 String sql3 = "SELECT Section_Code,Schedule_ID from r_curriculumitem inner join t_schedule on CurriculumItem_ID = Schedule_CurriculumItemID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID  inner join r_section on Schedule_SectionID = Section_ID inner join r_subject on Subject_Group =  CurriculumItem_SubjectID  where Curriculum_CurriculumYearID = (SELECT CurriculumYear_ID FROM `r_curriculumyear` where CurriculumYear_Ative_Flag = 'Active' ) and Curriculum_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Schedule_AcademicYearID = '"+acadyear+"' and Schedule_Display_Status = 'Active' and CurriculumItem_SubjectID = '"+subid+"' and CurriculumItem_Display_Status = 'Active' and Schedule_ChildrenID = '"+subid2+"'  group by Section_Code ";
 					 //out.print(sql3+"\n");
 					 schedlist2 = new JSONArray();
 					 section2 = new JSONObject();

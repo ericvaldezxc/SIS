@@ -158,51 +158,7 @@
 	pageContext.setAttribute("totalFee", ffee);
 	
 
-	if(fstat == 0){
-
-%>    
-
-<t:Student title="Registration" from="Registration" to="">
-	<jsp:attribute name="myscript">      
-      	<script>
-			$(document).ready(function (){
-				
-			});
-		</script>
-    </jsp:attribute>
-    
-	<jsp:attribute name="customImportedScript">      
-		<script type="text/javascript" src="../Assets/js/jquery-1.8.3.min.js"></script>
-    </jsp:attribute>    
-    
-    <jsp:body>
-    	<script src="../Assets/Student/Schedule/Schedule.js"></script>
-    
-        <div class="row">
-            <div class="col-sm-12">
-            	<section class="panel">
-                	<div class="panel-body">
-                       	<div class="row">
-					    	<div class="col-lg-12">
-						    	<section class="panel">
-						        	<div class="panel-body">
-						            	<div class="row" style="text-align:center;color:#B33A3A">
-							            	<h4>The Registration isn't open yet</h4>
-				 		            	</div>
-						        	</div>
-						   		</section>
-						    </div>
-				         </div>
-                	</div>
-               	</section>
-            </div>
-         </div>
-    </jsp:body>
-</t:Student>
-
-<%
-	}
-	else if(finstat == 1){
+if(finstat == 1){
 
 %>    
 
@@ -334,7 +290,7 @@
 									var sbody = '<table class="table table-striped table-hover table-bordered" id="itemsTbl"><thead><tr><th style="width: 200px">Description</th><th style="width:200px">Amount</th></tr></thead><tbody>'    
 									$.each(item, function (key, val) {
 										sbody += "<tr><td>"+val.desc+"</td><td>"+val.amount+"</td></tr>"
-										totamount = totamount + parseFloat(val.amount)
+										totamount = totamount + parseFloat(val.amount.replace(',',''))
 										base += 30
 			                			
 			                		})
@@ -349,6 +305,8 @@
 									  		, 'elementHandlers': specialElementHandlers
 									  	}
 									)
+									
+									base = base - 60
 									
 									pdf.setFontType("bold");
 									pdf.setFontSize(15);
@@ -480,6 +438,50 @@
 </t:Student>
 
 <%
+	}
+	else if(fstat == 0){
+	
+	%>    
+	
+	<t:Student title="Registration" from="Registration" to="">
+	<jsp:attribute name="myscript">      
+	  	<script>
+			$(document).ready(function (){
+				
+			});
+		</script>
+	</jsp:attribute>
+	
+	<jsp:attribute name="customImportedScript">      
+		<script type="text/javascript" src="../Assets/js/jquery-1.8.3.min.js"></script>
+	</jsp:attribute>    
+	
+	<jsp:body>
+		<script src="../Assets/Student/Schedule/Schedule.js"></script>
+	
+	    <div class="row">
+	        <div class="col-sm-12">
+	        	<section class="panel">
+	            	<div class="panel-body">
+	                   	<div class="row">
+					    	<div class="col-lg-12">
+						    	<section class="panel">
+						        	<div class="panel-body">
+						            	<div class="row" style="text-align:center;color:#B33A3A">
+							            	<h4>The Registration isn't open yet</h4>
+				 		            	</div>
+						        	</div>
+						   		</section>
+						    </div>
+				         </div>
+	            	</div>
+	           	</section>
+	        </div>
+	     </div>
+	</jsp:body>
+	</t:Student>
+	
+	<%
 	}
 	else{
 %>    

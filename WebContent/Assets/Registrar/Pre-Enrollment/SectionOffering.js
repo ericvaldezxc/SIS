@@ -138,6 +138,7 @@ var EditableTable = function () {
             	var curriculumDrp = $('#curriculumDrp').val()
             	var professorDrp = $('#professorDrp').val()
             	var professorDrp = $('#professorDrp').val()
+            	var slot = $('#slotTxt').val()
             	
                 swal({
                     title: "Are you sure?",
@@ -168,7 +169,7 @@ var EditableTable = function () {
 							 
                 		$.ajax({	
         					type:'POST',
-        					data:{subject:latsub,curriculumDrp:curriculumDrp,section:section,year:year,course:course,semester:semester,campus:campus,lattype:lattype,professorDrp:professorDrp},
+        					data:{slot:slot,subject:latsub,curriculumDrp:curriculumDrp,section:section,year:year,course:course,semester:semester,campus:campus,lattype:lattype,professorDrp:professorDrp},
         					url:'Controller/Registrar/PreEnrollment/Schedule',
         					success: function(result){
 	    						 $('#schedmainBody tr').each(function(){
@@ -245,7 +246,7 @@ var EditableTable = function () {
             								sched += val2.timesched + ' - ' + val2.room + '</br>';
 
                                     });
-        							$('#mainBody').append('<tr><td style="font-size:12px"><label class="codeText"  data-type="solo" data-curriculum-id="'+val.id+'" data-tuition="'+val.tuition+'">'+val.code+'</label></td><td style="font-size:12px" ><label class="descText">'+val.desc+'</label></td><td style="font-size:12px" ><label class="unitText">'+val.units+'</label></td><td class="proffesor" data-code="'+val.profcode+'">'+val.prof+'</td><td class="schedule">'+sched+'</td><td><a class="btn btn-success scheduleBtn" data-toggle="modal" href="#Schedule"><i class="fa fa-calendar"></i></a></td></tr>')
+        							$('#mainBody').append('<tr><td style="font-size:12px"><label class="codeText"  data-type="solo" data-curriculum-id="'+val.id+'" data-tuition="'+val.tuition+'">'+val.code+'</label></td><td style="font-size:12px" ><label class="descText">'+val.desc+'</label></td><td style="font-size:12px" ><label class="unitText">'+val.units+'</label></td><td>'+val.slot+'</td><td>'+val.avaslot+'</td><td class="proffesor" data-code="'+val.profcode+'">'+val.prof+'</td><td class="schedule">'+sched+'</td><td><a class="btn btn-success scheduleBtn" data-toggle="modal" href="#Schedule"><i class="fa fa-calendar"></i></a></td></tr>')
         							
     							}
         						else{
@@ -259,14 +260,14 @@ var EditableTable = function () {
                 								sched += val3.timesched + ' - ' + val3.room + '</br>';
 
                                         });
-            							$('#mainBody').append('<tr><td style="font-size:12px;padding-left: 25px;font-style:italic"  ><label class="codeText" data-subject-id="'+val2.id+'" data-type="child" data-tuition="'+val2.tuition+'">'+val2.code+'</label></td><td style="font-size:12px" ><label class="descText">'+val2.desc+'</label></td><td style="font-size:12px" ><label class="unitText">'+val2.units+'</label></td><td class="proffesor"  data-code="'+val2.profcode+'">'+val2.prof+'</td><td class="schedule">'+sched+'</td><td><a class="btn btn-success scheduleBtn"  data-toggle="modal" href="#Schedule"><i class="fa fa-calendar"></i></a></td></tr>')
+            							$('#mainBody').append('<tr><td style="font-size:12px;padding-left: 25px;font-style:italic"  ><label class="codeText" data-subject-id="'+val2.id+'" data-type="child" data-tuition="'+val2.tuition+'">'+val2.code+'</label></td><td style="font-size:12px" ><label class="descText">'+val2.desc+'</label></td><td style="font-size:12px" ><label class="unitText">'+val2.units+'</label></td><td>'+val2.slot+'</td><td>'+val2.slot+'</td><td class="proffesor"  data-code="'+val2.profcode+'">'+val2.prof+'</td><td class="schedule">'+sched+'</td><td><a class="btn btn-success scheduleBtn"  data-toggle="modal" href="#Schedule"><i class="fa fa-calendar"></i></a></td></tr>')
                                    });
         							
         						}
     							
                             });
     						if($('#mainBody').html() == ''){
-    							$('#mainBody').html('<tr><td style="font-size:12px" ><center class="codeText"></center></td><td style="font-size:12px" ><center class="descText"></center></td><td style="font-size:12px" ><center class="unitText"></center></td><td><center></center></td></tr>')
+    							$('#mainBody').html('<tr><td style="font-size:12px" ><center class="codeText"></center></td><td style="font-size:12px" ><center class="descText"></center></td><td style="font-size:12px" ><center class="unitText"></center></td><td></td><td><center></center></td></tr>')
     							
     						}
     						else{
@@ -303,13 +304,15 @@ var EditableTable = function () {
             $('#mainBody').on('click','a.scheduleBtn',function(){
             	var courcode = $(this).closest('tr').children('td:eq(0)').text()
             	var courdesc = $(this).closest('tr').children('td:eq(1)').text()
-            	var name = $(this).closest('tr').children('td:eq(3)').text()
+            	var name = $(this).closest('tr').children('td:eq(4)').text()
+            	var slot = $(this).closest('tr').children('td:eq(3)').text()
             	var profcode = $(this).closest('tr').find('.proffesor').data('code')
             	var camp = $('#campusDrp').val()
 				var room = '<td><select class="populate roomDrp"  ><option value="default" selected="selected" >TBA</option> '  
 				
             	lattype = $(this).closest('tr').find('.codeText').data('type')
             	latsub = courcode
+            	$('#slotTxt').val(slot)
             	$('#Schedule .modal-title').html(courcode + ' - ' + courdesc)
             	latcode = courcode
             	

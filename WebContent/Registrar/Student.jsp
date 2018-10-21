@@ -29,8 +29,11 @@
 	String status = "";	
 	String couid = "";
 	Statement stmnt = conn.createStatement();
-	ResultSet rs = stmnt.executeQuery("SELECT CurriculumYear_Description,CurriculumYear_Code,Student_Account_CurriculumYearID,Course_Code,Student_Account_CourseID,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Student_Account_Student_Number,case when Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' then 'Enrolled' else 'Not Enrolled' end as status,IF((SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'))=0,'Not Enrolled','Enrolled') as enrolledba,ifnull((select Returnee_ID from t_returnee where Returnee_Display_Status = 'Active' and Returnee_StudentAccountID =  Student_Account_ID ),'Not Returnee') as retid FROM `t_student_taken_curriculum_subject`  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join r_section on Student_Account_SectionID = Section_ID inner join r_course on Student_Account_CourseID = Course_ID inner join r_curriculumyear on CurriculumYear_ID = Student_Account_CurriculumYearID  group by Student_Taken_Curriculum_Subject_StudentAccountID");
+	Statement stmnt2 = conn.createStatement();
+	ResultSet rs = stmnt.executeQuery("SELECT Student_Account_ID,Curriculum_Max_Credited_Unit,CurriculumYear_Description,CurriculumYear_Code,Student_Account_CurriculumYearID,Course_Code,Student_Account_CourseID,Section_Code,Student_Profile_First_Name,Student_Profile_Middle_Name,Student_Profile_Last_Name,Student_Account_Student_Number,case when Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' then 'Enrolled' else 'Not Enrolled' end as status,IF((SELECT count(*) as cou FROM `t_student_taken_curriculum_subject` where Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'))=0,'Not Enrolled','Enrolled') as enrolledba,ifnull((select Returnee_ID from t_returnee where Returnee_Display_Status = 'Active' and Returnee_StudentAccountID =  Student_Account_ID ),'Not Returnee') as retid FROM `t_student_taken_curriculum_subject`  inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join r_curriculum on CurriculumItem_CurriculumID = Curriculum_ID inner join r_section on Student_Account_SectionID = Section_ID inner join r_course on Student_Account_CourseID = Course_ID inner join r_curriculumyear on CurriculumYear_ID = Student_Account_CurriculumYearID  group by Student_Taken_Curriculum_Subject_StudentAccountID");
 	while(rs.next()){
+		String fstudid = rs.getString("Student_Account_ID");
+		String maxunit = rs.getString("Curriculum_Max_Credited_Unit");
 		fname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_First_Name"));
 		mname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Middle_Name"));
 		lname = ec.decrypt(ec.key, ec.initVector, rs.getString("Student_Profile_Last_Name"));
@@ -42,16 +45,25 @@
 		String retid = rs.getString("retid");
 		String enrollstat = rs.getString("enrolledba");
 		String printregi = "";
+		String unitstotake = "";
+		ResultSet rs2 = stmnt2.executeQuery("select "+maxunit+"-IFNULL(SUM(Subject_Credited_Units),0) as unitotake from t_student_taken_curriculum_subject inner join r_subject ON Student_Taken_Curriculum_Subject_SubjectID = Subject_ID where Student_Taken_Curriculum_Subject_StudentAccountID = '"+fstudid+"' and Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Student_Taken_Curriculum_Subject_AcademicIYearID = (select Academic_Year_ID from r_academic_year where Academic_Year_Active_Flag ='Present') and Student_Taken_Curriculum_Subject_SemesterID = (select Semester_ID from r_semester where Semester_Active_Flag = 'Active') ");
+		while(rs2.next()){
+			unitstotake = rs2.getString("unitotake");
+		}		
+		
+		String tdunit = "<td>Not Available</td>";
 		if(enrollstat.equals("Enrolled")){
 			printregi = "<a class='btn printregi' title='Print Registration Card' style='background-color:#0080ff;color:white'><i class='fa fa-print'></i></a>";
+			tdunit = "<td>"+ unitstotake+" Units</td>";
 		}
+		String buttons = "";
 		
 		if(retid.equals("Not Returnee")){
-			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' href='#Profile'><i class='fa fa-eye'></i></a> <a class='btn pedit' style='background-color:#33cc33;color:white' style='color:white' data-toggle='modal' href='#EditProfile'><i class='fa fa-edit'></i></a>  <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' href='#curriculum'><i class='fa fa-flag'></i></a> "+printregi+" <a class='btn btn-danger addreturnee' title='Returnee'><i class='fa fa-rotate-right'></i></a> </td></tr>"; 
+			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td>"+unitstotake+" Unit/s</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' href='#Profile'><i class='fa fa-eye'></i></a> <a class='btn pedit' style='background-color:#33cc33;color:white' style='color:white' data-toggle='modal' href='#EditProfile'><i class='fa fa-edit'></i></a>  <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'><i class='fa fa-flag'></i></a> "+printregi+" <a class='btn btn-danger addreturnee' title='Returnee'><i class='fa fa-rotate-right'></i></a> </td></tr>"; 
 			
 		}
 		else{
-			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' href='#Profile'><i class='fa fa-eye'></i></a> <a class='btn pedit' style='background-color:#33cc33;color:white' style='color:white' data-toggle='modal' href='#EditProfile'><i class='fa fa-edit'></i></a> <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' href='#curriculum'><i class='fa fa-flag'></i></a> "+printregi+" <a class='btn btn-info tar returnee' title='Returnee' data-course='"+couid+"' data-toggle='modal' data-curriculum-code='"+curcode+"' href='#Returnee'><i class='fa fa-rotate-left'></i></a> </td></tr>"; 
+			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td>"+unitstotake+" Unit/s</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' href='#Profile'><i class='fa fa-eye'></i></a> <a class='btn pedit' style='background-color:#33cc33;color:white' style='color:white' data-toggle='modal' href='#EditProfile'><i class='fa fa-edit'></i></a> <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'><i class='fa fa-flag'></i></a> "+printregi+" <a class='btn btn-info tar returnee' title='Returnee' data-course='"+couid+"' data-toggle='modal' data-curriculum-code='"+curcode+"' href='#Returnee'><i class='fa fa-rotate-left'></i></a> </td></tr>"; 
 			
 		}
 		
@@ -91,6 +103,8 @@
 			$(document).ready(function (){
 //				alert(window.location.hostname+":"+window.location.port+"/")
 //				$('#yearhidden').hide()
+				var availunittotake = 'None'
+				var tocreditunit = 0
 				EditableTable.init();
 				$("select.schedule").select2();
 				$("select#shiftCourseDrp").select2();
@@ -258,38 +272,61 @@
 				
 				$('#curBody').on('click','a.enroll',function(){
 					$('#curriculum').modal('toggle')
-					var coucode = $(this).closest('tr').children('td:eq(0)').text()
-					globsub = coucode
-					var coudesc = $(this).closest('tr').children('td:eq(1)').text()
-					$('#Subject-Title').html(coucode + ' - ' + coudesc)
-					$.ajax({
-    					type:'POST',
-    					data:{subject: coucode},
-    					url: "Controller/Registrar/Student/Schedule",
-    					success: function(result){
-    						var item = $.parseJSON(result)
-    						var opt = '<option value="default" selected disabled>Select a schedule</option>'
-    						var optbody = ''
-    						$.each(item,function(key,val){
-//    							optbody += 
-   								$.each(val.sched,function(key2,val2){
-   	    							optbody += val2 + ' '
-   	    							
-   	    						})
-    							opt += '<option value="'+val.section+'">'+optbody+'</option>'
-    							//alert(opt)
-    						})
-    						if(opt == '')
-    							opt = '<option value="default">No Schedule Available</option> '
-    						$('#schedDrp').html(opt)
-    						$('select#schedDrp').select2('val', 'default')
-    						console.log(item)
-    						
-    					},
-                        error: function (response) {
-                            swal("Error encountered while accessing the data", "Please try again", "error");
-                        }
-    				});
+					tocreditunit = $(this).data("credited-unit")
+					var newavailunittotake = parseFloat(availunittotake) - tocreditunit 
+					if(newavailunittotake >= 0){
+						console.log(tocreditunit)
+						var coucode = $(this).closest('tr').children('td:eq(0)').text()
+						globsub = coucode
+						var coudesc = $(this).closest('tr').children('td:eq(1)').text()
+						$('#Subject-Title').html(coucode + ' - ' + coudesc)
+						$.ajax({
+	    					type:'POST',
+	    					data:{subject: coucode},
+	    					url: "Controller/Registrar/Student/Schedule",
+	    					success: function(result){
+	    						var item = $.parseJSON(result)
+	    						var opt = '<option value="default" selected disabled>Select a schedule</option>'
+	    						var optbody = ''
+	    						$.each(item,function(key,val){
+//	    							optbody += 
+	   								$.each(val.sched,function(key2,val2){
+	   	    							optbody += val2 + ' '
+	   	    							
+	   	    						})
+	    							opt += '<option value="'+val.section+'">'+optbody+'</option>'
+	    							//alert(opt)
+	    						})
+	    						if(opt == '')
+	    							opt = '<option value="default">No Schedule Available</option> '
+	    						$('#schedDrp').html(opt)
+	    						$('select#schedDrp').select2('val', 'default')
+	    						console.log(item)
+	    						$('#enroll').modal("toggle")
+	    						
+	    					},
+	                        error: function (response) {
+	                            swal("Error encountered while accessing the data", "Please try again", "error");
+	                        }
+	    				});
+					}
+					else{
+						swal({
+                            title: "There are no more allowed units to take for this semester"
+                            , text: "Please check the student allowed units to take"
+                            , type: "error"
+                            , confirmButtonColor: '#88A755'
+                            , confirmButtonText: 'Okay'
+                            , closeOnConfirm: true
+                        }, function (isConfirm) {
+                            if (isConfirm) {
+                               $('#curriculum').modal('toggle')
+                            }
+                        });
+                       
+
+					}
+					
 					
 				})
 				$('#enrollClose').click(function(){
@@ -1423,6 +1460,7 @@
        					 				
        					 			}
        					 			else{
+       					 				//alert(val2.desc)
     						   			$.each(val2.group,function(key3,val3){
     	   					 				var prereq = ''
        	   					 				var i = 0
@@ -1610,10 +1648,14 @@
 	            });
 				
 				
-				
+				 
+				//tocreditunit
 				$('#editable-sample').on('click','a.curriculum',function(){
 					var studentnumber = $(this).closest('tr').children('td:eq(0)').text()
-					globstudnum = studentnumber
+					if(availunittotake == 'None')
+						availunittotake = $(this).data("available-units-to-take")
+					
+				 	globstudnum = studentnumber
 					$.ajax({
     					type:'POST',
     					data:{studentnumber: studentnumber},
@@ -1649,7 +1691,7 @@
            					 				if(enrollstatus == 'Enrolled')
            					 					st = "Enrolled"           					 				
            					 				else if(val2.status == 'Not Cleared')
-           					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject'  data-toggle='modal' href='#enroll'><i class='fa fa-bolt'></i></a>"
+           					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject' data-credited-unit='"+val2.units+"'   href='#enroll'><i class='fa fa-bolt'></i></a>"
         					 				else{
            					 					st = 'Cleared'
            					 					enrollstatus = 'Cleared'
@@ -1686,7 +1728,7 @@
     											if(enrollstatus == 'Enrolled')
                					 					st = "Enrolled"             					 				
                					 				else if(val3.status == 'Not Cleared')
-    	       					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject'  data-toggle='modal' href='#enroll'><i class='fa fa-bolt'></i></a>"
+    	       					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject' data-credited-unit='"+val3.units+"'   href='#enroll'><i class='fa fa-bolt'></i></a>"
     	    					 				else{
     	       					 					st = 'Cleared'
     	           					 					enrollstatus = 'Cleared'
@@ -1764,6 +1806,7 @@
 		        					data:{subject: globsub,studnum: globstudnum,section: sec},
 		        					url: "Controller/Registrar/Student/Enroll",
 		        					success: function(result){
+		        						availunittotake = parseFloat(availunittotake) - tocreditunit 
 		        						swal({
 		                                    title: "Record Updated!"
 		                                    , text: "The data is successfully Updated!"
@@ -1994,11 +2037,12 @@
                                     <table class="table table-striped table-hover table-bordered" id="editable-sample">
 	                                    <thead>
 	                                        <tr>
-	                                            <th style="width: 20%">Student Number</th>
+	                                            <th style="width: 16%">Student Number</th>
 	                                            <th style="width: 20%">Student Name</th>
-	                                            <th style="width: 15%">Course and Section</th>
-	                                            <th style="width: 15%">Curriculum</th>
+	                                            <th style="width: 12%">Course and Section</th>
+	                                            <th style="width: 12%">Curriculum</th>
 	                                            <th style="width: 10%">Status</th>
+	                                            <th style="width: 10%">Available Units</th>
 	                                            <th style="width: 20%">Action</th>
 	                                            
 	                                        </tr>

@@ -33,7 +33,7 @@ public class SendEmail extends HttpServlet {
 	        
 	        String to = "ericvaldezxc@gmail.com";
 	        String subject = "Confirmation";
-	        String message =  "<html><body><h4>asdsdd</h4></body></html>";
+	        String message =  "<html><body><h4>asdszxczxczdd</h4></body></html>";
 	        String user = "sisbsit41@gmail.com";
 	        String pass = "passwordsis";
 	        SendMail.send(to,subject, message, user, pass);

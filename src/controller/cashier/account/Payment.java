@@ -84,9 +84,19 @@ public class Payment extends HttpServlet {
 
 			
 			
+			
 			sql = "insert into t_payable_history (Payable_History_Student_Account_ID,Payable_History_Semester_ID,Payable_History_AcademicYearID,Payable_History_Year_Level,Payable_History_Description,Payable_History_Type,Payable_History_Amount,Payable_History_Balance) values ('"+studid+"',(SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active'),(SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'),'"+yearlvl+"','CASH - UPON ENROLLMENT','Payment','"+amount+"','"+balance+"')   ";
 			out.print(sql);
 			stmnt.execute(sql);
+			
+			sql = "insert into t_payment_log (Payment_Log_StudentAccountID,Payment_Log_OR_Number,Payment_Log_SemesterID,Payment_Log_AcademicyYearID,Payment_Log_Paymount_Amount,Payment_Log_Remaining_Balance,Payment_Log_Type) values ('"+studid+"',(SELECT CONCAT(YEAR(CURRENT_DATE),'-',RIGHT(COUNT(*)+100001,5),'-PA') FROM (select * from t_payment_log where left(Payment_Log_OR_Number,4) = YEAR(CURRENT_DATE) and RIGHT(Payment_Log_OR_Number,2) = 'PA') as t1),(SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active'),(SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'),'"+amount+"','"+balance+"','Payment')   ";
+			out.print(sql);
+			stmnt.execute(sql);
+			
+			
+			
+			
+			
 			
 			conn.close();
 		} catch (SQLException e) {

@@ -88,6 +88,11 @@ public class Offset extends HttpServlet {
 			out.print(sql);
 			stmnt.execute(sql);
 			
+			
+			sql = "insert into t_payment_log (Payment_Log_StudentAccountID,Payment_Log_OR_Number,Payment_Log_SemesterID,Payment_Log_AcademicyYearID,Payment_Log_Paymount_Amount,Payment_Log_Remaining_Balance,Payment_Log_Type) values ('"+studid+"',(SELECT CONCAT(YEAR(CURRENT_DATE),'-',RIGHT(COUNT(*)+100001,5),'-OF') FROM (select * from t_payment_log where left(Payment_Log_OR_Number,4) = YEAR(CURRENT_DATE) and RIGHT(Payment_Log_OR_Number,2) = 'OF') as t1),(SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active'),(SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present'),'"+amount+"','"+balance+"','Offset')   ";
+			out.print(sql);
+			stmnt.execute(sql);
+			
 			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

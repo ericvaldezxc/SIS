@@ -57,6 +57,7 @@ public class Schedule extends HttpServlet {
 		String lattype = request.getParameter("lattype");
 		String professorDrp = request.getParameter("professorDrp");
 		String subject = request.getParameter("subject");
+		String slot = request.getParameter("slot");
 		
 		DBConfiguration db = new DBConfiguration(); 
 		Connection conn = db.getConnection();
@@ -102,15 +103,15 @@ public class Schedule extends HttpServlet {
 				
 				if(professorDrp.equals("")) {
 					if(cou.equals("0"))
-						sql = "Insert into t_schedule (Schedule_ProfessorID,Schedule_CurriculumItemID,Schedule_SectionID,Schedule_ChildrenID,Schedule_AcademicYearID) values (null,'"+id+"',(SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"'),NULL,(SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present'))";
+						sql = "Insert into t_schedule (Schedule_ProfessorID,Schedule_CurriculumItemID,Schedule_SectionID,Schedule_ChildrenID,Schedule_AcademicYearID,Schedule_Slot) values (null,'"+id+"',(SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"'),NULL,(SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present'),'"+slot+"')";
 					else 
-						sql = "UPDATE t_schedule set Schedule_ProfessorID = null where Schedule_ID = '"+schedid+"'";
+						sql = "UPDATE t_schedule set Schedule_ProfessorID = null,Schedule_Slot = '"+slot+"' where Schedule_ID = '"+schedid+"'";
 				}
 				else {
 					if(cou.equals("0"))
-						sql = "Insert into t_schedule (Schedule_ProfessorID,Schedule_CurriculumItemID,Schedule_SectionID,Schedule_ChildrenID,Schedule_AcademicYearID) values ((SELECT Professor_ID FROM r_professor WHERE Professor_Code = '"+ professorDrp+"'),'"+id+"',(SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"'),NULL,(SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present'))";
+						sql = "Insert into t_schedule (Schedule_ProfessorID,Schedule_CurriculumItemID,Schedule_SectionID,Schedule_ChildrenID,Schedule_AcademicYearID,Schedule_Slot) values ((SELECT Professor_ID FROM r_professor WHERE Professor_Code = '"+ professorDrp+"'),'"+id+"',(SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"'),NULL,(SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present'),'"+slot+"')";
 					else 
-						sql = "UPDATE t_schedule set Schedule_ProfessorID = (SELECT Professor_ID FROM r_professor WHERE Professor_Code = '"+ professorDrp+"') where Schedule_ID = '"+schedid+"'";
+						sql = "UPDATE t_schedule set Schedule_ProfessorID = (SELECT Professor_ID FROM r_professor WHERE Professor_Code = '"+ professorDrp+"'),Schedule_Slot = '"+slot+"' where Schedule_ID = '"+schedid+"'";
 
 					
 				}
@@ -132,16 +133,16 @@ public class Schedule extends HttpServlet {
 				
 				if(professorDrp.equals("")) {
 					if(cou.equals("0"))
-						sql = "Insert into t_schedule (Schedule_ProfessorID,Schedule_CurriculumItemID,Schedule_SectionID,Schedule_ChildrenID,Schedule_AcademicYearID) values (null,'"+id+"',(SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"'),(SELECT Subject_ID FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"'),(SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present'))";
+						sql = "Insert into t_schedule (Schedule_ProfessorID,Schedule_CurriculumItemID,Schedule_SectionID,Schedule_ChildrenID,Schedule_AcademicYearID,Schedule_Slot) values (null,'"+id+"',(SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"'),(SELECT Subject_ID FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"'),(SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present'),'"+slot+"')";
 					else 
-						sql = "UPDATE t_schedule set Schedule_ProfessorID = null where Schedule_ID = '"+schedid+"'";
+						sql = "UPDATE t_schedule set Schedule_ProfessorID = null,Schedule_Slot = '"+slot+"' where Schedule_ID = '"+schedid+"'";
 					
 				}
 				else {
 					if(cou.equals("0"))
-						sql = "Insert into t_schedule (Schedule_ProfessorID,Schedule_CurriculumItemID,Schedule_SectionID,Schedule_ChildrenID,Schedule_AcademicYearID) values ((SELECT Professor_ID FROM r_professor WHERE Professor_Code = '"+ professorDrp+"'),'"+id+"',(SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"'),(SELECT Subject_ID FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"'),(SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present'))";
+						sql = "Insert into t_schedule (Schedule_ProfessorID,Schedule_CurriculumItemID,Schedule_SectionID,Schedule_ChildrenID,Schedule_AcademicYearID,Schedule_Slot) values ((SELECT Professor_ID FROM r_professor WHERE Professor_Code = '"+ professorDrp+"'),'"+id+"',(SELECT Section_ID FROM r_section WHERE Section_Code = '"+section+"'),(SELECT Subject_ID FROM r_subject WHERE Subject_Code = '"+ec.encrypt(ec.key, ec.initVector, subject)+"'),(SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present'),'"+slot+"')";
 					else 
-						sql = "UPDATE t_schedule set Schedule_ProfessorID = (SELECT Professor_ID FROM r_professor WHERE Professor_Code = '"+ professorDrp+"') where Schedule_ID = '"+schedid+"'";
+						sql = "UPDATE t_schedule set Schedule_ProfessorID = (SELECT Professor_ID FROM r_professor WHERE Professor_Code = '"+ professorDrp+"'),Schedule_Slot = '"+slot+"' where Schedule_ID = '"+schedid+"'";
 					
 					
 				}

@@ -273,12 +273,16 @@
 				});
 				$('.ms-container').css("width", "100%"); 
 				var latcode = ''
+				/*
 				$('#addBtn').click(function(e){
 					var degree = $('#selDegree').val()
 					var subject = $('#selSubject').val()
 					var fname = $('#fnameTxt').val()
 					var mname = $('#mnameTxt').val()
 					var lname = $('#lnameTxt').val()
+					var email = $('#emailTxt').val()
+					var contactnum = $('#conTxt').val()
+					alert(email)
 					
 	            	e.preventDefault();
 					 swal({
@@ -290,23 +294,26 @@
 	                    confirmButtonText: 'Yes!',
 	                    cancelButtonText: "No!",
 	                    closeOnConfirm: false,
-	                    closeOnCancel: false
+	                    closeOnCancel: false,
+	                    showLoaderOnConfirm: true
 	                },
 	                function (isConfirm) {
 	                    if (isConfirm) {
-	                		$.ajax({
-	        					type:'POST',
-	        					data:{degree:JSON.stringify(degree),subject:JSON.stringify(subject),fname:fname,mname:mname,lname:lname,type:'Insert',latcode:latcode},
-	        					url:'Controller/Registrar/Faculty/Faculty',
-	        					success: function(result){
-	         						swal("Record Added!", "The data is successfully added!", "success");
-		                             
-	        					},
-	                            error: function (response) {
-	                                swal("Error encountered while adding data", "Please try again", "error");
-	                                $("#editable-sample_new").click();
-	                            }
-	        				});
+	                    	setTimeout(function () {
+		                		$.ajax({
+		        					type:'POST',
+		        					data:{degree:JSON.stringify(degree),subject:JSON.stringify(subject),fname:fname,mname:mname,lname:lname,type:'Insert',latcode:latcode,email:email,contactnum:contactnum },
+		        					url:'Controller/Registrar/Faculty/Faculty',
+		        					success: function(result){
+		         						swal("Record Added!", "The data is successfully added!", "success");
+			                             
+		        					},
+		                            error: function (response) {
+		                                swal("Error encountered while adding data", "Please try again", "error");
+		                                $("#editable-sample_new").click();
+		                            }
+		        				});
+	                    	}, 2000);
 
 	                    } else {
 
@@ -317,6 +324,7 @@
 	                });
 									
 				});
+				*/
 				
 				$('#addBtn').click(function(e){
 					var degree = $('#selDegree').val()
@@ -324,6 +332,8 @@
 					var fname = $('#fnameTxt').val()
 					var mname = $('#mnameTxt').val()
 					var lname = $('#lnameTxt').val()
+					var email = $('#emailTxt').val()
+					var contactnum = $('#conTxt').val()
 					
 	            	e.preventDefault();
 					 swal({
@@ -335,23 +345,26 @@
 	                    confirmButtonText: 'Yes!',
 	                    cancelButtonText: "No!",
 	                    closeOnConfirm: false,
-	                    closeOnCancel: false
+	                    closeOnCancel: false,
+	                    showLoaderOnConfirm: true
 	                },
 	                function (isConfirm) {
 	                    if (isConfirm) {
-	                		$.ajax({
-	        					type:'POST',
-	        					data:{degree:JSON.stringify(degree),subject:JSON.stringify(subject),fname:fname,mname:mname,lname:lname,type:'Insert',latcode:latcode},
-	        					url:'Controller/Registrar/Faculty/Faculty',
-	        					success: function(result){
-	         						swal("Record Added!", "The data is successfully added!", "success");
-		                             
-	        					},
-	                            error: function (response) {
-	                                swal("Error encountered while adding data", "Please try again", "error");
-	                                $("#editable-sample_new").click();
-	                            }
-	        				});
+	                    	setTimeout(function () {
+		                		$.ajax({
+		        					type:'POST',
+		        					data:{degree:JSON.stringify(degree),subject:JSON.stringify(subject),fname:fname,mname:mname,lname:lname,type:'Insert',latcode:latcode,email:email,contactnum:contactnum},
+		        					url:'Controller/Registrar/Faculty/Faculty',
+		        					success: function(result){
+		         						swal("Record Added!", "The data is successfully added!", "success");
+			                             
+		        					},
+		                            error: function (response) {
+		                                swal("Error encountered while adding data", "Please try again", "error");
+		                                $("#editable-sample_new").click();
+		                            }
+		        				});
+	                    	}, 2000);
 
 	                    } else {
 
@@ -513,6 +526,14 @@
 	                        </div>
 		                	<div class="col-lg-4">
 	                        	Last Name <input type="text" class="form-control" placeholder="ex. Dela Cruz" id="lnameTxt" >
+	                        </div>
+	                	</div>
+	                	<div class="row">
+		                	<div class="col-lg-6" style="padding-top:10px">
+	                           Contact Number<input type="text" maxlength="11" class="form-control" placeholder="ex. 09xxxxxxxxx"  id="conTxt" >
+	                        </div>
+	                        <div class="col-lg-6" style="padding-top:10px">
+	                        	Email Address  <input type="text" class="form-control" placeholder="ex. juandelacruz@domain.com" id="emailTxt" >
 	                        </div>
 	                	</div>
 	                	<div class="row" style="margin-top:10px">

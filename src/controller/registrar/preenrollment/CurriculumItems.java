@@ -132,9 +132,10 @@ public class CurriculumItems extends HttpServlet {
 				 if(mcou.equals("0")) {
 					 obj.put("prof", "Not Set");
 					 obj.put("profcode", "Not Set");
+					 obj.put("slot", "Not Set");
 					 
 				 }else {
-					 sql3 = "SELECT ifnull(Professor_Code,0) as pcode,Professor_FirstName,Professor_MiddleName,Professor_LastName FROM `t_schedule` left join r_professor on Schedule_ProfessorID = Professor_ID left join r_curriculumitem on Schedule_CurriculumItemID =  CurriculumItem_ID  WHERE Schedule_SectionID = (SELECT Section_ID from r_section where Section_Code = '"+section+"') and CurriculumItem_SubjectID = '"+subjectid+"' and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present') ";
+					 sql3 = "SELECT ifnull(Professor_Code,0) as pcode,Schedule_Slot,Professor_FirstName,Professor_MiddleName,Professor_LastName,Schedule_Slot - (SELECT count(*) FROM `t_student_taken_curriculum_subject` as mytbl1 WHERE mytbl1.Student_Taken_Curriculum_Subject_SemesterID = (SELECT semtbl.Semester_ID FROM `r_semester` as semtbl where semtbl.Semester_Active_Flag = 'Active') and mytbl1.Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT yeartbl.Academic_Year_ID FROM `r_academic_year` as yeartbl where yeartbl.Academic_Year_Active_Flag = 'Present' )  and mytbl1.Student_Taken_Curriculum_Subject_SubjectID = '"+subjectid+"' and mytbl1.Student_Taken_Curriculum_Subject_Taken_Status = 'true' and mytbl1.Student_Taken_Curriculum_Subject_Display_Status = 'Active') AS AVASLOT FROM `t_schedule` left join r_professor on Schedule_ProfessorID = Professor_ID left join r_curriculumitem on Schedule_CurriculumItemID =  CurriculumItem_ID  WHERE Schedule_SectionID = (SELECT Section_ID from r_section where Section_Code = '"+section+"') and CurriculumItem_SubjectID = '"+subjectid+"' and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present') ";
 					 rs3 = stmnt3.executeQuery(sql3);
 					 String Fullname = "";
 					 int countprof = 0;
@@ -142,12 +143,17 @@ public class CurriculumItems extends HttpServlet {
 						 if(rs3.getString("pcode").equals("0")) {
 							 obj.put("prof", "Not Set");
 							 obj.put("profcode", "Not Set");
+							 obj.put("slot", "Not Set");
+							 obj.put("avaslot", "Not Set");
+							 
 							 
 						 }else {
 							 Fullname = fn.fullname(ec.decrypt(ec.key, ec.initVector, rs3.getString("Professor_FirstName")),ec.decrypt(ec.key, ec.initVector, rs3.getString("Professor_MiddleName")),ec.decrypt(ec.key, ec.initVector, rs3.getString("Professor_LastName")));
 							 String profcode = rs3.getString("pcode");
 							 obj.put("prof", Fullname);
 							 obj.put("profcode", profcode);
+							 obj.put("slot", rs3.getString("Schedule_Slot"));
+							 obj.put("avaslot", rs3.getString("AVASLOT"));
 							 
 						 }
 						 countprof++;
@@ -155,6 +161,9 @@ public class CurriculumItems extends HttpServlet {
 					 if(countprof == 0) {
 						 obj.put("prof", "Not Set");
 						 obj.put("profcode", "Not Set");
+						 obj.put("slot", "Not Set");
+						 obj.put("avaslot", "Not Set");
+						 
 					 }
 				 }
 				 
@@ -207,13 +216,14 @@ public class CurriculumItems extends HttpServlet {
 						 String Fullname = "";
 						 while(rs4.next()){
 							 group = new JSONObject();
+							 String sub2 = rs4.getString("Subject_ID");
 							 group.put("id", ec.decrypt(ec.key, ec.initVector, rs4.getString("Subject_ID")));
 							 group.put("code", ec.decrypt(ec.key, ec.initVector, rs4.getString("Subject_Code")));
 							 group.put("desc", ec.decrypt(ec.key, ec.initVector, rs4.getString("Subject_Description")));
 							 group.put("tuition", rs4.getString("Subject_Tuition_Hours"));
 							 group.put("units", rs4.getString("Subject_Credited_Units"));
 							 
-							 sql5 = "SELECT ifnull(Professor_Code,0) as pcode,Professor_FirstName,Professor_MiddleName,Professor_LastName FROM `t_schedule` left join r_professor on Schedule_ProfessorID = Professor_ID left join r_curriculumitem on Schedule_CurriculumItemID =  CurriculumItem_ID right join r_subject on CurriculumItem_SubjectID = Subject_Group WHERE Schedule_SectionID = (SELECT Section_ID from r_section where Section_Code = '"+section+"')  and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present')   and Schedule_ChildrenID = '"+groupid+"'";
+							 sql5 = "SELECT ifnull(Professor_Code,0) as pcode,Professor_FirstName,Schedule_Slot,Professor_MiddleName,Professor_LastName,Schedule_Slot - (SELECT count(*) FROM `t_student_taken_curriculum_subject` as mytbl1 WHERE mytbl1.Student_Taken_Curriculum_Subject_SemesterID = (SELECT semtbl.Semester_ID FROM `r_semester` as semtbl where semtbl.Semester_Active_Flag = 'Active') and mytbl1.Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT yeartbl.Academic_Year_ID FROM `r_academic_year` as yeartbl where yeartbl.Academic_Year_Active_Flag = 'Present' )  and mytbl1.Student_Taken_Curriculum_Subject_SubjectID = '"+sub2+"' and mytbl1.Student_Taken_Curriculum_Subject_Taken_Status = 'true' and mytbl1.Student_Taken_Curriculum_Subject_Display_Status = 'Active') AS AVASLOT  FROM `t_schedule` left join r_professor on Schedule_ProfessorID = Professor_ID left join r_curriculumitem on Schedule_CurriculumItemID =  CurriculumItem_ID right join r_subject on CurriculumItem_SubjectID = Subject_Group WHERE Schedule_SectionID = (SELECT Section_ID from r_section where Section_Code = '"+section+"')  and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present')   and Schedule_ChildrenID = '"+groupid+"'";
 //							 out.print(sql5+"\n");
 							 rs5 = stmnt5.executeQuery(sql5);
 							 Fullname = "";
@@ -222,12 +232,16 @@ public class CurriculumItems extends HttpServlet {
 								 if(rs5.getString("pcode").equals("0")) {
 									 group.put("prof", "Not Set");
 									 group.put("profcode", "Not Set");
+									 group.put("slot", "Not Set");
+									 group.put("avaslot", "Not Set");
 									 
 								 }else {
 									 Fullname = fn.fullname(ec.decrypt(ec.key, ec.initVector, rs5.getString("Professor_FirstName")),ec.decrypt(ec.key, ec.initVector, rs5.getString("Professor_MiddleName")),ec.decrypt(ec.key, ec.initVector, rs5.getString("Professor_LastName")));
 									 String profcode = rs5.getString("pcode");
 									 group.put("prof", Fullname);
 									 group.put("profcode", profcode);
+									 group.put("slot", rs5.getString("Schedule_Slot"));
+									 group.put("avaslot", rs5.getString("AVASLOT"));
 									 
 								 }
 								 countprof++;
@@ -235,6 +249,8 @@ public class CurriculumItems extends HttpServlet {
 							 if(countprof == 0) {
 								 group.put("prof", "Not Set");
 								 group.put("profcode", "Not Set");
+								 group.put("slot", "Not Set");
+								 group.put("avaslot", "Not Set");
 							 }
 							 
 							 

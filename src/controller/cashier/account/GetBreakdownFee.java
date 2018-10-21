@@ -1,4 +1,4 @@
-package controller.student.registration;
+package controller.cashier.account;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,7 +23,7 @@ import connection.DBConfiguration;
 /**
  * Servlet implementation class GetDocument
  */
-@WebServlet("/Student/Controller/Student/Registration/GetBreakdownFee")
+@WebServlet("/Cashier/Controller/Cashier/Print/GetBreakdownFee")
 public class GetBreakdownFee extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -61,10 +61,8 @@ public class GetBreakdownFee extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		String username = request.getParameter("studentNumber");	
 
-		HttpSession session = request.getSession();
-		String username = session.getAttribute("username").toString();
-		
 		String sql = "select *,format(Breakdown_Fee_Amount,2) as bamo from t_breakdown_fee where Breakdown_Fee_Student_Account_ID = (SELECT Student_Account_ID FROM `t_student_account` where Student_Account_Student_Number = '"+username+"' ) and Breakdown_Fee_AcademicYearID = (select Academic_Year_ID from r_academic_year where Academic_Year_Active_Flag = 'Present') and Breakdown_Fee_Semester_ID = (select Semester_ID from r_semester where Semester_Active_Flag = 'Active' ) ";
 		JSONArray arr = new JSONArray();
 		PrintWriter out = response.getWriter();	

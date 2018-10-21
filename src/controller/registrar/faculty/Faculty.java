@@ -19,7 +19,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import configuration.EncryptandDecrypt;
+import configuration.RandomCharacter;
 import connection.DBConfiguration;
+import controller.mobile.SendMail;
 
 /**
  * Servlet implementation class GetDocument
@@ -63,6 +65,8 @@ public class Faculty extends HttpServlet {
 		String mname = request.getParameter("mname");
 		String lname = request.getParameter("lname");
 		String latcode = request.getParameter("latcode");
+		String contactnum = request.getParameter("contactnum");
+		String email = request.getParameter("email");
 		String type = request.getParameter("type");
 		
 		try {
@@ -89,17 +93,31 @@ public class Faculty extends HttpServlet {
 		PrintWriter out = response.getWriter();			
 		try {
 			if(type.equals("Insert")){
-				sql = "INSERT INTO `r_professor` (Professor_Code,Professor_FirstName,Professor_MiddleName,Professor_LastName) VALUES ((SELECT concat(YEAR(NOW()),'-',right(count(*)+100001,5)) FROM (SELECT * FROM `r_professor`) AS T1 WHERE LEFT(T1.Professor_Code,4) = YEAR(NOW())),'"+ec.encrypt(ec.key, ec.initVector, fname)+"','"+ec.encrypt(ec.key, ec.initVector, mname)+"','"+ec.encrypt(ec.key, ec.initVector, lname)+"')";
+				sql = "INSERT INTO `r_professor` (Professor_Code,Professor_FirstName,Professor_MiddleName,Professor_LastName,Professor_EmailAddress,Professor_ContactNumber) VALUES ((SELECT concat(YEAR(NOW()),'-',right(count(*)+100001,5)) FROM (SELECT * FROM `r_professor`) AS T1 WHERE LEFT(T1.Professor_Code,4) = YEAR(NOW())),'"+ec.encrypt(ec.key, ec.initVector, fname)+"','"+ec.encrypt(ec.key, ec.initVector, mname)+"','"+ec.encrypt(ec.key, ec.initVector, lname)+"','"+email+"','"+contactnum+"')";
 				stmnt.execute(sql);
 				String prof = "";
+				
+				String code = "";
+				ResultSet rs = stmnt.executeQuery("SELECT * FROM r_professor WHERE Professor_ID = (select max(Professor_ID) from r_professor)");
+				 while(rs.next()){
+					 code = rs.getString("Professor_Code") ;
+			 	 }
+				RandomCharacter ran = new RandomCharacter();
+				 String userpass = ran.showPassword();
+				  String subject2 = "Confirmation";
+			      String message =  "<html><body><h4>The username is "+code+" and the password is "+userpass+"</h4></body></html>";
+			      String user = "sisbsit41@gmail.com";
+			      String pass = "passwordsis";
+			      SendMail.send(email,subject2, message, user, pass);
+				
 				sql = "select Professor_Code from r_professor where Professor_ID =  (select max(Professor_ID) from r_professor )";
-				ResultSet rs = stmnt.executeQuery(sql);
+				rs = stmnt.executeQuery(sql);
 				while(rs.next()){
 					prof = ec.encrypt(ec.key, ec.initVector,  rs.getString("Professor_Code")) ;
 				      
 				}
 				
-				sql = "INSERT INTO `r_user_account` (User_Account_Reference,User_Account_Type,User_Account_Username,User_Account_Password) VALUES ((select max(Professor_ID) from r_professor),'Faculty','"+prof+"','"+prof+"')";
+				sql = "INSERT INTO `r_user_account` (User_Account_Reference,User_Account_Type,User_Account_Username,User_Account_Password) VALUES ((select max(Professor_ID) from r_professor),'Faculty','"+prof+"','"+ec.encrypt(ec.key, ec.initVector,  userpass) +"')";
 				stmnt.execute(sql);
 
 				
