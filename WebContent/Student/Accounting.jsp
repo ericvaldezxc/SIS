@@ -27,7 +27,7 @@
 	String sql ="";
 	
 	
-	ResultSet rs = stmnt.executeQuery("SELECT *,ifnull(Scholarship_Description,'') as scho,format(Payable_History_Amount,2) as amo,format(Payable_History_Balance,2) as bal,TIME_FORMAT(Payable_History_Date_Added, '%Y-%m-%d ') as gdate FROM `t_payable_history` inner join t_student_account on Student_Account_ID = Payable_History_Student_Account_ID inner join r_semester on Payable_History_Semester_ID = Semester_ID inner join r_academic_year on Payable_History_AcademicYearID = Academic_Year_ID  left join r_scholarship on Payable_History_ScholarshipID = Scholarship_ID where Student_Account_Student_Number = '"+uname+"' ");
+	ResultSet rs = stmnt.executeQuery("SELECT *,ifnull(Scholarship_Description,'') as scho,format(Payable_History_Amount,2) as amo,format(Payable_History_Balance,2) as bal,TIME_FORMAT(Payable_History_Date_Added, '%Y-%m-%d ') as gdate FROM `t_payable_history` inner join t_student_account on Student_Account_ID = Payable_History_Student_Account_ID inner join r_semester on Payable_History_Semester_ID = Semester_ID inner join r_academic_year on Payable_History_AcademicYearID = Academic_Year_ID  left join r_scholarship on Payable_History_ScholarshipID = Scholarship_ID where Student_Account_Student_Number = '"+uname+"' order by Payable_History_Date_Added asc" ) ;
 	while(rs.next()){
 		String assessment = "0.00";
 		String payment = "0.00";

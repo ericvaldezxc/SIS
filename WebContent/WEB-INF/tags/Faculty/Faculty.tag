@@ -99,7 +99,7 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
-                <li><a href="ADProfile.php"><i class=" fa fa-suitcase"></i>Profile</a></li>
+                <li><a data-toggle='modal' href='#ChangePassword' id="changepassBtn"><i class=" fa fa-gear"></i>Change Password</a></li>
                 <li><a id="logoutBtn"><i class="fa fa-key" ></i> Log Out</a></li>
             </ul>
         </li>
@@ -262,6 +262,28 @@
 
 </section>
 
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="ChangePassword" class="modal fade">
+       <div class="modal-dialog" style="width:55%">
+           <div class="modal-content">
+               <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                   <h4 class="modal-title">Change Password</h4>
+                   
+               </div>
+               <div class="modal-body">
+               		<div class="col-lg-6" style="">
+               			New Password
+               			<input type="password" class="form-control" placeholder="******" id="newpassTxt" >
+                    </div>
+               </div>
+               <div class="modal-footer">
+                   <button data-dismiss="modal" class="btn btn-default" id="" type="button">Close</button>
+                   <button class="btn btn-success " id="SavePasswordBtn" type="button">Save</button>
+               </div>
+           </div>
+       </div>
+   </div>	
+
 
 <!-- Placed js at the end of the document so the pages load faster -->
 
@@ -348,6 +370,36 @@
                 }
 			});
 		});
+		
+		$('#SavePasswordBtn').click(function(){
+			var newpass = $('#newpassTxt').val()
+
+			$.ajax({
+				type:'POST',
+				data:{newpass: newpass},
+				url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'ChangePassword',
+				success: function(result3){
+
+						swal({
+                        title: "Successfully Update!"
+                        , text: "You successfully update your password!"
+                        , type: "success"
+                        , confirmButtonColor: '#88A755'
+                        , confirmButtonText: 'Okay'
+                        , closeOnConfirm: false
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            window.location.reload();
+                        }
+                    });
+					
+				},
+                error: function (response) {
+                    swal("Error encountered while accessing the data", "Please try again", "error");
+                }
+			});			
+		})
+				
 				
 		
 		
