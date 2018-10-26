@@ -133,6 +133,7 @@ public class CurriculumItems extends HttpServlet {
 					 obj.put("prof", "Not Set");
 					 obj.put("profcode", "Not Set");
 					 obj.put("slot", "Not Set");
+					 obj.put("avaslot", "Not Set");
 					 
 				 }else {
 					 sql3 = "SELECT ifnull(Professor_Code,0) as pcode,Schedule_Slot,Professor_FirstName,Professor_MiddleName,Professor_LastName,Schedule_Slot - (SELECT count(*) FROM `t_student_taken_curriculum_subject` as mytbl1 WHERE mytbl1.Student_Taken_Curriculum_Subject_SemesterID = (SELECT semtbl.Semester_ID FROM `r_semester` as semtbl where semtbl.Semester_Active_Flag = 'Active') and mytbl1.Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT yeartbl.Academic_Year_ID FROM `r_academic_year` as yeartbl where yeartbl.Academic_Year_Active_Flag = 'Present' )  and mytbl1.Student_Taken_Curriculum_Subject_SubjectID = '"+subjectid+"' and mytbl1.Student_Taken_Curriculum_Subject_Taken_Status = 'true' and mytbl1.Student_Taken_Curriculum_Subject_Display_Status = 'Active') AS AVASLOT FROM `t_schedule` left join r_professor on Schedule_ProfessorID = Professor_ID left join r_curriculumitem on Schedule_CurriculumItemID =  CurriculumItem_ID  WHERE Schedule_SectionID = (SELECT Section_ID from r_section where Section_Code = '"+section+"') and CurriculumItem_SubjectID = '"+subjectid+"' and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM r_academic_year WHERE Academic_Year_Active_Flag = 'Present') ";

@@ -50,17 +50,19 @@
 						
 						$.each(data, function(key, val) {
 							head.push({ name : val.year, y : parseFloat(val.total) , drilldown : val.year })
-							
+							console.log("asdsd"+JSON.stringify(head)+"zxcx")
+							firstseriesfinalbody = []
 							$.each(val.body, function(key2, val2) {
+								firstseriesbody = []
 								firstseriesbody.push(val2.course,parseFloat(val2.cou));
+								firstseriesfinalbody.push(firstseriesbody)
 								
 							})
-							firstseriesfinalbody.push(firstseriesbody)
 							firstseries.push({ name : val.year, id : val.year, data : firstseriesfinalbody })
 							
 						})
 						console.log(JSON.stringify(head))
-						console.log(JSON.stringify(firstseries))
+						console.log("-"+JSON.stringify(firstseries)+"-")
 						
 						
 						Highcharts.chart('student', {
@@ -144,9 +146,10 @@
 							firstseries.push({ name : val.year, id : val.year, data : firstseriesfinalbody })
 							
 						})
+						/*
 						console.log(JSON.stringify(head))
 						console.log(JSON.stringify(firstseries))
-						
+						*/
 						
 						Highcharts.chart('curyear', {
 						    chart: {

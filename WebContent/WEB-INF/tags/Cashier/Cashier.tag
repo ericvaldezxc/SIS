@@ -129,6 +129,12 @@
                     	<li class="" id="ScholarshipBtn"><a href="ScholarshipAccounts.jsp">Scholar</a></li>					   
                     </ul>
                 </li>
+            	<li > 
+            		<a href="PaymentHistory.jsp" class="" id="PaymentHistoryBtn">
+                     	<i class ="fa fa-list-alt" ></i>
+                     	<span>Payment History</span>
+                    </a> 
+                </li>
             </ul>            
         </div>
         <!-- sidebar menu end-->
@@ -312,7 +318,9 @@
 			$("#StudentAccBtn").addClass("active");
 		if(title == 'Scholar Accounts') 
 			$("#ScholarshipBtn").addClass("active");
-		 		
+		if(title == 'Payment History') 
+			$("#PaymentHistoryBtn").addClass("active");
+		
 		if(title == 'Student Accounts' || title == 'Scholar Accounts' ) 
 			$('#AccountsBtn').click();
 		
