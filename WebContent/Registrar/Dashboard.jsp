@@ -27,8 +27,23 @@
 		sem = ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Description"));
 		
 	}
+	String countPerType = "";
+	String perType = "";
+	
+	rs = stmnt.executeQuery("SELECT count(*),User_Account_Type FROM `r_user_account` where User_Account_Display_Status = 'Active' group by User_Account_Type  ");
+	while(rs.next()){
+		String cou =  rs.getString("count(*)");
+		String type = rs.getString("User_Account_Type");
+		countPerType += "<td>"+  cou +"</td>";
+		perType += "<th>"+ type +"</th>";
+
+		
+	}
+	
 	pageContext.setAttribute("acadyear", acadyear);
 	pageContext.setAttribute("sem", sem);
+	pageContext.setAttribute("perType", perType);
+	pageContext.setAttribute("countPerType", countPerType);
 
 
 %>    
@@ -209,6 +224,29 @@
 	                }
 
 				});
+				Highcharts.chart('usersDashboard', {
+	                data: {
+	                    table: 'usersTbl'
+	                },
+	                chart: {
+	                    type: 'column'
+	                },
+	                title: {
+	                    text: 'Users Bar Graph'
+	                },
+	                yAxis: {
+	                    allowDecimals: false,
+	                    title: {
+	                        text: 'Number'
+	                    }
+	                },
+	                tooltip: {
+	                    formatter: function() {
+	                        return '<b>' + this.series.name + '</b><br/>' +
+	                            this.point.y + ' ' + this.series.name ;
+	                    }
+	                }
+	            });
 				
 
 			})
@@ -254,6 +292,27 @@
             <section class="panel">
                 <div class="panel-body">
                     <div id="curyear" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                </div>
+            </section>
+        </div> 
+        <div class="col-md-12">
+            <section class="panel">
+                <div class="panel-body">
+                    <div id=usersDashboard style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                    <table id="usersTbl" class="hidden">
+                    	<thead>
+	                        <tr>
+	                            <th></th>
+	                           	${perType}
+	                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Number</th>
+                                ${countPerType}
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </div> 

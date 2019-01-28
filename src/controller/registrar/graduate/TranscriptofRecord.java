@@ -109,6 +109,7 @@ public class TranscriptofRecord extends HttpServlet {
 					String subjdesc = ec.decrypt(ec.key, ec.initVector, rs2.getString("Subject_Description"));
 					String subcredunit = rs2.getString("Subject_Credited_Units");
 					String section = rs2.getString("Section_Code");
+//					out.print(rs2.getString("grade"));
 					String finalgrade = fg.finalGrade(rs2.getString("grade"));
 						 
 					

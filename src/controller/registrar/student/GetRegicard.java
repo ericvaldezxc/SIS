@@ -85,7 +85,7 @@ public class GetRegicard extends HttpServlet {
 		String section = "";
 		
 		try {
-			sql = "SELECT *,(SELECT Academic_Year_Description FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present' ) as actyear,(SELECT Semester_Description FROM `r_semester` where Semester_Active_Flag = 'Active' ) as actsem,ifnull(Student_Profile_Guardian_Contact_Number,'') as gcn from t_student_account inner join r_student_profile on Student_Account_Student_Profile_ID  =  Student_Profile_ID inner join r_section on Student_Account_SectionID = Section_ID  where Student_Account_Student_Number= '"+studentnumber+"'";
+			sql = "SELECT *,IFNULL(Student_Profile_Guardian_Name,'') AS GUARDIAN,(SELECT Academic_Year_Description FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present' ) as actyear,(SELECT Semester_Description FROM `r_semester` where Semester_Active_Flag = 'Active' ) as actsem,ifnull(Student_Profile_Guardian_Contact_Number,'') as gcn from t_student_account inner join r_student_profile on Student_Account_Student_Profile_ID  =  Student_Profile_ID inner join r_section on Student_Account_SectionID = Section_ID  where Student_Account_Student_Number= '"+studentnumber+"'";
 			ResultSet rs = stmnt.executeQuery(sql);
 			JSONObject obj = new JSONObject();
 				
@@ -101,7 +101,7 @@ public class GetRegicard extends HttpServlet {
 				dob = rs.getString("Student_Profile_Date_Of_Birth");
 				gender = rs.getString("Student_Profile_Gender");
 				civil = rs.getString("Student_Profile_Civil_Status");
-				guardian = rs.getString("Student_Profile_Guardian_Name");
+				guardian = rs.getString("GUARDIAN");
 				year = rs.getString("Student_Account_Year");
 				actyear = ec.decrypt(ec.key, ec.initVector, rs.getString("actyear"));
 				actsem = ec.decrypt(ec.key, ec.initVector, rs.getString("actsem"));

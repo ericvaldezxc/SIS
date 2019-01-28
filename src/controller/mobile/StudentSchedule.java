@@ -87,7 +87,11 @@ public class StudentSchedule extends HttpServlet {
 				 String sectionid = rs.getString("Student_Taken_Curriculum_Subject_SectionID");
 				 String curid = rs.getString("CurriculumItem_ID");
 				 String subjid = rs.getString("Subject_ID");
-				 String sql2 = "SELECT IFNULL(CONCAT(Schedule_Items_Date,' ',TIME_FORMAT(Schedule_Items_Time_Start, '%h:%i %p'),'-',TIME_FORMAT(Schedule_Items_Time_End, '%h:%i %p'),' '),'TBA') AS SCHED,IFNULL(Room_Description,'TBA') AS ROOM   FROM t_schedule_items inner join `t_schedule` on Schedule_Items_ScheduleID = Schedule_ID left join r_room on Schedule_Items_RoomID = Room_ID  WHERE if(Schedule_ChildrenID is null , 0 , Schedule_ChildrenID) = if(Schedule_ChildrenID is null , 0 , '"+subjid+"') and Schedule_CurriculumItemID = '"+curid+"' and Schedule_SectionID = '"+sectionid+"' and Schedule_Items_Display_Status = 'Active' ";
+				 
+				 String sql2 = "SELECT IFNULL(CONCAT(Schedule_Items_Date,' ',TIME_FORMAT(Schedule_Items_Time_Start, '%h:%i %p'),'-',TIME_FORMAT(Schedule_Items_Time_End, '%h:%i %p'),' '),'TBA') AS SCHED,IFNULL(Room_Description,'TBA') AS ROOM   FROM t_schedule_items inner join `t_schedule` on Schedule_Items_ScheduleID = Schedule_ID left join r_room on Schedule_Items_RoomID = Room_ID  WHERE if(Schedule_ChildrenID is null , 0 , Schedule_ChildrenID) = if(Schedule_ChildrenID is null , 0 , '"+subjid+"') and Schedule_CurriculumItemID = '"+curid+"' and Schedule_SectionID = '"+sectionid+"' and Schedule_Items_Display_Status = 'Active' and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present') ";
+				 //String sql2 = "SELECT IFNULL(CONCAT(Schedule_Items_Date,' ',TIME_FORMAT(Schedule_Items_Time_Start, '%h:%i %p'),'-',TIME_FORMAT(Schedule_Items_Time_End, '%h:%i %p'),' '),'TBA') AS SCHED,IFNULL(Room_Description,'TBA') AS ROOM   FROM t_schedule_items inner join `t_schedule` on Schedule_Items_ScheduleID = Schedule_ID left join r_room on Schedule_Items_RoomID = Room_ID  WHERE if(Schedule_ChildrenID is null , 0 , Schedule_ChildrenID) = if(Schedule_ChildrenID is null , 0 , '"+subjid+"') and Schedule_CurriculumItemID = '"+curid+"' and Schedule_SectionID = '"+sectionid+"' and Schedule_Items_Display_Status = 'Active' ";
+				 // luma wala pa yung nasa baba
+				 //and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present')
 				 //out.print(sql2);
 				 ResultSet rs2 = stmnt2.executeQuery(sql2);
 				 JSONArray schedulelist = new JSONArray();

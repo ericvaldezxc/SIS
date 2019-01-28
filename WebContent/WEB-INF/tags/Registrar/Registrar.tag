@@ -169,6 +169,12 @@
 	                    <span>Student Grade</span>
 	                </a>
            		</li>
+           		<li>
+	                <a href="StudentDocument.jsp" class="" id="documentBtn">
+	                    <i class="fa fa-folder-open-o"></i>
+	                    <span>Student Document</span>
+	                </a>
+           		</li>
            		<li class="sub-menu">
                     <a href="javascript:;" class="" id="CurriculumSetupBtn" >
                         <i class="fa fa-tasks"></i>
@@ -430,6 +436,8 @@
 			$("#GradeOpeningBtn").addClass("active");
  		else if(title == "Grade" ) 
 			$("#GradesBtn").addClass("active");
+ 		else if(title == "Document" ) 
+			$("#documentBtn").addClass("active");
  		else if(title == "Registration Opening" ) 
 			$("#RegistrationOpeningBtn").addClass("active");
  		else if(title == "Faculty" ) 

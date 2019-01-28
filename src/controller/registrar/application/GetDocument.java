@@ -69,7 +69,7 @@ public class GetDocument extends HttpServlet {
 		
 		JSONArray arr = new JSONArray();
 		PrintWriter out = response.getWriter();	
-		
+//		out.print(sql+"\n");	
 		try {
 			ResultSet rs = stmnt.executeQuery(sql);
 			while(rs.next()){

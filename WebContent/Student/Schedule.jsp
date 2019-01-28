@@ -39,16 +39,17 @@
       	<script>
 			$(document).ready(function (){
 				EditableTable.init();
+				
 				 $.ajax({
 					type:'POST',
 					data:{StudentNumber:${uname}},
-					url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'StudentSchedule',
+					url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'numberPerClass',
 					success: function(result){
 						var item = $.parseJSON(result)
 						var body = ''
 						$.each(item,function(key,val){
 							//console.log(val)
-							var sched = '<tr><td colspan="6" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>  </tr>'
+							var sched = '<tr><td colspan="7" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>  </tr>'
 							var i = 0
 							$.each(val.schedule,function(key2,val2){
 								if(i == 0)
@@ -59,13 +60,13 @@
 								
 							})
 							if(i == 0)
-								body += '<tr><td>'+val.code+'</td><td>'+val.desc+'</td><td>'+val.lec+'</td><td>'+val.lab+'</td><td>'+val.cred+'</td><td>TBA</td></tr>'
+								body += '<tr><td>'+val.code+'</td><td>'+val.desc+'</td><td>'+val.lec+'</td><td>'+val.lab+'</td><td>'+val.cred+'</td><td>TBA</td><td>'+val.numberPerClass+'</td></tr>'
 							else
-								body += '<tr><td>'+val.code+'</td><td>'+val.desc+'</td><td>'+val.lec+'</td><td>'+val.lab+'</td><td>'+val.cred+'</td><td>'+sched+'</td></tr>'
+								body += '<tr><td>'+val.code+'</td><td>'+val.desc+'</td><td>'+val.lec+'</td><td>'+val.lab+'</td><td>'+val.cred+'</td><td>'+sched+'</td><td>'+val.numberPerClass+'</td></tr>'
 
 						})
 						if(body == '')
-							$('#schedBody').html('<tr><td colspan="6" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>  </tr>')
+							$('#schedBody').html('<tr><td colspan="7" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>  </tr>')
 						else
 							$('#schedBody').html(body)
                          
@@ -74,6 +75,31 @@
                         swal("Error encountered while accessing the data", "Please try again", "error");
                     }
 				});
+				/*
+			 	$.ajax({
+					type:'POST',
+					data:{StudentNumber:${uname}},
+					url: "http://"+window.location.hostname+":"+window.location.port+"/SIS/" +'StudentClassmates',
+					success: function(result){
+						var item = $.parseJSON(result)
+						var body = ''
+						$.each(item,function(key,val){
+							//console.log(val)
+							body += '<tr><td>'+val.code+'</td><td>'+val.desc+'</td><td>'+val.count+'</td></tr>'
+								
+						})
+						if(body == '')
+							$('#numberPerClass').html('<tr><td colspan="3" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>  </tr>')
+						else
+							$('#numberPerClass').html(body)
+	                        
+					},
+	                   error: function (response2) {
+	                       swal("Error encountered while accessing the data", "Please try again", "error");
+	                   }
+				});
+				
+				*/
 
 				
 				/*
@@ -144,11 +170,12 @@
                 	<section class="panel">
                             <div class="panel-body">
                                 <div class="adv-table editable-table ">
-                                    <div class="clearfix">
+                                    <!--<div class="clearfix">
                                         <div class="btn-group pull-right">
                                             <button class="btn btn-default " id="btnprint">Print <i class="fa fa-print"></i></button>
                                         </div>
-                                    </div>
+                                    </div>-->
+                                    
                                     <div class="space15"></div>
                                     <table class="table table-hover" id="curTbl">
 			                			<thead>
@@ -159,20 +186,41 @@
  	                           					 <th style="width: 20%">Faculty Name</th>				
 					                            <th style="width: 20%">Schedule</th>
 					                             -->
-					                            <th style="width: 15%">Code</th>
-					                            <th style="width: 25%">Description</th>
+					                            <th style="width: 10%">Code</th>
+					                            <th style="width: 20%">Description</th>
 					                            <th style="width: 10%">Lec. Units</th>
 					                            <th style="width: 10%">Lab. Unit</th>
 					                            <th style="width: 10%">Cred. Unit</th>		                            
 					                            <th style="width: 30%">Schedule</th>
+					                            <th style="width: 10%"># of Student</th>
 					                       	</tr>
 			                    		</thead>
 			                    		<tbody id="schedBody">   
 					                    	<tr>
-					                        	<td colspan="6" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>
+					                        	<td colspan="7" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>
 					                        </tr> 
 			                    		</tbody>
 			               			</table>
+<!--				               			<table class="table table-hover">
+			                			<thead>
+					                    	<tr>
+					                       	<th style="width: 15%">Code</th>
+					                            <th style="width: 25%">Description</th>
+					                            <th style="width: 10%">Units</th>
+ 	                           					 <th style="width: 20%">Faculty Name</th>				
+					                            <th style="width: 20%">Schedule</th>
+					                             
+					                            <th style="width: 15%">Code</th>
+					                            <th style="width: 25%">Description</th>
+					                            <th style="width: 10%">Students</th>
+					                       	</tr>
+			                    		</thead>
+			                    		<tbody id="numberPerClass">   
+					                    	<tr>
+					                        	<td colspan="3" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>
+					                        </tr> 
+			                    		</tbody>
+			               			</table>-->
                                 </div>
                             </div>
                         </section>

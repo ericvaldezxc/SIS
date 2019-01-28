@@ -24,14 +24,14 @@ import connection.DBConfiguration;
 /**
  * Servlet implementation class GetSection
  */
-@WebServlet("/StudentSchedule")
-public class StudentSchedule extends HttpServlet {
+@WebServlet("/StudentClassmates")
+public class StudentClassmates extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public StudentSchedule() {
+    public StudentClassmates() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -82,34 +82,34 @@ public class StudentSchedule extends HttpServlet {
 			while(rs.next()){
 
 				 JSONObject obj = new JSONObject();
-				 obj.put("code", ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code")));
-				 obj.put("desc",  ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description")));	
-				 obj.put("lec",  rs.getString("Subject_Lecture_Units"));					 
-				 obj.put("lab",  rs.getString("Subject_Laboratory_Units"));					 
-				 obj.put("cred",  rs.getString("Subject_Credited_Units"));	
+//				 obj.put("code", ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code")));
+//				 obj.put("desc",  ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description")));	
+//				 obj.put("lec",  rs.getString("Subject_Lecture_Units"));					 
+//				 obj.put("lab",  rs.getString("Subject_Laboratory_Units"));					 
+//				 obj.put("cred",  rs.getString("Subject_Credited_Units"));	
 				 String sectionid = rs.getString("Student_Taken_Curriculum_Subject_SectionID");
 				 String curid = rs.getString("CurriculumItem_ID");
 				 String subjid = rs.getString("Subject_ID");
+				 String sql2 = "select count(*) as cou,Subject_Code,Subject_Description from t_student_taken_curriculum_subject inner join r_subject on Subject_ID = Student_Taken_Curriculum_Subject_SubjectID where Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` WHERE `Semester_Active_Flag` = 'Active') and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID  FROM `r_academic_year` WHERE `Academic_Year_Active_Flag` = 'Present') and Student_Taken_Curriculum_Subject_SectionID = '"+sectionid+"' and Student_Taken_Curriculum_Subject_SubjectID = '"+subjid+"'";
+				 
+				 
 //				 String sql2 = "SELECT IFNULL(CONCAT(Schedule_Items_Date,' ',TIME_FORMAT(Schedule_Items_Time_Start, '%h:%i %p'),'-',TIME_FORMAT(Schedule_Items_Time_End, '%h:%i %p'),' '),'TBA') AS SCHED,IFNULL(Room_Description,'TBA') AS ROOM   FROM t_schedule_items inner join `t_schedule` on Schedule_Items_ScheduleID = Schedule_ID left join r_room on Schedule_Items_RoomID = Room_ID  WHERE if(Schedule_ChildrenID is null , 0 , Schedule_ChildrenID) = if(Schedule_ChildrenID is null , 0 , '"+subjid+"') and Schedule_CurriculumItemID = '"+curid+"' and Schedule_SectionID = '"+sectionid+"' and Schedule_Items_Display_Status = 'Active' ";
 //				eto yung luma wala pang  and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present')
-				 String sql2 = "SELECT IFNULL(CONCAT(Schedule_Items_Date,' ',TIME_FORMAT(Schedule_Items_Time_Start, '%h:%i %p'),'-',TIME_FORMAT(Schedule_Items_Time_End, '%h:%i %p'),' '),'TBA') AS SCHED,IFNULL(Room_Description,'TBA') AS ROOM   FROM t_schedule_items inner join `t_schedule` on Schedule_Items_ScheduleID = Schedule_ID left join r_room on Schedule_Items_RoomID = Room_ID  WHERE if(Schedule_ChildrenID is null , 0 , Schedule_ChildrenID) = if(Schedule_ChildrenID is null , 0 , '"+subjid+"') and Schedule_CurriculumItemID = '"+curid+"' and Schedule_SectionID = '"+sectionid+"' and Schedule_Items_Display_Status = 'Active'  and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present') ";
+
+ //				 String sql2 = "SELECT IFNULL(CONCAT(Schedule_Items_Date,' ',TIME_FORMAT(Schedule_Items_Time_Start, '%h:%i %p'),'-',TIME_FORMAT(Schedule_Items_Time_End, '%h:%i %p'),' '),'TBA') AS SCHED,IFNULL(Room_Description,'TBA') AS ROOM   FROM t_schedule_items inner join `t_schedule` on Schedule_Items_ScheduleID = Schedule_ID left join r_room on Schedule_Items_RoomID = Room_ID  WHERE if(Schedule_ChildrenID is null , 0 , Schedule_ChildrenID) = if(Schedule_ChildrenID is null , 0 , '"+subjid+"') and Schedule_CurriculumItemID = '"+curid+"' and Schedule_SectionID = '"+sectionid+"' and Schedule_Items_Display_Status = 'Active'  and Schedule_AcademicYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present') ";
 				
-				 //out.print(sql2);
+//				 out.print(sql2+"\n");
 				 ResultSet rs2 = stmnt2.executeQuery(sql2);
 				 JSONArray schedulelist = new JSONArray();
 				 
 				 while(rs2.next()){
 					 JSONObject schedholder = new JSONObject();
-					 if(!rs2.getString("ROOM").equals("TBA"))
-						 schedholder.put("room",ec.decrypt(ec.key, ec.initVector, rs2.getString("ROOM")) );
-					 else
-						 schedholder.put("room","TBA" );
-					 schedholder.put("time", rs2.getString("SCHED"));
-					 schedulelist.add(schedholder);
+					 schedholder.put("desc",ec.decrypt(ec.key, ec.initVector, rs2.getString("Subject_Description"))) ;
+					 schedholder.put("code",ec.decrypt(ec.key, ec.initVector, rs2.getString("Subject_Code"))) ;
+					 schedholder.put("count", rs2.getString("cou"));
+					 arr.add(schedholder);
 					 
 				 }
-				 obj.put("schedule", schedulelist);
-				 arr.add(obj);
 				 
 			}
 		
