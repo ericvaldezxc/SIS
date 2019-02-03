@@ -44,7 +44,9 @@
 			<div class="row">
 			    <div class="col-md-6">
 			        <div class="mini-stat clearfix">
-			            <span class="mini-stat-icon orange"></span>
+			            <span class="mini-stat-icon orange">
+			            	<i class="fa fa-calendar"></i>
+			            </span>	      
 			            <div class="mini-stat-info">
 			                <span id="yearTxt">${acadyear }</span>
 			                Active Academic Year
@@ -53,7 +55,7 @@
 			    </div>
 			    <div class="col-md-6">
 			        <div class="mini-stat clearfix">
-			            <span class="mini-stat-icon tar"></span>
+			            <span class="mini-stat-icon tar"><i class="fa fa-asterisk"></i></span>
 			            <div class="mini-stat-info">
 			                <span id="semesterTxt">${sem }</span>
 			                Active Semester

@@ -64,17 +64,33 @@
 		
 		String tdunit = "<td>Not Available</td>";
 		if(enrollstat.equals("Enrolled")){
-			printregi = "<a class='btn printregi' title='Print Registration Card' style='background-color:#0080ff;color:white'><i class='fa fa-print'></i></a>";
+			printregi = "<li><a class='printregi' title='Print Registration Card'>Print Registration Card <i class='fa fa-print'></i></a></li>";
 			tdunit = "<td>"+ unitstotake+" Units</td>";
 		}
-		String buttons = "";
+		String buttons = "<div class='btn-group' style='margin-left:0px'>"+
+	    "<button data-toggle='dropdown' class='btn btn-primary dropdown-toggle ' type='button'><span><i class='fa fa-ellipsis-v'></i></span></button>"+
+	    "<ul role='menu' class='dropdown-menu'>";
+	       
 		
+		/*
 		if(retid.equals("Not Returnee")){
-			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td>"+unitstotake+" Unit/s</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' title='Student Schedule' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' title='View Student Profile'  href='#Profile'><i class='fa fa-eye'></i></a> <a class='btn pedit' style='background-color:#33cc33;color:white' style='color:white' data-toggle='modal' title='Edit Student Profile'  href='#EditProfile'><i class='fa fa-edit'></i></a>  <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'><i class='fa fa-flag'></i></a> "+printregi+" <a class='btn btn-danger addreturnee' title='Returnee'><i class='fa fa-rotate-right'></i></a> </td></tr>"; 
+			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td>"+unitstotake+" Unit/s</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' title='Student Schedule' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' title='View Student Profile'  href='#Profile'><i class='fa fa-eye'></i></a> <a class='btn pedit' style='background-color:#33cc33;color:white' style='color:white' data-toggle='modal' title='Edit Student Profile'  href='#EditProfile'><i class='fa fa-edit'></i></a>  <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'><i class='fa fa-flag'></i></a> "+printregi+" <a class='btn btn-danger addreturnee' title='Returnee'><i class='fa fa-rotate-right'></i></a> <a title='Print Transcript of records' class='btn btn-success tor' data-studnum='"+rs.getString("Student_Account_Student_Number")+"' ><i class='fa fa-print'></i></a> </td></tr>"; 
 			
 		}
 		else{
-			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td>"+unitstotake+" Unit/s</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' href='#Profile'><i class='fa fa-eye'></i></a> <a class='btn pedit' style='background-color:#33cc33;color:white' style='color:white' data-toggle='modal' href='#EditProfile'><i class='fa fa-edit'></i></a> <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'><i class='fa fa-flag'></i></a> "+printregi+" <a class='btn btn-info tar returnee' title='Returnee' data-course='"+couid+"' data-toggle='modal' data-curriculum-code='"+curcode+"' href='#Returnee'><i class='fa fa-rotate-left'></i></a> </td></tr>"; 
+			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td>"+unitstotake+" Unit/s</td><td style='text-align:center'> <a class='btn btn-success schedule' data-toggle='modal' href='#Schedule'><i class='fa fa-calendar'></i></a> <a class='btn btn-cancel tar profile' style='color:white' data-toggle='modal' href='#Profile'><i class='fa fa-eye'></i></a> <a class='btn pedit' style='background-color:#33cc33;color:white' style='color:white' data-toggle='modal' href='#EditProfile'><i class='fa fa-edit'></i></a> <a class='btn btn-warning shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'><i class='fa fa-exchange'></i></a> <a class='btn btn-info curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'><i class='fa fa-flag'></i></a> "+printregi+" <a class='btn btn-info tar returnee' title='Returnee' data-course='"+couid+"' data-toggle='modal' data-curriculum-code='"+curcode+"' href='#Returnee'><i class='fa fa-rotate-left'></i></a> <a title='Print Transcript of records' class='btn btn-success tor' data-studnum='"+rs.getString("Student_Account_Student_Number")+"' ><i class='fa fa-print'></i></a> </td></tr>"; 
+			
+		}
+		*/
+		if(retid.equals("Not Returnee")){
+			buttons = buttons + "<li><a class='schedule' data-toggle='modal' title='Student Schedule' href='#Schedule'>View Schedule <i class='fa fa-calendar'></i></a> </li><li><a class='profile' data-toggle='modal' title='View Student Profile'  href='#Profile'>View Profile <i class='fa fa-eye'></i></a> </li><li><a class='pedit'data-toggle='modal' title='Edit Student Profile'  href='#EditProfile'>Edit Profile <i class='fa fa-edit'></i></a>  </li><li><a class='shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'>Shift <i class='fa fa-exchange'></i></a> </li><li><a class='curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'>Curriculum Status <i class='fa fa-flag'></i></a></li><li> "+printregi+" </li><li><a class='addreturnee' title='Returnee'>Make Returnee <i class='fa fa-rotate-right'></i></a> </li><li><a title='Print Transcript of records' class='tor' data-studnum='"+rs.getString("Student_Account_Student_Number")+"' >Print TOR <i class='fa fa-print'></i></a></li></ul></div>";
+			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td>"+unitstotake+" Unit/s</td><td style=''>"+buttons+"</td></tr>"; 
+			
+		}
+		else{
+			buttons = buttons + "<li><a class='schedule' data-toggle='modal' title='Student Schedule' href='#Schedule'>View Schedule <i class='fa fa-calendar'></i></a> </li><li><a class='profile' data-toggle='modal' title='View Student Profile'  href='#Profile'>View Profile <i class='fa fa-eye'></i></a> </li><li><a class='pedit'data-toggle='modal' title='Edit Student Profile'  href='#EditProfile'>Edit Profile <i class='fa fa-edit'></i></a>  </li><li><a class='shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'>Shift <i class='fa fa-exchange'></i></a> </li><li><a class='curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'>Curriculum Status <i class='fa fa-flag'></i></a></li><li> "+printregi+" </li><li><a class='returnee' title='Returnee' data-course='"+couid+"' data-toggle='modal' data-curriculum-code='"+curcode+"' href='#Returnee'>Mark as Returnee<i class='fa fa-rotate-left'></i></a></li><li><a title='Print Transcript of records' class='tor' data-studnum='"+rs.getString("Student_Account_Student_Number")+"' >Print TOR <i class='fa fa-print'></i></a></li></ul></div>";
+
+			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td>"+unitstotake+" Unit/s</td><td style=''> "+buttons+"</td></tr>"; 
 			
 		}
 		
@@ -860,6 +876,258 @@
 					
 				
 				})	
+				
+				$('#editable-sample').on('click','a.tor',function(){
+					var pdf = new jsPDF('p', 'pt', 'letter');
+		            var breaker = '_______________________________________________________________________'
+		            var studnums = $(this).data('studnum')
+					var mybase = 210;
+		            specialElementHandlers = {
+							'#bypassme': function(element, renderer){
+								return true
+							}
+						}
+		        	$.ajax({
+    					type:'POST',
+    					data:{stnum:studnums},
+    					url: "Controller/Registrar/GraduatedStudents/GetProfile",
+    					success: function(result2){
+    						var item2 = $.parseJSON(result2)
+    						pdf.addPage();
+    						pdf.addPage();
+    						pdf.addPage();
+			    			
+    						$.ajax({
+		    					type:'POST',
+		    					data:{stnum:studnums},
+		    					url: "Controller/Registrar/GraduatedStudents/TranscriptofRecord",
+		    					success: function(result){
+		    						var item = $.parseJSON(result)
+		    						var title = ''
+		    						var torbody = ''
+		    						var i = 0
+		    						pdf.setPage(1)
+		    						
+		    						var myImage = new Image();
+				   					myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
+				   					myImage.onload = function(){
+				   						pdf.setPage(1)
+				   						pdf.addImage(myImage , 'png', 520, 20, 50, 50);
+				   						var uri = pdf.output('dataurlstring');
+				   					  	openDataUriWindow(uri);
+				   					};
+		    						
+		    						pdf.setFontType("normal");
+									pdf.setFontSize(14.5);
+									pdf.text(15,15,breaker)
+				
+									pdf.setFontType("bold");
+									pdf.setFontSize(13);
+									pdf.text(15,40,"Quezon City Polytechnic University")
+									
+									pdf.setFontType("italic");
+									pdf.setFontSize(7);
+									var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 230);
+									pdf.text(15,55,addre)
+									
+									pdf.setFontType("normal");
+									pdf.setFontSize(14.5);
+									pdf.text(15,70,breaker)
+									 
+									pdf.setFontType("italic");
+									pdf.setFontSize(14);
+									pdf.text(240,110,"Transcript of Records")
+									 
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,130,"Student Number")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,130,item2.studnum)
+									
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,140,"Student Name")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,140,item2.name)
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,150,"Year of Admission")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,150,item2.year)
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(15,160,"Address")
+				
+									pdf.setFontType("normal");
+									pdf.setFontSize(8);
+									pdf.text(110,160,item2.address)
+		    						
+		    						
+		    						$(item).each(function(key,val){
+		    							pdf.setFontType("normal");
+		    							pdf.setFontSize(14);
+		    							pdf.text(35,mybase-5,breaker)
+		    							
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(33,mybase+10,"|")
+										
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(33,mybase+13,"|")
+										
+		    							
+		       							title =  val.acadyear + " " + val.sem
+		        						pdf.setFontType("italic");
+		        						pdf.setFontSize(11);
+		        						pdf.text(50 , mybase + 10 , title)
+		        						
+		        						pdf.setFontType("normal");
+		    							pdf.setFontSize(14);
+		    							pdf.text(35,mybase + 15,breaker)
+		    							
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(33,mybase+30,"|")
+										
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(33,mybase+33,"|")
+										
+										pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(585,mybase+10,"|")
+										
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(585,mybase+13,"|")
+		        						
+		        						pdf.setFontType("italic");
+		         						pdf.setFontSize(11);
+		         						pdf.text(50 , mybase + 30 , "Code")
+		         							
+		         						pdf.setFontType("italic");
+		         						pdf.setFontSize(11);
+		         						pdf.text(150 , mybase + 30 , "Description")
+		         							
+		         						pdf.setFontType("italic");
+		         						pdf.setFontSize(11);
+		         						pdf.text(400 , mybase + 30 , "Grade")
+		         							
+		         						pdf.setFontType("italic");
+		         						pdf.setFontSize(11);
+		         						pdf.text(500 , mybase + 30 , "Credit")
+		         						
+		         						pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(585,mybase+30,"|")
+										
+		    							pdf.setFontType("italic");
+										pdf.setFontSize(17);
+										pdf.text(585,mybase+33,"|")
+		         						
+		         						pdf.setFontType("normal");
+		    							pdf.setFontSize(14);
+		    							pdf.text(35,mybase + 35,breaker)
+		        						
+		    							$(val.grades).each(function(key2,val2){
+		    								
+		    								pdf.setFontType("italic");
+											pdf.setFontSize(19);
+											pdf.text(33,mybase+46,"|")
+		    								
+		    								pdf.setFontType("italic");
+											pdf.setFontSize(17);
+											pdf.text(33,mybase+48,"|")
+											
+			    							pdf.setFontType("italic");
+											pdf.setFontSize(19);
+											pdf.text(33,mybase+54,"|")
+		    								
+		    								pdf.setFontType("italic");
+		           							pdf.setFontSize(9);
+		           							pdf.text(50 , mybase + 50 , val2.subjcode)
+		           							
+		           							pdf.setFontType("italic");
+		           							pdf.setFontSize(8);
+		           							var desc = pdf.splitTextToSize(val2.subjdesc, 230);
+		           							pdf.text(150 , mybase + 50 , desc)
+		           							
+		           							pdf.setFontType("italic");
+		           							pdf.setFontSize(9);
+		           							pdf.text(400 , mybase + 50 , val2.grade)
+		           							
+		           							pdf.setFontType("italic");
+		           							pdf.setFontSize(9);
+		           							pdf.text(500 , mybase + 50 , val2.subcredunit)
+		           							
+		           							pdf.setFontType("normal");
+			    							pdf.setFontSize(14);
+			    							pdf.text(35,mybase + 55,breaker)
+			    							
+			    							pdf.setFontType("italic");
+											pdf.setFontSize(19);
+											pdf.text(585,mybase+46,"|")
+		    								
+		    								pdf.setFontType("italic");
+											pdf.setFontSize(17);
+											pdf.text(585,mybase+48,"|")
+											
+			    							pdf.setFontType("italic");
+											pdf.setFontSize(19);
+											pdf.text(585,mybase+54,"|")
+		    								
+		        							mybase =  mybase + 25
+		
+		    							})
+		    							mybase =  mybase + 70
+		    							i++
+		    							if(i == 4 ){
+		    								pdf.setPage(2)
+		    								mybase = 40			    						
+		    								
+		    							}
+		    							if(i == 7 ){
+		    								pdf.setPage(3)
+		    								mybase = 40			    						
+		    								
+		    							}
+		    							if(i == 10 ){
+		    								pdf.setPage(4)
+		    								mybase = 40			    						
+		    								
+		    							}
+		    							
+		    						})
+		    						
+									
+									
+		    						
+		    								
+						            
+		    						
+									
+		    					}
+		    				})
+    						
+    						
+    					}
+    				})
+		            
+				
+   						
+   						
+   					
+				})	
+
 				
 				function openDataUriWindow(url) {
 				    var html = '<html>' +
@@ -2048,13 +2316,13 @@
                                     <table class="table table-striped table-hover table-bordered" id="editable-sample">
 	                                    <thead>
 	                                        <tr>
-	                                            <th style="width: 16%">Student Number</th>
+	                                            <th style="width: 17%">Student Number</th>
 	                                            <th style="width: 20%">Student Name</th>
-	                                            <th style="width: 12%">Course and Section</th>
-	                                            <th style="width: 12%">Curriculum</th>
+	                                            <th style="width: 15%">Course and Section</th>
+	                                            <th style="width: 15%">Curriculum</th>
 	                                            <th style="width: 10%">Status</th>
 	                                            <th style="width: 10%">Available Units</th>
-	                                            <th style="width: 20%">Action</th>
+	                                            <th style="width: 13%">Action</th>
 	                                            
 	                                        </tr>
 	                                    </thead>

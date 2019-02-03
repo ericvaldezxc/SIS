@@ -5147,6 +5147,33 @@ div.tagsinput span.tag {
 .yellow-b {
     background: #fdd752 !important;
 }
+.pumice{
+  background: #d2d7d3 !important;  
+}
+.wax-flower{
+  background: #f1a9a0 !important;  
+}
+.wistful{
+  background: #aea8d3 !important;  
+}
+.buff{
+  background: #f2d984 !important;  
+}
+.gossip{
+  background: #87d37c !important;  
+}
+.malibu{
+  background: #6bb9f0 !important;  
+}
+.bennington{
+  background: #4fc3f7 !important;  
+}
+.stamp{
+  background: #29b6f6 !important;  
+}
+.urie{
+  background: #03a9f4 !important;  
+}
 /*== Weather Widget ==*/
 .weather-widget {
     background:#fff;

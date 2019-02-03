@@ -1,6 +1,8 @@
 <%@page import="java.sql.*"%>
 <%@page import="connection.DBConfiguration" %>
 <%@page import="configuration.EncryptandDecrypt" %>
+<%@page import="org.json.simple.JSONArray" %>
+<%@page import="org.json.simple.JSONObject" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags/Registrar" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -29,11 +31,13 @@
 	}
 	String countPerType = "";
 	String perType = "";
+	JSONObject accountList = new JSONObject();
 	
 	rs = stmnt.executeQuery("SELECT count(*),User_Account_Type FROM `r_user_account` where User_Account_Display_Status = 'Active' group by User_Account_Type  ");
 	while(rs.next()){
 		String cou =  rs.getString("count(*)");
 		String type = rs.getString("User_Account_Type");
+		accountList.put(type,cou);
 		countPerType += "<td>"+  cou +"</td>";
 		perType += "<th>"+ type +"</th>";
 
@@ -44,6 +48,12 @@
 	pageContext.setAttribute("sem", sem);
 	pageContext.setAttribute("perType", perType);
 	pageContext.setAttribute("countPerType", countPerType);
+	pageContext.setAttribute("studentAccount", accountList.get("Student"));
+	pageContext.setAttribute("facultyAccount", accountList.get("Faculty"));
+	pageContext.setAttribute("cashierAccount", accountList.get("Cashier"));
+	pageContext.setAttribute("adminAccount", accountList.get("Admin"));
+	
+	
 
 
 %>    
@@ -264,9 +274,11 @@
     <jsp:body>
     
     	<div class="col-md-6">
-	        <div class="mini-stat clearfix">
-	            <span class="mini-stat-icon orange"></span>	        
-	            <div class="mini-stat-info">
+	        <div class="mini-stat">
+	            <span class="mini-stat-icon orange">
+	            	<i class="fa fa-calendar"></i>
+	            </span>	        
+ 	            <div class="mini-stat-info">
 	                <span id="academicyear">${acadyear}</span>
 	                Active Academic Year
 	            </div>
@@ -274,13 +286,53 @@
     	</div>
     	<div class="col-md-6">
 	        <div class="mini-stat clearfix">
-		        <span class="mini-stat-icon tar"></span>
+		        <span class="mini-stat-icon tar"><i class="fa fa-asterisk"></i></span>
 	            <div class="mini-stat-info">
 	                <span id="semester">${sem}</span>
 	                Active Semester
 	            </div>
 	        </div>
     	</div>
+    	<div class="col-md-3">
+	        <div class="mini-stat">
+	            <span class="mini-stat-icon wistful">
+	            	<i class="fa fa-users"></i>
+	            </span>	        
+ 	            <div class="mini-stat-info">
+	                <span id="studentAccountsLbl">${studentAccount}</span>
+	                Student Accounts
+	            </div>
+	        </div>
+    	</div>
+    	<div class="col-md-3">
+	        <div class="mini-stat clearfix">
+		        <span class="mini-stat-icon wax-flower"><i class="fa fa-users"></i></span>
+	            <div class="mini-stat-info">
+	                <span id="facultyAccountsLbl">${facultyAccount}</span>
+	                Faculty Accounts
+	            </div>
+	        </div>
+    	</div>
+		<div class="col-md-3">
+	        <div class="mini-stat">
+	            <span class="mini-stat-icon gossip">
+	            	<i class="fa fa-users"></i>
+	            </span>	        
+ 	            <div class="mini-stat-info">
+	                <span id="adminAccountsLbl">${adminAccount}</span>
+	                Admin Accounts
+	            </div>
+	        </div>
+    	</div>
+    	<div class="col-md-3">
+	        <div class="mini-stat clearfix">
+		        <span class="mini-stat-icon urie"><i class="fa fa-users"></i></span>
+	            <div class="mini-stat-info">
+	                <span id="cashierAccountsLbl">${cashierAccount}</span>
+	                Cashier Accounts
+	            </div>
+	        </div>
+    	</div>    	
     	<div class="col-md-12">
             <section class="panel">
                 <div class="panel-body">
