@@ -73,9 +73,145 @@
       	<script>
 			$(document).ready(function (){
 				EditableTable.init();
-				
+				let availunittotake = 0
+				$('#editable-sample').on('click','a.curriculum',function(){
+					var studentnumber = $(this).closest('tr').children('td:eq(0)').text()
+					if(availunittotake == 'None')
+						availunittotake = $(this).data("available-units-to-take")
+					
+				 	globstudnum = studentnumber
+					$.ajax({
+						type:'POST',
+						data:{studentnumber: studentnumber},
+						url: "Controller/Registrar/Student/Curriculum",
+						success: function(result){
+							var item = $.parseJSON(result)
+	  						var body = ''
+	  							$.each(item,function(key,val){
+	      							body += "<section class='panel'>"+
+	      							"<header class='panel-heading' style='background-color:#68a0b0;margin-top:10px;color:white'>"+
+	      									"<label>"+val.yearlvl + " - " + val.semester +"</label><br/>"+
+	      									"<span class='tools pull-right'>"+
+	      					        "<a href='javascript:;' class='fa fa-chevron-down' style='color:white'></a>"+
+	      					        "</span>"+
+	      					        "</header>"+
+	      					        "<div class='panel-body' style='background-color:;'>";
+	      					        
+	      					        var tbody = '';
+	      					 		$.each(val.subject,function(key2,val2){
+	      					 			if(val2.group  == ''){
+	      					 				var prereq = ''
+	      					 				var i = 0
+	      					 				$.each(val2.prerequisite,function(key3,val3){
+	      					 					if(i != 0)
+	      					 						prereq  += ', '
+	      					 					prereq += val3
+	      					 				
+	      					 					i++
+	      					 				})
+	      					 				var st = ''
+	      					 				var enrollstatus = val2.estatus
+	      					 				
+	      					 				if(enrollstatus == 'Enrolled')
+	      					 					st = "Enrolled"           					 				
+	      					 				else if(val2.status == 'Not Cleared')
+	      					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject' data-credited-unit='"+val2.units+"'   href='#enroll'><i class='fa fa-bolt'></i></a>"
+	   					 				else{
+	      					 					st = 'Cleared'
+	      					 					enrollstatus = 'Cleared'
+	   					 					
+	   					 				}
+	      					 					
+	      						   			tbody +="<tr>"+
+	   						   						"<td>"+val2.code+"</td>"+
+	   						   						"<td>"+val2.desc+"</td>"+
+	   						   						"<td style='font-weight:bold;'>"+prereq+"</td>"+
+	   						   						"<td>"+val2.units+"</td>"+
+	   						   						"<td>"+val2.status+"</td>"+
+	   						   						"<td>"+st+"</td>"+
+	   						   					"</tr>"	
+	      					 				
+	      					 			}
+	      					 			else{
+	      					 				
+	   	   					 			tbody +="<tr>"+
+	   						   						"<td colspan='6' style='font-weight:bold;text-align:lelft;color:#68a0b0'>"+val2.code+"</td>"+
+	   						   					"</tr>"	
+	   						   			$.each(val2.group,function(key3,val3){
+	   	   					 				var prereq = ''
+	      	   					 				var i = 0
+	      	   					 				$.each(val3.prerequisite,function(key4,val4){
+	      	   					 					if(i != 0)
+	      	   					 						prereq  += ', '
+	      	   					 					prereq += val4
+	      	   					 				
+	      	   					 					i++
+	      	   					 				})
+												var st = ''
+												enrollstatus = val3.estatus
+												if(enrollstatus == 'Enrolled')
+	          					 					st = "Enrolled"             					 				
+	          					 				else if(val3.status == 'Not Cleared')
+		       					 					st = "<a class='btn btn-info enroll' title='Enroll this Subject' data-credited-unit='"+val3.units+"'   href='#enroll'><i class='fa fa-bolt'></i></a>"
+		    					 				else{
+		       					 					st = 'Cleared'
+		           					 					enrollstatus = 'Cleared'
+		        					 					
+		        					 			}
+	   						   			
+	   		   					 			tbody +="<tr style='font-style:italic'>"+
+	   							   						"<td>"+val3.code+"</td>"+
+	   							   						"<td>"+val3.desc+"</td>"+
+	   							   						"<td style='font-weight:bold;'>"+prereq+"</td>"+
+	   							   						"<td>"+val3.units+"</td>"+
+	   							   						"<td>"+val3.status+"</td>"+
+	       						   						"<td>"+st+"</td>"+
+	   							   					"</tr>"	
+	   						   				
+	   						   				
+	   						   			})
+	   						   						
+	      					 			}
+	      					 			
+	      					 		})
+	      					 		if(tbody != ''){
+	   	   					 		body += "<table class='table table-hover'>"+
+	   	   							"<thead>"+
+	   		   							"<tr>"+
+	   		   						    	"<th style='width: 20%'>Code</th>"+
+	   		   						        "<th style='width: 25%'>Description</th>"+
+	   		   						        "<th style='width: 15%'>Prerequisite</th>"+
+	   		   						        "<th style='width: 5%'>Cred. Unit</th>"+
+	   		   						        "<th style='width: 15%'>Status</th>"+
+	   		   						        "<th style='width: 10%'>Action</th>"+
+	   		   						   	"</tr>"+
+	   		   						"</thead>"+
+	   		   						"<tbody>   ";
+	   		   						body += tbody
+
+
+	   	   					        body += 	"</tbody>"+
+	      										"</table>";
+	      					 			
+	      					 		}
+	      					        
+	      					        
+	      							body +=  "</div>"+
+	      							"</section>";
+	      						})
+	  						$('#curBody').html(body)
+							console.log(item)
+
+	                        
+						},
+	                   error: function (response) {
+	                       swal("Error encountered while accessing the data", "Please try again", "error");
+	                   }
+					});
+				})
 			});
 		</script>
+		
     </jsp:attribute>
     
 	<jsp:attribute name="customImportedScript">      
@@ -267,6 +403,56 @@
 	            </div>
 	        </div>
 	    </div>	
+	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="Schedule" class="modal fade">
+	        <div class="modal-dialog" style="width:70%">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                    <h4 class="modal-title" id="schedule-title">Schedule</h4>
+	                </div>
+	                <div class="modal-body">
+	                   <table class="table table-hover" >
+                			<thead>
+		                    	<tr>
+		                        	<th style="width: 15%">Code</th>
+		                            <th style="width: 30%">Description</th>
+		                            <th style="width: 5%">Lec. Units</th>
+		                            <th style="width: 5%">Lab. Unit</th>
+		                            <th style="width: 5%">Cred. Unit</th>		                            
+		                            <th style="width: 40%">Schedule</th>
+		                       	</tr>
+                    		</thead>
+                    		<tbody id="schedBody">   
+		                    	<tr>
+		                        	<td colspan="6" style="text-align:center;font-weight:bold;font-style:italic">No Avaliable Data to show</td>
+		                        </tr> 
+                    		</tbody>
+               			</table>
+	                </div>
+	                <div class="modal-footer">
+	                    <button data-dismiss="modal" class="btn btn-default" id="closeBtn" type="button"><u>C</u>lose</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>	
+	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="curriculum" class="modal fade">
+	        <div class="modal-dialog" style="width:70%">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                    <h4 class="modal-title" id="schedule-title">Curriculum</h4>
+	                </div>
+	                <div class="modal-body" id="curBody"> 
+	                
+	                   
+	                </div>
+	                <div class="modal-footer">
+	                    <button data-dismiss="modal" class="btn btn-default" id="closeBtn" type="button">Close</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	   
 	        
 	    </jsp:body>
 

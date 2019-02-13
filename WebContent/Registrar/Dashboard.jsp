@@ -62,6 +62,7 @@
 	<jsp:attribute name="myscript"> 
 		<script>
 			$(document).ready(function(){
+				/*()
 				$.ajax({
 					type:'POST',
 					data:{},
@@ -159,7 +160,95 @@
 	                }
 
 				});
+				*/
+				$.ajax({
+					type:'POST',
+					data:{},
+					url: 'Controller/Registrar/Dashboard/Student',
+					dataType: 'json',
+					success: function(data){
+
+						
+						var head = []
+						var firstseries = []
+						var firstseriesbody = []
+						var firstseriesfinalbody = []
+						
+						$.each(data, function(key, val) {
+							head.push({ name : val.year, y : parseFloat(val.total) , drilldown : val.year })
+							//console.log("asdsd"+JSON.stringify(head)+"zxcx")
+							firstseriesfinalbody = []
+							$.each(val.body, function(key2, val2) {
+								firstseriesbody = []
+								firstseriesbody.push(val2.course,parseFloat(val2.cou));
+								firstseriesfinalbody.push(firstseriesbody)
+								
+							})
+							firstseries.push({ name : val.year, id : val.year, data : firstseriesfinalbody })
+							
+						})
+						
+						
+						Highcharts.chart('student', {
+						    chart: {
+						        type: 'column'
+						    },
+						    title: {
+						        text: 'Student'
+						    },
+						    subtitle: {
+						        text: 'Per academic year'
+						    },
+						    xAxis: {
+						        type: 'category'
+						    },
+						    yAxis: {
+						        title: {
+						            text: 'Number of Student'
+						        }
+
+						    },
+						    legend: {
+						        enabled: false
+						    },
+						    plotOptions: {
+						        series: {
+						            borderWidth: 0,
+						            dataLabels: {
+						                enabled: true,
+						                format: '{point.y:0f}'
+						            }
+						        }
+						    },
+
+						    tooltip: {
+						        headerFormat: '<span style="font-size:11px">{point.name} {series.name}s</span><br>',
+						        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:0f} Student</b> of total<br/>'
+						    },
+
+						    "series": [
+						        {
+						            "name": "Student",
+						            "colorByPoint": true,
+						            "data":head
+						        }
+						    ],
+						    "drilldown": {
+						        "series": firstseries
+						    }
+						});
+						
+					
+						             
+					},
+	                error: function (response) {
+	                    swal("Error encountered while accessing the data", "Please try again", "error");
+	                }
+
+				});
 				
+				
+				/*
 				$.ajax({
 					type:'POST',
 					url: 'Controller/Registrar/Dashboard/GetEnrolledPerCur',
@@ -332,6 +421,93 @@
 	                }
 
 				});
+				
+				*/
+				
+				
+				$.ajax({
+					type:'POST',
+					dataType:'json',
+					url: 'Controller/Registrar/Dashboard/GetEnrolledPerCur',
+					success: function(data){	
+						
+						var head = []
+						var firstseries = []
+						
+						var firstseriesfinalbody = []
+						
+						$.each(data, function(key, val) {
+							head.push({ name : val.year, y : parseFloat(val.total) , drilldown : val.year })
+							var firstseriesbody = []
+							$.each(val.body, function(key2, val2) {
+								firstseriesbody = []
+								firstseriesbody.push(val2.course,parseFloat(val2.cou));
+								firstseriesfinalbody.push(firstseriesbody)
+								
+							})
+							firstseries.push({ name : val.year, id : val.year, data : firstseriesfinalbody })
+							
+						})
+						
+						Highcharts.chart('curyear', {
+						    chart: {
+						        type: 'column'
+						    },
+						    title: {
+						        text: 'Student'
+						    },
+						    subtitle: {
+						        text: 'Per curriculum year'
+						    },
+						    xAxis: {
+						        type: 'category'
+						    },
+						    yAxis: {
+						        title: {
+						            text: 'Number of Student'
+						        }
+
+						    },
+						    legend: {
+						        enabled: false
+						    },
+						    plotOptions: {
+						        series: {
+						            borderWidth: 0,
+						            dataLabels: {
+						                enabled: true,
+						                format: '{point.y:0f}'
+						            }
+						        }
+						    },
+
+						    tooltip: {
+						        headerFormat: '<span style="font-size:11px">{point.name} {series.name}s</span><br>',
+						        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:0f} Student</b> of total<br/>'
+						    },
+
+						    "series": [
+						        {
+						            "name": "Student",
+						            "colorByPoint": true,
+						            "data":head
+						        }
+						    ],
+						    "drilldown": {
+						        "series": firstseries
+						    }
+						});
+						
+					},
+	                error: function (response2) {
+	                    swal("Error encountered while accessing the data", "Please try again", "error");
+	                }
+            	
+            	
+               
+            	})
+				
+				
 				Highcharts.chart('usersDashboard', {
 	                data: {
 	                    table: 'usersTbl'
