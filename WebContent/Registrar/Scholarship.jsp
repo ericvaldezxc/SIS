@@ -21,7 +21,7 @@
 			
 			tablebody += "<tr><td>" + rs.getString("Scholarship_Code")+ "</td><td>"+rs.getString("Scholarship_Description")+"</td><td>"+rs.getString("Scholarship_Percentage")+"%</td><td>"; 
 			if(rs.getString("Scholarship_Display_Status").equals("Active") )
-				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit'><i class='fa fa-edit'></i></a> <a class='btn btn-info scholars' data-toggle='modal' href='#scholarship'><i class='fa fa-upload'></i></a> <a class='btn btn-warning scholarhistory' data-toggle='modal' href='#scholarshiphistory'><i class='fa fa-book'></i></a> <a class='btn genex' style='background-color:#33cc33;color:white' title='Generate Excel' ><i class='fa fa-th-list'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
+				tablebody += "<center> <a class='btn btn-success edit' data-toggle='modal' href='#FeeEdit' title='Edit Profile'><i class='fa fa-edit'></i></a> <a class='btn btn-info scholars' data-toggle='modal' href='#scholarship' title='Scholars'><i class='fa fa-upload'></i></a> <a class='btn btn-warning scholarhistory' data-toggle='modal' href='#scholarshiphistory' title='Transaction History'><i class='fa fa-book'></i></a> <a class='btn genex' style='background-color:#33cc33;color:white' title='Generate Excel' ><i class='fa fa-th-list'></i></a> <a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-rotate-right'></i></a><center></td></tr>";
 			else
 				tablebody += "<center><a class='btn btn-info retrieve' href='javascript:;'><i class='fa fa-rotate-left'></i></a><center></td></tr>";
 			

@@ -132,7 +132,7 @@
                     </a>
                     <ul class="sub">
                     	<li class="" id="CurrentStudentBtn"><a href="CurrentStudent.jsp">Current Student</a></li>
-                    	<li class="" id="FormerBtudentBtn"><a href="FormerStudent.jsp">Former Student</a></li>
+                    	<!-- <li class="" id="FormerBtudentBtn"><a href="FormerStudent.jsp">Former Student</a></li> -->
                     </ul>
                 </li>
                 <li>

@@ -46,17 +46,19 @@
     <jsp:body>
     
     	<div class="col-md-6">
-	        <div class="mini-stat clearfix">
-	            <span class="mini-stat-icon orange"></span>	        
-	            <div class="mini-stat-info">
+	        <div class="mini-stat">
+	            <span class="mini-stat-icon orange">
+	            	<i class="fa fa-calendar"></i>
+	            </span>	        
+ 	            <div class="mini-stat-info">
 	                <span id="academicyear">${acadyear}</span>
-	                Active Academic Year
+	                Active Academic Years
 	            </div>
 	        </div>
     	</div>
     	<div class="col-md-6">
 	        <div class="mini-stat clearfix">
-		        <span class="mini-stat-icon tar"></span>
+		        <span class="mini-stat-icon tar"><i class="fa fa-asterisk"></i></span>
 	            <div class="mini-stat-info">
 	                <span id="semester">${sem}</span>
 	                Active Semester
