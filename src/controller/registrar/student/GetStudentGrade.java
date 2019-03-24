@@ -120,7 +120,8 @@ public class GetStudentGrade extends HttpServlet {
 					String type = rs2.getString("Subject_Type");
 					String grade = rs2.getString("Students_Grade_Grade");
 					if(type.equals("Academic")) {
-						if(!grade.equals("D") || !grade.equals("I") || !grade.equals("NOT S")) {
+						
+						if(!grade.equals("D") && !grade.equals("I") && !grade.equals("NOT S")) {
 							counter++;
 							wholegrade = wholegrade + Double.parseDouble(grade);
 						}

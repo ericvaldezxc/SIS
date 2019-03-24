@@ -77,7 +77,7 @@
                                 <div class="adv-table editable-table ">
                                     <div class="clearfix">
                                         <div class="btn-group pull-right">
-                                            <button class="btn btn-default " id="btnprint">Print <i class="fa fa-print"></i></button>
+                                            <!-- <button class="btn btn-default " id="btnprint">Print <i class="fa fa-print"></i></button>  -->
                                         </div>
                                     </div>
                                     <div class="space15"></div>
