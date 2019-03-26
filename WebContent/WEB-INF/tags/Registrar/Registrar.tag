@@ -132,6 +132,7 @@
                     	<li class="" id="SubjectBtn"><a href="SubjectFee.jsp">Subject Fee</a></li>
                     	<li class="" id="MandatoryBtn"><a href="MandatoryFee.jsp">Mandatory Fee</a></li>
                     	<li class="" id="SectionOfferingBtn"><a href="SectionOffering.jsp">Section Offering</a></li>
+                    	<li class="" id="AnnouncementBtn"><a href="Announcement.jsp">Announcement</a></li>
                     	<li class="" id="RegistrationOpeningBtn"><a href="RegistrationOpening.jsp">Registration Opening</a></li>
                     </ul>
                 </li>
@@ -470,11 +471,13 @@
 			$("#AcadBtn").addClass("active");
  		else if(title == "Student Grade" ) 
 			$("#StudentGradeBtn").addClass("active");
+ 		else if(title == "Announcement" ) 
+			$("#AnnouncementBtn").addClass("active");
 		
 		
 		
 		
-		if(title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering' || title == 'Registration Opening' || title == 'Academic Year' || title == 'Semester') 
+		if(title == 'Announcement' ||title == 'Tuition Fee' || title == 'Mandatory Fee' || title == 'Subject Fee' || title == 'Course Fee' || title == 'Section Offering' || title == 'Registration Opening' || title == 'Academic Year' || title == 'Semester') 
 			$('#Pre-Enrollment').click();
 		if(title == 'Grade Opening' || title == "Grade") 
 			$('#GradeBtn').click();

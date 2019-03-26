@@ -99,17 +99,31 @@ public class importStudent extends HttpServlet {
 	        String civilStatus = (String) jsonLineItem.get("civilStatus");
 	        String address = (String) jsonLineItem.get("address");
 	        String studNumber = (String) jsonLineItem.get("studNumber");
+
 	        
-			sql = "update r_student_profile set Student_Profile_First_Name = '"+firstName+"',Student_Profile_First_Name = '"+firstName+"',Student_Profile_First_Name = '"+firstName+"',Student_Profile_First_Name = '"+firstName+"',Student_Profile_First_Name = '"+firstName+"',Student_Profile_First_Name = '"+firstName+"',Student_Profile_First_Name = '"+firstName+"',Student_Profile_First_Name = '"+firstName+"',Student_Profile_First_Name = '"+firstName+"',Student_Profile_First_Name = '"+firstName+"',Student_Profile_First_Name = '"+firstName+"',  where Student_Profile_ID = ('') ";
+	        
+	        firstName = ec.encrypt(ec.key, ec.initVector, firstName);
+	        middleName = ec.encrypt(ec.key, ec.initVector, middleName);
+	        lastName = ec.encrypt(ec.key, ec.initVector, lastName);
+			cn = ec.encrypt(ec.key, ec.initVector, cn);
+			emailAdd = ec.encrypt(ec.key, ec.initVector, emailAdd);
+			pob = ec.encrypt(ec.key, ec.initVector, pob);
+			address = ec.encrypt(ec.key, ec.initVector, address);
+	        
+			sql = "update r_student_profile set Student_Profile_First_Name = '"+firstName+"',Student_Profile_Middle_Name = '"+middleName+"',Student_Profile_Last_Name = '"+lastName+"',Student_Profile_Guardian_Contact_Number = '"+guardianContactNumber+"',Student_Profile_Guardian_Name = '"+guardianName+"',Student_Profile_Place_Of_Birth = '"+pob+"',Student_Profile_Gender = '"+gender+"',Student_Profile_Civil_Status = '"+civilStatus+"',Student_Profile_Address = '"+address+"',Student_Profile_Contact_Number = '"+cn+"',Student_Profile_Email_Address = '"+emailAdd+"'  where Student_Profile_ID = (SELECT Student_Account_Student_Profile_ID FROM `t_student_account` where Student_Account_Student_Number = '"+studNumber+"' ) ";
 
-
-			
+			try {
+				stmnt.execute(sql);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			
 
 		}
 		
-		out.print(students);
+		
 
 		try {
 			conn.close();

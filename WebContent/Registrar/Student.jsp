@@ -83,12 +83,12 @@
 		}
 		*/
 		if(retid.equals("Not Returnee")){
-			buttons = buttons + "<li><a class='schedule' data-toggle='modal' title='Student Schedule' href='#Schedule'>View Schedule <i class='fa fa-calendar'></i></a> </li><li><a class='profile' data-toggle='modal' title='View Student Profile'  href='#Profile'>View Profile <i class='fa fa-eye'></i></a> </li><li><a class='pedit'data-toggle='modal' title='Edit Student Profile'  href='#EditProfile'>Edit Profile <i class='fa fa-edit'></i></a>  </li><li><a class='shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'>Shift <i class='fa fa-exchange'></i></a> </li><li><a class='curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'>Curriculum Status <i class='fa fa-flag'></i></a></li><li> "+printregi+" </li><li><a class='addreturnee' title='Returnee'>Make Returnee <i class='fa fa-rotate-right'></i></a> </li><li><a title='Print Transcript of records' class='tor' data-studnum='"+rs.getString("Student_Account_Student_Number")+"' >Print TOR <i class='fa fa-print'></i></a></li></ul></div>";
+			buttons = buttons + "<li><a class='enrolledSubject' data-id='"+fstudid+"' data-toggle='modal' title='Enrolled Subject' href='#EnrolledSubjectModal'>Enrolled Subject<i class='fa fa-eye'></i></a> </li><li><a class='schedule' data-toggle='modal' title='Student Schedule' href='#Schedule'>View Schedule <i class='fa fa-calendar'></i></a> </li><li><a class='profile' data-toggle='modal' title='View Student Profile'  href='#Profile'>View Profile <i class='fa fa-eye'></i></a> </li><li><a class='pedit'data-toggle='modal' title='Edit Student Profile'  href='#EditProfile'>Edit Profile <i class='fa fa-edit'></i></a>  </li><li><a class='shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'>Shift <i class='fa fa-exchange'></i></a> </li><li><a class='curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'>Curriculum Status <i class='fa fa-flag'></i></a></li><li> "+printregi+" </li><li><a class='addreturnee' title='Returnee'>Make Returnee <i class='fa fa-rotate-right'></i></a> </li><li><a title='Print Transcript of records' class='tor' data-studnum='"+rs.getString("Student_Account_Student_Number")+"' >Print TOR <i class='fa fa-print'></i></a></li></ul></div>";
 			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td>"+unitstotake+" Unit/s</td><td style=''>"+buttons+"</td></tr>"; 
 			
 		}
 		else{
-			buttons = buttons + "<li><a class='schedule' data-toggle='modal' title='Student Schedule' href='#Schedule'>View Schedule <i class='fa fa-calendar'></i></a> </li><li><a class='profile' data-toggle='modal' title='View Student Profile'  href='#Profile'>View Profile <i class='fa fa-eye'></i></a> </li><li><a class='pedit'data-toggle='modal' title='Edit Student Profile'  href='#EditProfile'>Edit Profile <i class='fa fa-edit'></i></a>  </li><li><a class='shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'>Shift <i class='fa fa-exchange'></i></a> </li><li><a class='curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'>Curriculum Status <i class='fa fa-flag'></i></a></li><li> "+printregi+" </li><li><a class='returnee' title='Returnee' data-course='"+couid+"' data-toggle='modal' data-curriculum-code='"+curcode+"' href='#Returnee'>Mark as Returnee<i class='fa fa-rotate-left'></i></a></li><li><a title='Print Transcript of records' class='tor' data-studnum='"+rs.getString("Student_Account_Student_Number")+"' >Print TOR <i class='fa fa-print'></i></a></li></ul></div>";
+			buttons = buttons + "<li><a class='enrolledSubject' data-id='"+fstudid+"' data-toggle='modal' title='Enrolled Subject' href='#EnrolledSubjectModal'>Enrolled Subject<i class='fa fa-eye'></i></a> </li><li><a class='schedule' data-toggle='modal' title='Student Schedule' href='#Schedule'>View Schedule <i class='fa fa-calendar'></i></a> </li><li><a class='profile' data-toggle='modal' title='View Student Profile'  href='#Profile'>View Profile <i class='fa fa-eye'></i></a> </li><li><a class='pedit'data-toggle='modal' title='Edit Student Profile'  href='#EditProfile'>Edit Profile <i class='fa fa-edit'></i></a>  </li><li><a class='shift' data-toggle='modal' data-course='"+couid+"'  title='Shift' href='#shift'>Shift <i class='fa fa-exchange'></i></a> </li><li><a class='curriculum' title='Curriculum' data-toggle='modal' data-available-units-to-take='"+unitstotake+"' href='#curriculum'>Curriculum Status <i class='fa fa-flag'></i></a></li><li> "+printregi+" </li><li><a class='returnee' title='Returnee' data-course='"+couid+"' data-toggle='modal' data-curriculum-code='"+curcode+"' href='#Returnee'>Mark as Returnee<i class='fa fa-rotate-left'></i></a></li><li><a title='Print Transcript of records' class='tor' data-studnum='"+rs.getString("Student_Account_Student_Number")+"' >Print TOR <i class='fa fa-print'></i></a></li></ul></div>";
 
 			tablebody += "<tr><td>"+ rs.getString("Student_Account_Student_Number")+"</td><td>"+ fullname+"</td><td>"+ rs.getString("Section_Code")+"</td><td>"+curdesc+"</td><td>"+rs.getString("enrolledba")+"</td><td>"+unitstotake+" Unit/s</td><td style=''> "+buttons+"</td></tr>"; 
 			
@@ -149,6 +149,77 @@
 				})
 				
 				
+				$('#editable-sample').on('click','a.enrolledSubject',function(){
+					let myId = $(this).data('id')
+					$.ajax({
+    					type:'POST',
+    					data:{id: myId},
+    					dataType:"JSON",
+    					url: "Controller/Registrar/Student/getEnrolledSubject",
+    					success: function(result){
+    						let enrolledSubjectTableBody = ''
+    						$(result).each(function(key , val){
+    							enrolledSubjectTableBody = enrolledSubjectTableBody + '<tr><td>'+val.subjectCode+'</td><td>'+val.subjectDesc+'</td><td>'+val.credUnit+'</td><td style="text-align:center"><button class="btn btn-danger btn-sm deleteEnrolledSubject" data-id="'+val.takenSubjectId+'" ><span><i class="fa fa-trash-o"></i></span></button></td></tr>'
+    						
+    						})
+    						if(enrolledSubjectTableBody == '')
+    							enrolledSubjectTableBody = '<tr><td colspan="4" style="text-align:center"> No data available</td></tr>'
+    						$('#enrolledSubjectTbl').html(enrolledSubjectTableBody)
+    						console.log(enrolledSubjectTableBody)
+    						
+    						
+    						
+    					},
+                        error: function (response) {
+                            swal("Error encountered while accessing the data", "Please try again", "error");
+                        }
+    				});
+					
+				})	
+				
+				$('#enrolledSubjectTbl').on('click','button.deleteEnrolledSubject',function(){
+					var myId = $(this).data('id')
+					swal({
+	                    title: "Are you sure?",
+	                    text: "Do you really want to remove this enrolled subject?",
+	                    type: "warning",
+	                    showCancelButton: true,
+	                    confirmButtonColor: '#DD6B55',
+	                    confirmButtonText: 'Yes!',
+	                    cancelButtonText: "No!",
+	                    closeOnConfirm: false,
+	                    closeOnCancel: false
+	                },
+		                function (isConfirm) {
+		                    if (isConfirm) {
+		                    	
+		                    	$(this).parents("tr").remove()
+		                    	$.ajax({
+		        					type:'POST',
+		        					data:{id: myId},
+		        					url: "Controller/Registrar/Student/removeEnrolledSubject",
+		        					success: function(result){
+		        						
+		        						swal("Record Updated!", "The data is successfully Updated!", "success");
+		        						
+		        						
+		        					},
+		                            error: function (response) {
+		                                swal("Error encountered while accessing the data", "Please try again", "error");
+		                            }
+		        				});
+
+		                    } else {
+		
+		                        swal("Cancelled", "The transaction is cancelled", "error");
+		                    }
+		
+		                });
+					
+					
+				})	
+					
+
 				//start
 				
 				$("#importBtn").on('change', function() {
@@ -192,7 +263,7 @@
 	    		        for (var j=0; j<row.length; j++) {
 	    			        var col = row[j].split(',');
 	    			        if(col[0] != "" ){
-	    			        	studentForImport.push({ firstName:col[0] , middleName:col[1] , lastName:col[2] , cn:col[3], emailAdd:col[4], guardianName:col[5], guardianContactNumber:col[6], dob:col[7] , pob:col[8] , gender:col[9] , civilStatus:col[10] , address:col[11] ,studNumber:col[12]  });
+	    			        	studentForImport.push({ firstName:col[0] , middleName:col[1] , lastName:col[2] , cn:col[3], emailAdd:col[4], guardianName:col[5], guardianContactNumber:col[6], dob:col[7] , pob:col[8] , gender:col[10] , civilStatus:col[11] , address:col[9] ,studNumber:col[12]  });
 	    			        	
 	    			        }
 	    		        }
@@ -220,11 +291,21 @@
 	    			$.ajax({
     					type:'POST',
     					data:{studentList: JSON.stringify(studentForImport)},
-    					dataType: "json",
     					url: "Controller/Registrar/Student/importStudent",
     					success: function(result){
     							    						
-                             
+    						swal({
+                                title: "Record Updated!"
+                                , text: "The data is successfully Updated!"
+                                , type: "success"
+                                , confirmButtonColor: '#88A755'
+                                , confirmButtonText: 'Okay'
+                                , closeOnConfirm: false
+                            }, function (isConfirm) {
+                                if (isConfirm) {
+                                    window.location.reload();
+                                }
+                            });
     					},
                         error: function (response) {
                             
@@ -1049,6 +1130,9 @@
 					
 				
 				})	
+				
+				
+				
 				
 				$('#editable-sample').on('click','a.tor',function(){
 					var pdf = new jsPDF('p', 'pt', 'letter');
@@ -2857,8 +2941,38 @@
 	        </div>
 	    </div>	
 	    
+	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="EnrolledSubjectModal" class="modal fade">
+	       <div class="modal-dialog" style="width:60%">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                    <h4 class="modal-title" >Enrolled Subjects</h4>
+	                </div>
+	                <div class="modal-body">
+                        <div class="row">
+	                        <div class="col-lg-12">
+		                        <table class="table table-striped table-hover table-bordered" >
+		                        	<thead>
+		                                   <tr><th style="width: 20%">Code</th><th style="width: 25%">Description</th><th style="width: 15%">Cred. Unit</th><th style="width: 10%">Action</th></tr>
+		                               </thead>
+		                               <tbody id="enrolledSubjectTbl">   
+		                              		<tr>
+		                              		 	<td colspan="4" style="text-align:center"> No data available</td>
+		                            		</tr>  
+		                               </tbody>
+		                        </table>
+	                        </div>
+                        </div>
+	                </div>
+	                <div class="modal-footer">
+	                	 <button data-dismiss="modal" class="btn btn-default" id="" type="button">Close</button>
+	                </div>
+	            </div>
+	       </div>
+	    </div>	
+	    
 	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" id="importModal" class="modal fade">
-	        <div class="modal-dialog" style="width:60%">
+	        <div class="modal-dialog" style="width:80%">
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

@@ -30,6 +30,18 @@
 	pageContext.setAttribute("acadyear", acadyear);
 	pageContext.setAttribute("sem", sem);
 
+	String tablebody = "";
+
+	stmnt = conn.createStatement();
+	rs = stmnt.executeQuery("Select *,DATE_FORMAT(announcement_date_updated, '%W %D %M %Y') asOf from t_announcement where announcement_active_status = 'Active'");
+	while(rs.next()){
+		tablebody += "<tr><td style='font-weight:bold'>"+ rs.getString("asOf")+"</td><td><h4>" + rs.getString("announcement_name")+ "<h4><p style='font-size:13px'>"+rs.getString("announcement_description")+"</p></td><td>"; 
+	}
+	if(tablebody.equals(""))
+	{
+		tablebody = "<tr><td colspan='2'>No data avaialble</td></tr>";
+	}
+	pageContext.setAttribute("tablebody", tablebody);
 
 %>    
 
@@ -203,6 +215,30 @@
 					    		<h6 style="font-style:italic" id="sectionLbl">Section</h6>
 						    </div>
 				         </div>
+                	</div>
+               	</section>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-12">
+            	<section class="panel">
+                	<div class="panel-body">
+                       	<div class="row">
+	                       	<div class="col-lg-12">
+	                       		<table class="table table-invoice">
+		                            <thead>
+		                            <tr>
+		                                <th style="width:20%">As of</th>
+		                                <th style="width:80%">Announcement</th>
+		                            </tr>
+		                            </thead>
+		                            <tbody>
+			                            ${tablebody}
+		                            </tbody>
+		                        </table>
+						    </div>
+					    </div>
                 	</div>
                	</section>
             </div>
