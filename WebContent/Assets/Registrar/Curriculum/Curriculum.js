@@ -467,6 +467,97 @@ var EditableTable = function () {
                 }
             });
 
+            function openDataUriWindow(url) {
+			    var html = '<html>' +
+			        '<style>html, body { padding: 0; margin: 0; } iframe { width: 100%; height: 100%; border: 0;}  </style>' +
+			        '<body>' +
+			        '<iframe src="' + url + '"></iframe>' +
+			        '</body></html>';
+			    a = window.open();
+			    a.document.write(html);
+			}
+			
+            
+            $('#btnPrintCurriculum').on('click', function () {
+            	var items = [];
+               	var course = $('#updcourseDrp option:selected').val();
+               	var semester = $('#updSemesterDrp option:selected').text();
+               	var yearLvl = $('#updyearlvlDrp option:selected').val();
+               	var maxCred = $('#updmaxcredTxt option:selected').val();
+              	var tableBody = ""
+              		
+                $('#viewmainBody tr').each(function(index, el) {
+                	if($(this).closest('tr').find('.SubjectDrp option:selected').val()!= undefined){
+                		let subj = $(this).closest('tr').find('.SubjectDrp option:selected').val()
+                		let credunit = $(this).closest('tr').find('.unitText').text()
+                		let labunit = $(this).closest('tr').find('.labUnitText').text()
+                		let lecunit = $(this).closest('tr').find('.lecUnitText').text()
+                		let tuitionHrs = $(this).closest('tr').find('.tuitionHrsText').text()
+                		let lecHrs = $(this).closest('tr').find('.lecHrsText').text()
+                		let labHrs = $(this).closest('tr').find('.labHrsText').text()
+                		let prereq = $(this).closest('tr').find('.prereq').text()
+                		
+                		tableBody += "<tr><td>"+subj+"</td><td>"+prereq+"</td><td>"+credunit+"</td><td>"+labunit+"</td><td>"+labunit+"</td><td>"+lecunit+"</td><td>"+tuitionHrs+"</td><td>"+lecHrs+"</td><td>"+labHrs+"</td></tr>"
+                		
+                	}
+                    	
+                })
+                
+                
+                var pdf = new jsPDF('l', 'pt', 'letter');
+                var breaker = '_____________________________________________________________________________________________'
+
+                pdf.setFontType("normal");
+				pdf.setFontSize(14.5);
+				pdf.text(15,15,breaker)
+
+				pdf.setFontType("bold");
+				pdf.setFontSize(13);
+				pdf.text(15,40,"Quezon City Polytechnic University")
+
+				pdf.setFontType("italic");
+				pdf.setFontSize(7);
+				var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 230);
+				pdf.text(15,55,addre)
+				
+				pdf.setFontType("normal");
+				pdf.setFontSize(14.5);
+				pdf.text(15,70,breaker)
+				
+				pdf.setFontType("italic");
+				pdf.setFontSize(14);
+				pdf.text(320,110,course + ' - ' + semester + ' - ' + yearLvl )
+				
+				
+				
+				specialElementHandlers = {
+					'#bypassme': function(element, renderer){
+						return true
+					}
+				}
+				
+				tableBody = "<thead><th>Code</th><th>Prerequisite</th><th>Credited Units</th><th>Laboratory Units</th><th>Lecture Units</th><th>Tuition Hours</th><th>Laboratory Hours</th><th>Laboratory Hours</th></thead><tbody>"+tableBody+"</tbody>"
+				$('#myHiddenTable').html(tableBody)
+				var res = pdf.autoTableHtmlToJson(document.getElementById("myHiddenTable"),true);
+			    pdf.autoTable(res.columns, res.data, {
+			      startY: 170
+			    });
+
+			   	
+				
+                
+                
+                var myImage = new Image();
+				myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
+				myImage.onload = function(){
+					pdf.addImage(myImage , 'png', 700, 20, 50, 50);
+					 var uri = pdf.output('dataurlstring');
+			  	   	 openDataUriWindow(uri);
+			  	};
+				
+            })
+            
+            
 
 
             $('#editable-sample').on('click','a.edit', function (e) {
@@ -518,7 +609,6 @@ var EditableTable = function () {
                         	
                         });
                     	$.each(code,function (key,val){
-                    		alert(val)
                     		$('.addGroupItemEdit').click();
                     		$('#viewmainBody').find('tr:last .SubjectDrp').select2("val", val).trigger("change")
                     		

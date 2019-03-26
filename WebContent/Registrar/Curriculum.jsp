@@ -102,6 +102,13 @@
 				
 				$('#mainBody').on('change','select.grpfee',function(){
                 	var unit = $(this).find('option:selected').data("cred-unit");
+                	var labunit = $(this).find('option:selected').data("lab-unit");
+                	var lecunit = $(this).find('option:selected').data("lec-unit");
+                	var tuitionHrs = $(this).find('option:selected').data("tuition-hours");
+                	var labHrs = $(this).find('option:selected').data("lab-hours");
+                	var lecHrs = $(this).find('option:selected').data("lec-hours");
+
+                	
                 	var val = $(this).find('option:selected').val()
                 	$('#mainBody tr').each(function(){
 	                	if($(this).data("code") == befcode)
@@ -111,6 +118,13 @@
                 	befcode = val;
                 	
                 	$(this).closest('tr').find('.unitText').html(unit)
+                	$(this).closest('tr').find('.labUnitText').html(labunit)
+                	$(this).closest('tr').find('.lecUnitText').html(lecunit)
+                	$(this).closest('tr').find('.tuitionHrsText').html(tuitionHrs)
+                	$(this).closest('tr').find('.labHrsText').html(labHrs)
+                	$(this).closest('tr').find('.lecHrsText').html(lecHrs)
+                	
+                	
                 	getTotal()
                 	$.ajax({
     					type:'POST',
@@ -174,6 +188,13 @@
 				
 				$('#viewmainBody').on('change','select.grpfee',function(){
                 	var unit = $(this).find('option:selected').data("cred-unit");
+                	var prereq = $(this).find('option:selected').data("prereq");
+                	var labunit = $(this).find('option:selected').data("lab-unit");
+                	var lecunit = $(this).find('option:selected').data("lec-unit");
+                	var tuitionHrs = $(this).find('option:selected').data("tuition-hours");
+                	var labHrs = $(this).find('option:selected').data("lab-hours");
+                	var lecHrs = $(this).find('option:selected').data("lec-hours");
+                	
                 	var val = $(this).find('option:selected').val()
                 	$('#viewmainBody tr').each(function(){
 	                	if($(this).data("code") == befcode)
@@ -183,6 +204,13 @@
                 	befcode = val;
                 	
                 	$(this).closest('tr').find('.unitText').html(unit)
+                	$(this).closest('tr').find('.labUnitText').html(labunit)
+                	$(this).closest('tr').find('.lecUnitText').html(lecunit)
+                	$(this).closest('tr').find('.tuitionHrsText').html(tuitionHrs)
+                	$(this).closest('tr').find('.labHrsText').html(labHrs)
+                	$(this).closest('tr').find('.lecHrsText').html(lecHrs)
+                	$(this).closest('tr').find('.prereq').html(prereq)
+                	
                 	getTotal()
                 	$.ajax({
     					type:'POST',
@@ -209,7 +237,20 @@
 				
 				$('#viewmainBody').on('change','select.fee',function(){
 					var unit = $(this).find('option:selected').data("cred-unit");
+					var labunit = $(this).find('option:selected').data("lab-unit");
+                	var lecunit = $(this).find('option:selected').data("lec-unit");
+                	var tuitionHrs = $(this).find('option:selected').data("tuition-hours");
+                	var labHrs = $(this).find('option:selected').data("lab-hours");
+                	var lecHrs = $(this).find('option:selected').data("lec-hours");
+                	var prereq = $(this).find('option:selected').data("prereq");
+                	
                 	$(this).closest('tr').find('.unitText').html(unit)
+                	$(this).closest('tr').find('.labUnitText').html(labunit)
+                	$(this).closest('tr').find('.lecUnitText').html(lecunit)
+                	$(this).closest('tr').find('.tuitionHrsText').html(tuitionHrs)
+                	$(this).closest('tr').find('.labHrsText').html(labHrs)
+                	$(this).closest('tr').find('.lecHrsText').html(lecHrs)
+                	$(this).closest('tr').find('.prereq').html(prereq)
                 	getTotal()
 					
 				});
@@ -247,7 +288,7 @@
 				}
 				
 				function appendtable(grp,code,desc){
-					var row = '<tr class="getcode" data-code="'+grp+'"><td colspan="3"  style="text-align:center">'+code+ ' - '+ desc+'</td></tr>';
+					var row = '<tr class="getcode" data-code="'+grp+'"><td colspan="9"  style="text-align:center">'+code+ ' - '+ desc+'</td></tr>';
 					
 					return row
 				}
@@ -259,6 +300,12 @@
     </jsp:attribute>
     
 	<jsp:attribute name="customImportedScript">      
+	
+		<script src="../Assets/js/html2canvas.js"></script>
+		<script src="../Assets/js/jspdf.js"></script>
+		
+		<script src="../Assets/js/jspdf.debug.js"></script>
+		<script src="../Assets/js/jspdf.plugin.autotable.js"></script>
 		<script type="text/javascript" src="../Assets/js/jquery-1.8.3.min.js"></script>
     </jsp:attribute>    
     
@@ -276,9 +323,7 @@
                                      Add New <i class="fa fa-plus"></i>
                                  </button>
                                      </div>
-                                     <div class="btn-group pull-right">
-                                         <button class="btn btn-default " id="btnprint">Print <i class="fa fa-print"></i></button>
-                                     </div>
+                                     
                                  </div>
                                  <div class="space15"></div>
                                  <table class="table table-striped table-hover table-bordered" id="editable-sample">
@@ -306,14 +351,26 @@
 					<td>
          				${firstCol}
 		            </td>
-		            <td style="font-size:20px" ><center class="unitText"></center></td>
+		            <td style="font-size:15px" ><center class="prereq"></center></td>
+		            <td style="font-size:15px" ><center class="unitText"></center></td>
+		            <td style="font-size:15px" ><center class="labUnitText"></center></td>
+		            <td style="font-size:15px" ><center class="lecUnitText"></center></td>
+		            <td style="font-size:15px" ><center class="tuitionHrsText"></center></td>		            
+		            <td style="font-size:15px" ><center class="labHrsText"></center></td>
+		            <td style="font-size:15px" ><center class="lecHrsText"></center></td>
 		            <td><center><a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-trash-o'></i></a></center></td>
 				</tbody>
 				<tbody id="groupduplicate">    
 					<td>
          				${groupfirstCol}
 		            </td>
-		            <td style="font-size:20px" ><center class="unitText"></center></td>
+         		    <td style="font-size:15px" ><center class="prereq"></center></td>		            
+		            <td style="font-size:15px" ><center class="unitText"></center></td>
+		            <td style="font-size:15px" ><center class="labUnitText"></center></td>
+		            <td style="font-size:15px" ><center class="lecUnitText"></center></td>
+		            <td style="font-size:15px" ><center class="tuitionHrsText"></center></td>		            
+		            <td style="font-size:15px" ><center class="labHrsText"></center></td>
+		            <td style="font-size:15px" ><center class="lecHrsText"></center></td>
 		            <td><center><a class='btn btn-danger delete' href='javascript:;'><i class='fa fa-trash-o'></i></a></center></td>
 				</tbody>
 				<tbody id="updateduplicate">    
@@ -422,8 +479,11 @@
 	            </div>
 	        </div>
 	    </div>	
+	     <table class="hidden" id="myHiddenTable">
+         </table>
+                                    
 	    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog"  id="CurriculumEdit" class="modal fade">
-	        <div class="modal-dialog" style="width:700px">
+	        <div class="modal-dialog" style="width:60%">
 	            <div class="modal-content">
 	                <div class="modal-header">
 	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -432,27 +492,35 @@
 	                <div class="modal-body">
 	                    <form method="post" id="form-data">
 	                     	<div class="row" style="padding-left:15px;padding-top:10px">
+	                     		<div class="col-lg-12" style="padding-left:15px;">
+	                        			<button class="btn btn-default " type="button" id="btnPrintCurriculum">Print <i class="fa fa-print"></i></button>
+                                  </div> 
 	                            <div class="col-lg-12" style="padding-top:10px">
+	                             	
 	                            	<div class="col-lg-6">
 	                        			Course
+	                        			<br/>
 	                        			<select id="updcourseDrp" class="populate fee" style="width: 290px">
                                       	  ${courseDrp} 
                                     	</select>                      			
 		                            </div>
 		                            <div class="col-lg-6">
 	                        			Semester
+	                        			<br/>
 	                        			<select id="updSemesterDrp" class="populate fee" style="width: 290px">
                                       	  ${semesterDrp} 
                                     	</select>                      			
 		                            </div>
 		                            <div class="col-lg-6" style="padding-top:10px">
 	                        			Year Level
+	                        			<br/>
 	                        			<select id="updyearlvlDrp" class="populate fee" style="width: 290px">
                                       	  ${yearlvlDrp} 
                                     	</select>       			
 		                            </div>
 		                            <div class="col-lg-6" style="padding-top:10px">
 	                        			Maximum Credited Units to take
+	                        			<br/>
 	                        			<input type="number"  min="0" max="100" step="0" class="form-control" placeholder="ex. 26" id="updmaxcredTxt">
 		                            </div>
 		                            
@@ -462,7 +530,13 @@
 			                            	<thead>
 		                                        <tr>
 		                                            <th style="width: 200px">Code</th>
+		                                            <th style="width: 100px">Prerequisite</th>
 		                                            <th style="width: 100px">Credited Units</th>
+		                                            <th style="width: 100px">Laboratory Units</th>
+		                                            <th style="width: 100px">Lecture Units</th>
+		                                            <th style="width: 100px">Tuition Hours</th>
+		                                            <th style="width: 100px">Laboratory Hours</th>
+		                                            <th style="width: 100px">Lecture Hours</th>
 		                                            <th style="width: 120px">Action</th>  
 		                                        </tr>
 		                                    </thead>

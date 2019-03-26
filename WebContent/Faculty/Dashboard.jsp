@@ -28,7 +28,7 @@
 		sem = ec.decrypt(ec.key, ec.initVector, rs.getString("Semester_Description"));
 		
 	}
-	String tablebody = "";
+	String tablebody = "<tr><td>a</td><td>0</td></tr>";
 	rs = stmnt.executeQuery("SELECT count(*) as cou,t1.Subject_Code,t1.Subject_Description FROM `t_student_taken_curriculum_subject` inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_subject as t1  on Student_Taken_Curriculum_Subject_SubjectID =  t1.Subject_ID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join t_schedule on Schedule_CurriculumItemID = CurriculumItem_ID  left join r_professor on Schedule_ProfessorID = Professor_ID  left join r_subject as t2 on t1.Subject_Group = t2.Subject_ID inner join r_section on Student_Account_SectionID = Section_ID   where Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' and Schedule_ProfessorID = Professor_ID and Schedule_AcademicYearID = Academic_Year_ID and Professor_Code = '"+username+"' group by t1.Subject_Code ");
 	while(rs.next()){
 
@@ -39,6 +39,7 @@
 	pageContext.setAttribute("acadyear", acadyear);
 	pageContext.setAttribute("sem", sem);
 	pageContext.setAttribute("tablebody", tablebody);
+	pageContext.setAttribute("asd", "SELECT count(*) as cou,t1.Subject_Code,t1.Subject_Description FROM `t_student_taken_curriculum_subject` inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_subject as t1  on Student_Taken_Curriculum_Subject_SubjectID =  t1.Subject_ID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join t_schedule on Schedule_CurriculumItemID = CurriculumItem_ID  left join r_professor on Schedule_ProfessorID = Professor_ID  left join r_subject as t2 on t1.Subject_Group = t2.Subject_ID inner join r_section on Student_Account_SectionID = Section_ID   where Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' and Schedule_ProfessorID = Professor_ID and Schedule_AcademicYearID = Academic_Year_ID and Professor_Code = '"+username+"' group by t1.Subject_Code ");
 %>    
 
 <t:Faculty title="Dashboard" from="Dashboard" to="">
@@ -53,7 +54,7 @@
 				        type: 'column'
 				    },
 				    title: {
-				        text: 'Data extracted from a HTML table in the page'
+				        text: 'Student per Subject'
 				    },
 				    legend: {
 				        enabled: false
@@ -61,7 +62,7 @@
 				    yAxis: {
 				        allowDecimals: false,
 				        title: {
-				            text: 'Units'
+				            text: 'Number of Students'
 				        }
 				    },
 				    tooltip: {
@@ -90,7 +91,7 @@
 	            	<i class="fa fa-calendar"></i>
 	            </span>	      		        	        
 	            <div class="mini-stat-info">
-	                <span id="academicyear">${acadyear}</span>
+	                <span id="academicyear">${asd}</span>
 	                Active Academic Year
 	            </div>
 	        </div>
@@ -99,7 +100,7 @@
 	        <div class="mini-stat clearfix">
 		        <span class="mini-stat-icon tar"><i class="fa fa-asterisk"></i></span>
 	            <div class="mini-stat-info">
-	                <span id="semester">${sem}</span>
+	                <span id="semester">${tablebody}</span>
 	                Active Semester
 	            </div>
 	        </div>

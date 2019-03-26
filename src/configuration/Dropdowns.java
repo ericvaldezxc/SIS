@@ -232,14 +232,14 @@ public class Dropdowns {
 	public String fillsubjectDrp() throws SQLException {
 		String Drp = "";
 		Statement stmnt = conn.createStatement();
-		rs = stmnt.executeQuery("Select Subject_Code,Subject_Description,Subject_Credited_Units from r_subject WHERE Subject_Display_Stat = 'Active' and Subject_Type = 'Academic'");
+		rs = stmnt.executeQuery("Select *,(select Subject_Code from r_subject where Subject_ID = Prerequisite_Prequisite_SubjectID ) as prereq,Subject_Code,Subject_Description,Subject_Credited_Units,Subject_Laboratory_Units from r_subject left join r_prerequisite on Prerequisite_Main_SubjectID = Subject_ID WHERE Subject_Display_Stat = 'Active' and Subject_Type = 'Academic'");
 		int  i = 0 ;
 		while(rs.next()){
 			if(i == 0){
 				Drp += "<optgroup label='Academic'>";				
 				
 			}
-			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-prereq='"+ec.decrypt(ec.key, ec.initVector, rs.getString("prereq"))+"' data-lab-unit='"+rs.getString("Subject_Laboratory_Units")+"' data-lec-unit='"+rs.getString("Subject_Lecture_Units")+"'  data-cred-unit='"+rs.getString("Subject_Credited_Units")+"' data-lec-hours='"+rs.getString("Subject_Lecture_Hours")+"'  data-lab-hours='"+rs.getString("Subject_Laboratory_Hours")+"' data-tuition-hours='"+rs.getString("Subject_Tuition_Hours")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
 
 			i++;
 			
@@ -249,13 +249,14 @@ public class Dropdowns {
 			
 		}
 		i = 0;
-		rs = stmnt.executeQuery("Select Subject_Code,Subject_Description,Subject_Credited_Units from r_subject WHERE Subject_Display_Stat = 'Active' and Subject_Type = 'Non-Academic'");
+		rs = stmnt.executeQuery("Select *,(select Subject_Code from r_subject where Subject_ID = Prerequisite_Prequisite_SubjectID ) as prereq,Subject_Code,Subject_Description,Subject_Credited_Units,Subject_Laboratory_Units from r_subject left join r_prerequisite on Prerequisite_Main_SubjectID = Subject_ID WHERE Subject_Display_Stat = 'Active' and Subject_Type = 'Non-Academic'");
 		while(rs.next()){
 			if(i == 0){
 				Drp += "<optgroup label='Non-Academic'>";				
 				
 			}
-			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+//			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-prereq='"+ec.decrypt(ec.key, ec.initVector, rs.getString("prereq"))+"' data-lab-unit='"+rs.getString("Subject_Laboratory_Units")+"' data-lec-unit='"+rs.getString("Subject_Lecture_Units")+"'  data-cred-unit='"+rs.getString("Subject_Credited_Units")+"' data-lec-hours='"+rs.getString("Subject_Lecture_Hours")+"'  data-lab-hours='"+rs.getString("Subject_Laboratory_Hours")+"' data-tuition-hours='"+rs.getString("Subject_Tuition_Hours")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
 
 			i++;
 			
@@ -349,10 +350,11 @@ public class Dropdowns {
 	public String fillgroupsubjectDrp() throws SQLException {
 		String Drp = "";
 		Statement stmnt = conn.createStatement();
-		rs = stmnt.executeQuery("Select distinct t1.Subject_Code,t1.Subject_Description,t1.Subject_Credited_Units from r_subject as t1 inner join r_subject as t2 on t1.Subject_ID = t2.Subject_Group WHERE t1.Subject_Display_Stat = 'Active' and t2.Subject_Display_Stat = 'Active'");
+rs = stmnt.executeQuery("Select distinct t1.Subject_Lecture_Units,t1.Subject_Laboratory_Units,t1.Subject_Lecture_Hours,t1.Subject_Laboratory_Hours,t1.Subject_Tuition_Hours,t1.Subject_Credited_Units, t1.Subject_Code,t1.Subject_Description,t1.Subject_Credited_Units from r_subject as t1 inner join r_subject as t2 on t1.Subject_ID = t2.Subject_Group WHERE t1.Subject_Display_Stat = 'Active' and t2.Subject_Display_Stat = 'Active'");
+//		rs = stmnt.executeQuery("Select distinct (select Subject_Code from r_subject where Subject_ID = Prerequisite_Prequisite_SubjectID ) as prereq,t1.Subject_Lecture_Units,t1.Subject_Laboratory_Units,t1.Subject_Lecture_Hours,t1.Subject_Laboratory_Hours,t1.Subject_Tuition_Hours,t1.Subject_Credited_Units, t1.Subject_Code,t1.Subject_Description,t1.Subject_Credited_Units from r_subject as t1 inner join r_subject as t2 on t1.Subject_ID = t2.Subject_Group left join r_prerequisite on Prerequisite_Main_SubjectID = Subject_ID WHERE t1.Subject_Display_Stat = 'Active' and t2.Subject_Display_Stat = 'Active'");
 		while(rs.next()){
 
-			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-prereq='' data-lab-unit='"+rs.getString("Subject_Laboratory_Units")+"' data-lec-unit='"+rs.getString("Subject_Lecture_Units")+"'  data-cred-unit='"+rs.getString("Subject_Credited_Units")+"' data-lec-hours='"+rs.getString("Subject_Lecture_Hours")+"'  data-lab-hours='"+rs.getString("Subject_Laboratory_Hours")+"' data-tuition-hours='"+rs.getString("Subject_Tuition_Hours")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
 
 		}
 

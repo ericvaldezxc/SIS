@@ -66,7 +66,7 @@ public class CurriculumViewItemController extends HttpServlet {
 		String sql = "";
 		String sql2 = "";
 		
-		sql = "SELECT Subject_Code,Subject_Description,Subject_Credited_Units FROM `r_curriculumitem` INNER JOIN r_subject ON CurriculumItem_SubjectID = Subject_ID INNER JOIN r_curriculum ON Curriculum_ID = CurriculumItem_CurriculumID inner join r_curriculumyear on CurriculumYear_ID = Curriculum_CurriculumYearID WHERE Subject_Display_Stat = 'Active' and CurriculumItem_Display_Status = 'Active' and Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"' Order by Subject_Group asc";
+		sql = "SELECT Subject_Code,Subject_Description,Subject_Credited_Units,Subject_Lecture_Hours,Subject_Laboratory_Hours,Subject_Tuition_Hours,Subject_Laboratory_Units,Subject_Lecture_Units FROM `r_curriculumitem` INNER JOIN r_subject ON CurriculumItem_SubjectID = Subject_ID INNER JOIN r_curriculum ON Curriculum_ID = CurriculumItem_CurriculumID inner join r_curriculumyear on CurriculumYear_ID = Curriculum_CurriculumYearID WHERE Subject_Display_Stat = 'Active' and CurriculumItem_Display_Status = 'Active' and Curriculum_Code = '"+ec.encrypt(ec.key, ec.initVector, latcode)+"' Order by Subject_Group asc";
 		JSONArray arr = new JSONArray();
 		JSONArray grouplist = new JSONArray();
 		PrintWriter out = response.getWriter();	
@@ -83,6 +83,11 @@ public class CurriculumViewItemController extends HttpServlet {
 				 obj.put("code", ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code")));
 				 obj.put("desc", ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description")));
 				 obj.put("unit", rs.getString("Subject_Credited_Units"));
+				 obj.put("lechrs", rs.getString("Subject_Lecture_Hours"));
+				 obj.put("labhrs", rs.getString("Subject_Laboratory_Hours"));
+				 obj.put("tuitionhrs", rs.getString("Subject_Tuition_Hours"));
+				 obj.put("labunit", rs.getString("Subject_Laboratory_Units"));
+				 obj.put("lecunit", rs.getString("Subject_Lecture_Units"));
 				 sql2 = "SELECT * FROM `r_subject` AS T1 WHERE T1.Subject_Group = (SELECT T2.Subject_ID FROM r_subject AS T2 where T2.Subject_Code = '"+rs.getString("Subject_Code")+"' )";
 //				 out.print(sql2+" \n");
 				 rs2 = stmnt2.executeQuery(sql2);
