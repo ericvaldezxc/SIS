@@ -39,14 +39,14 @@
 	pageContext.setAttribute("acadyear", acadyear);
 	pageContext.setAttribute("sem", sem);
 	pageContext.setAttribute("tablebody", tablebody);
-	pageContext.setAttribute("asd", "SELECT count(*) as cou,t1.Subject_Code,t1.Subject_Description FROM `t_student_taken_curriculum_subject` inner join t_student_account on Student_Taken_Curriculum_Subject_StudentAccountID = Student_Account_ID inner join r_student_profile on Student_Account_Student_Profile_ID = Student_Profile_ID inner join r_academic_year on Academic_Year_ID = Student_Taken_Curriculum_Subject_AcademicIYearID inner join r_subject as t1  on Student_Taken_Curriculum_Subject_SubjectID =  t1.Subject_ID inner join r_semester on Student_Taken_Curriculum_Subject_SemesterID = Semester_ID inner join r_curriculumitem on CurriculumItem_SubjectID = Student_Taken_Curriculum_Subject_SubjectID inner join t_schedule on Schedule_CurriculumItemID = CurriculumItem_ID  left join r_professor on Schedule_ProfessorID = Professor_ID  left join r_subject as t2 on t1.Subject_Group = t2.Subject_ID inner join r_section on Student_Account_SectionID = Section_ID   where Semester_Active_Flag = 'Active' and Academic_Year_Active_Flag = 'Present' and Schedule_ProfessorID = Professor_ID and Schedule_AcademicYearID = Academic_Year_ID and Professor_Code = '"+username+"' group by t1.Subject_Code ");
 %>    
 
 <t:Faculty title="Dashboard" from="Dashboard" to="">
 	<jsp:attribute name="myscript"> 
 		<script>
 			$(document).ready(function(){
-				Highcharts.chart('tableBody', {
+				
+				/* Highcharts.chart('tableBody', {
 				    data: {
 				        table: 'datatable'
 				    },
@@ -71,6 +71,90 @@
 				        }
 				    }
 				});
+				
+				 */
+				$.ajax({
+					type:'POST',
+					data:{},
+					url: 'Controller/Faculty/Dashboard/GetEnrolledSubjects',
+					dataType: 'json',
+					success: function(data){
+						var head = []
+						var firstseries = []
+						var firstseriesbody = []
+						var firstseriesfinalbody = []
+						
+						$.each(data, function(key, val) {
+							head.push({ name : val.year, y : parseFloat(val.total) , drilldown : val.year })
+							firstseriesfinalbody = []
+							$.each(val.body, function(key2, val2) {
+								firstseriesbody = []
+								firstseriesbody.push(val2.subject,parseFloat(val2.cou));
+								firstseriesfinalbody.push(firstseriesbody)
+								
+							})
+							firstseries.push({ name : val.year, id : val.year, data : firstseriesfinalbody })
+							
+						})
+						
+						
+						Highcharts.chart('student', {
+						    chart: {
+						        type: 'column'
+						    },
+						    title: {
+						        text: 'Student'
+						    },
+						    subtitle: {
+						        text: 'Per academic year'
+						    },
+						    xAxis: {
+						        type: 'category'
+						    },
+						    yAxis: {
+						        title: {
+						            text: 'Number of Student'
+						        }
+
+						    },
+						    legend: {
+						        enabled: false
+						    },
+						    plotOptions: {
+						        series: {
+						            borderWidth: 0,
+						            dataLabels: {
+						                enabled: true,
+						                format: '{point.y:0f}'
+						            }
+						        }
+						    },
+
+						    tooltip: {
+						        headerFormat: '<span style="font-size:11px">{point.name} {series.name}s</span><br>',
+						        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:0f} Student</b> of total<br/>'
+						    },
+
+						    "series": [
+						        {
+						            "name": "Student",
+						            "colorByPoint": true,
+						            "data":head
+						        }
+						    ],
+						    "drilldown": {
+						        "series": firstseries
+						    }
+						});
+						
+					
+						             
+					},
+	                error: function (response) {
+	                    swal("Error encountered while accessing the data", "Please try again", "error");
+	                }
+
+				});
 			})
 		</script>
 	</jsp:attribute>
@@ -91,7 +175,7 @@
 	            	<i class="fa fa-calendar"></i>
 	            </span>	      		        	        
 	            <div class="mini-stat-info">
-	                <span id="academicyear">${asd}</span>
+	                <span id="academicyear">${acadyear}</span>
 	                Active Academic Year
 	            </div>
 	        </div>
@@ -100,11 +184,19 @@
 	        <div class="mini-stat clearfix">
 		        <span class="mini-stat-icon tar"><i class="fa fa-asterisk"></i></span>
 	            <div class="mini-stat-info">
-	                <span id="semester">${tablebody}</span>
+	                <span id="semester">${sem}</span>
 	                Active Semester
 	            </div>
 	        </div>
     	</div>
+    	<div class="col-md-12">
+            <section class="panel">
+                <div class="panel-body">
+                    <div id="student" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                </div>
+            </section>
+        </div> 
+    	<!-- 
     	<div class="col-md-12">
             <section class="panel">
                 <div class="panel-body" id="tableBody">
@@ -124,6 +216,7 @@
             </section>
         </div> 
         </div> 
+         -->
     </jsp:body>
 
 
