@@ -162,11 +162,13 @@ var EditableTable = function () {
 //        						$('#codeTxt').val('') ;
 //        						 $('#descTxt').val('');
 	                             $("#addcloseBtn").click();
-	                             $('#mainBody tr .SubjectDrp').each(function(index,val){
-	                        		$.ajax({
+	                             $('#mainBody tr ').each(function(index,val){
+	                            	let mySubjectDrp = $(this).find('.SubjectDrp option:selected').val()
+	                            	let prereq = $(this).find('.SubjectDrpprereq  option:selected').val()	                        		
+	                            	$.ajax({
 	                					type:'POST',
-	                					data:{codeTxt: $(this).val(),type:"Insert",latcode:latcode},
-	                					url:'Controller/Registrar/Curriculum/CurriculumItemController',
+	                					data:{codeTxt: mySubjectDrp,prereq: prereq,type:"Insert",latcode:latcode},
+	                					url:'Controller/Registrar/Curriculum/CurriculumItemController2',
 	                					async: true,
 	                					success: function(result2){
 
@@ -176,7 +178,6 @@ var EditableTable = function () {
 	                                        
 	                                    }
 	                				});
-	             					
 	                             });
 
          						swal("Record Added!", "The data is successfully added!", "success");
@@ -229,11 +230,14 @@ var EditableTable = function () {
         					url:'Controller/Registrar/Curriculum/CurriculumController',
         					success: function(result){
         						 
-	                             $('#itemsTblEdit tr .SubjectDrp').each(function(index,val){
-		                        		$.ajax({
+	                             $('#viewmainBody tr').each(function(index,val){
+	                            	let mySubjectDrp = $(this).find('.SubjectDrp option:selected').val()
+	                            	let prereq = $(this).find('.SubjectDrpprereq option:selected').val()	                        		
+
+	                            	 $.ajax({
 		                					type:'POST',
-		                					data:{codeTxt: $(this).find('option:selected').attr("value"),type:"Update",latcode:latcode},
-		                					url:'Controller/Registrar/Curriculum/CurriculumItemController',
+		                					data:{codeTxt: mySubjectDrp,prereq: prereq,type:"Update",latcode:latcode},
+		                					url:'Controller/Registrar/Curriculum/CurriculumItemController2',
 		                					async: true,
 		                					success: function(result2){
 
@@ -481,6 +485,7 @@ var EditableTable = function () {
             $('#btnPrintCurriculum').on('click', function () {
             	var items = [];
                	var course = $('#updcourseDrp option:selected').val();
+               	var courseDesc = $('#updcourseDrp option:selected').text();
                	var semester = $('#updSemesterDrp option:selected').text();
                	var yearLvl = $('#updyearlvlDrp option:selected').val();
                	var maxCred = $('#updmaxcredTxt option:selected').val();
@@ -497,63 +502,98 @@ var EditableTable = function () {
                 		let labHrs = $(this).closest('tr').find('.labHrsText').text()
                 		let prereq = $(this).closest('tr').find('.prereq').text()
                 		
-                		tableBody += "<tr><td>"+subj+"</td><td>"+prereq+"</td><td>"+credunit+"</td><td>"+labunit+"</td><td>"+labunit+"</td><td>"+lecunit+"</td><td>"+tuitionHrs+"</td><td>"+lecHrs+"</td><td>"+labHrs+"</td></tr>"
+//                		tableBody += "<tr><td>"+subj+"</td><td>"+prereq+"</td><td>"+credunit+"</td><td>"+labunit+"</td><td>"+labunit+"</td><td>"+lecunit+"</td><td>"+tuitionHrs+"</td><td>"+lecHrs+"</td><td>"+labHrs+"</td></tr>"
                 		
                 	}
                     	
                 })
                 
                 
-                var pdf = new jsPDF('l', 'pt', 'letter');
-                var breaker = '_____________________________________________________________________________________________'
+                let coursePlease = $('#coursePleaseTxt').val()
+        		let yearPlease = $('#curyearPleaseTxt').val()
 
-                pdf.setFontType("normal");
-				pdf.setFontSize(14.5);
-				pdf.text(15,15,breaker)
+        		
+                $.ajax({
+                    type: 'post',
+                    url: 'Controller/Registrar/Curriculum/PrintCurriculum2',
+                    data: {
+                    	course:coursePlease,
+                    	curyear:yearPlease
+                    },
+                    success: function (response) {
+                    	var item = $.parseJSON(response);
+                    	$.each(item, function (key, val) {
+                    		tableBody += "<tr><td colspan='5'>"+val.yearlvl +" - " + val.semester +"</td></tr>"
+                    	  	$.each(val.subject, function (key2, val2) {
+                        		console.log(val2)
+                        		var myreq = val2.prerequisite
+                        		if(myreq == "null" ||  myreq == null)
+                        			myreq = ""
+                        		tableBody += "<tr><td>"+val2.code+"</td><td>"+myreq+"</td><td>"+val2.tuition+"</td><td>"+val2.lechours+"</td><td>"+val2.labhours+"</td></tr>"
+                                
+                        		
+                            });                    
+                    		tableBody += "<tr><td colspan='5'></td></tr>"
+                                	
+                        });
+                    	 var pdf = new jsPDF('l', 'pt', 'letter');
+                         var breaker = '_____________________________________________________________________________________________'
 
-				pdf.setFontType("bold");
-				pdf.setFontSize(13);
-				pdf.text(15,40,"Quezon City Polytechnic University")
+                         pdf.setFontType("normal");
+         				pdf.setFontSize(14.5);
+         				pdf.text(15,15,breaker)
 
-				pdf.setFontType("italic");
-				pdf.setFontSize(7);
-				var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 230);
-				pdf.text(15,55,addre)
-				
-				pdf.setFontType("normal");
-				pdf.setFontSize(14.5);
-				pdf.text(15,70,breaker)
-				
-				pdf.setFontType("italic");
-				pdf.setFontSize(14);
-				pdf.text(320,110,course + ' - ' + semester + ' - ' + yearLvl )
-				
-				
-				
-				specialElementHandlers = {
-					'#bypassme': function(element, renderer){
-						return true
-					}
-				}
-				
-				tableBody = "<thead><th>Code</th><th>Prerequisite</th><th>Credited Units</th><th>Laboratory Units</th><th>Lecture Units</th><th>Tuition Hours</th><th>Laboratory Hours</th><th>Laboratory Hours</th></thead><tbody>"+tableBody+"</tbody>"
-				$('#myHiddenTable').html(tableBody)
-				var res = pdf.autoTableHtmlToJson(document.getElementById("myHiddenTable"),true);
-			    pdf.autoTable(res.columns, res.data, {
-			      startY: 170
-			    });
+         				pdf.setFontType("bold");
+         				pdf.setFontSize(13);
+         				pdf.text(15,40,"Quezon City Polytechnic University")
 
-			   	
-				
+         				pdf.setFontType("italic");
+         				pdf.setFontSize(7);
+         				var addre = pdf.splitTextToSize("QCPU Technical & Vocational Building, 673 Quirino Hway, Novaliches, Quezon City, 1116 Metro Manila", 230);
+         				pdf.text(15,55,addre)
+         				
+         				pdf.setFontType("normal");
+         				pdf.setFontSize(14.5);
+         				pdf.text(15,70,breaker)
+         				
+         				pdf.setFontType("italic");
+         				pdf.setFontSize(14);
+         				pdf.text(340,110,courseDesc  )
+         				
+         				
+         				
+         				specialElementHandlers = {
+         					'#bypassme': function(element, renderer){
+         						return true
+         					}
+         				}
+         				
+         				tableBody = "<thead><th>Code</th><th>Prerequisite</th><th>Credited Units</th><th>Lecture Hours</th><th>Laboratory Hours</th></thead><tbody>"+tableBody+"</tbody>"
+         				$('#myHiddenTable').html(tableBody)
+         				var res = pdf.autoTableHtmlToJson(document.getElementById("myHiddenTable"),true);
+         			    pdf.autoTable(res.columns, res.data, {
+         			      startY: 150
+         			    });
+
+         			   	
+         				
+                         
+                         
+                         var myImage = new Image();
+         				myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
+         				myImage.onload = function(){
+         					pdf.addImage(myImage , 'png', 800, 20, 50, 50);
+//         					pdf.addImage(myImage , 'png', 700, 20, 50, 50);
+         					 var uri = pdf.output('dataurlstring');
+         			  	   	 openDataUriWindow(uri);
+         			  	};
+                    	
+                    }
+                
+                })
                 
                 
-                var myImage = new Image();
-				myImage.src = "http://"+window.location.hostname+":"+window.location.port+"/SIS/Assets/images/PUPLogo.png";
-				myImage.onload = function(){
-					pdf.addImage(myImage , 'png', 700, 20, 50, 50);
-					 var uri = pdf.output('dataurlstring');
-			  	   	 openDataUriWindow(uri);
-			  	};
+               
 				
             })
             
@@ -564,11 +604,20 @@ var EditableTable = function () {
                 e.preventDefault();
                 
                 var getcode = $(this).closest('tr').children('td:first').text();
+                var yearLvlTo = $(this).closest('tr').children('td:eq(2)').text();
                 latcode = getcode;
                 var nRow = $(this).parents('tr')[0];
+                $('#updyearlvlDrp').select2("val", yearLvlTo).trigger("change")
                 
         		$('#codeUpdateTxt').val(getcode)
         		$('#curriculumCode').html(getcode)
+        		$('#prereqcontainer').hide()
+        		$('#curyearPleaseTxt').hide()
+        		$('#coursePleaseTxt').hide()
+        		var yearPlease = $(this).closest('tr').children('td:first').next().text();
+        		var coursePlease = $(this).closest('tr').children('td:first').next().next().next().text();
+        		$('#coursePleaseTxt').val(coursePlease)
+        		$('#curyearPleaseTxt').val(yearPlease)
         		
         		$("#updSemesterDrp").select2("val", $(this).data('semester'));
         		$("#updcourseDrp").select2("val", $(this).data('course'));
@@ -576,13 +625,11 @@ var EditableTable = function () {
         		$("#updmaxcredTxt").val($(this).data('maxcred'));
         		console.log($(this).data('maxcred'))
         		
-        		
-        		
         		$('#viewmainBody').html('')
         		$.ajax({
 					type:'POST',
 					data:{latcode:latcode},
-					url:'Controller/Registrar/Curriculum/CurriculumViewItemController',
+					url:'Controller/Registrar/Curriculum/CurriculumViewItemController2',
 					success: function(result){
 						var item = $.parseJSON(result);
 						var i = 0;
@@ -600,7 +647,25 @@ var EditableTable = function () {
                     			
                     		}else{
                     			$('.addItemEdit').click();
+                    			var getCourse = $('#updcourseDrp option:selected').val()
+                    			$.ajax({
+                					type:'POST',
+                					async:false,
+                					data:{latcode:val.code,course:getCourse},
+                					url:'Controller/Registrar/Curriculum/GetPreqreqPlease',
+                					success: function(result){
+                						if(result == 'null')
+                							result = 'default'
+                						$('#prereqcontainer').val(result)
+                						
+                					}
+                						
+            					})
+                					
+                    			console.log(val.code)
                     			$('#viewmainBody').find('tr:last .SubjectDrp').select2("val", val.code).trigger("change")
+
+                    			$('#viewmainBody').find('tr:last .SubjectDrpprereq').select2("val", $('#prereqcontainer').val()).trigger("change")
                     			
                     			
                     		}

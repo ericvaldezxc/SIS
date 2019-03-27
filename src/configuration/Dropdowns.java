@@ -269,6 +269,47 @@ public class Dropdowns {
 		
 		return Drp;
 	}
+	public String fillsubjectDrpNew() throws SQLException {
+		String Drp = "";
+		Statement stmnt = conn.createStatement();
+		rs = stmnt.executeQuery("Select *,(select Subject_Code from r_subject where Subject_ID = Prerequisite_Prequisite_SubjectID ) as prereq,Subject_Code,Subject_Description,Subject_Credited_Units,Subject_Laboratory_Units from r_subject left join r_prerequisite on Prerequisite_Main_SubjectID = Subject_ID WHERE Subject_Display_Stat = 'Active' and Subject_Type = 'Academic'");
+		int  i = 0 ;
+		while(rs.next()){
+			if(i == 0){
+				Drp += "<optgroup label='Academic'>";				
+				
+			}
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-prereq='"+ec.decrypt(ec.key, ec.initVector, rs.getString("prereq"))+"' data-lab-unit='"+rs.getString("Subject_Laboratory_Units")+"' data-lec-unit='"+rs.getString("Subject_Lecture_Units")+"'  data-cred-unit='"+rs.getString("Subject_Credited_Units")+"' data-lec-hours='"+rs.getString("Subject_Lecture_Hours")+"'  data-lab-hours='"+rs.getString("Subject_Laboratory_Hours")+"' data-tuition-hours='"+rs.getString("Subject_Tuition_Hours")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+
+			i++;
+			
+		}
+		if(i != 0){
+			Drp += "</optgroup>";				
+			
+		}
+		i = 0;
+		rs = stmnt.executeQuery("Select *,(select Subject_Code from r_subject where Subject_ID = Prerequisite_Prequisite_SubjectID ) as prereq,Subject_Code,Subject_Description,Subject_Credited_Units,Subject_Laboratory_Units from r_subject left join r_prerequisite on Prerequisite_Main_SubjectID = Subject_ID WHERE Subject_Display_Stat = 'Active' and Subject_Type = 'Non-Academic'");
+		while(rs.next()){
+			if(i == 0){
+				Drp += "<optgroup label='Non-Academic'>";				
+				
+			}
+//			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-cred-unit='"+rs.getString("Subject_Credited_Units")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+			Drp += "<option value='"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"' data-prereq='"+ec.decrypt(ec.key, ec.initVector, rs.getString("prereq"))+"' data-lab-unit='"+rs.getString("Subject_Laboratory_Units")+"' data-lec-unit='"+rs.getString("Subject_Lecture_Units")+"'  data-cred-unit='"+rs.getString("Subject_Credited_Units")+"' data-lec-hours='"+rs.getString("Subject_Lecture_Hours")+"'  data-lab-hours='"+rs.getString("Subject_Laboratory_Hours")+"' data-tuition-hours='"+rs.getString("Subject_Tuition_Hours")+"'  >"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Code"))+"-"+ec.decrypt(ec.key, ec.initVector, rs.getString("Subject_Description"))+"</option>";
+
+			i++;
+			
+		}
+		if(i != 0){
+			Drp += "</optgroup>";				
+			
+		}
+		i = 0;
+		
+		return Drp;
+	}
+	
 	public String fillsubjectDrp2() throws SQLException {
 		String Drp = "";
 		Statement stmnt = conn.createStatement();

@@ -47,7 +47,7 @@
 		}
 	
 	firstCol =  "<select class='populate SubjectDrp fee' style='width: 290px'><option value='default' >Select Subject</option>"+subjectDrp+"</select>" ;
-	String firstCol22 =  "<select class='populate SubjectDrp fee2' style='width: 290px'><option value='default' >Select Subject</option>"+subjectDrp+"</select>" ;
+	String firstCol22 =  "<select class='populate SubjectDrpprereq fee2' style='width: 290px'><option value='default' >Select Subject</option>"+subjectDrp+"</select>" ;
 	groupfirstCol =  "<select class='populate SubjectDrp grpfee' style='width: 290px'><option value='default' >Select Subject</option>"+groupsubject+"</select>" ;
 	firstCol2 =  "<select class='populate SubjectDrp fee' style='width: 290px'>"+subjectDrp+"</select>";
 	feefirstCol =  "<select class='form-control FeeDrp'><option value='default' selected='selected' disabled='disabled' data-description='' data-amount=''>Select a Fee</option>"+feeDrp+"</select>";
@@ -88,16 +88,19 @@
 				var befcode = '';
 				var groupbody = $('#groupduplicate').html()
 				$("select.fee").select2();
+				$("select.fee2").select2();
 				
 				$('.addItem').on('click',function(){
 					$("#mainBody").append(body);
 					$("#mainBody select.fee").select2();
+					$("#mainBody select.fee2").select2();
 					
 				});
 				
 				$('.addGroupItem').on('click',function(){
 					$("#mainBody").append(groupbody);
 					$("#mainBody select.grpfee").select2();
+					$("#mainBody select.fee2").select2();
 					
 				});
 				
@@ -199,6 +202,7 @@
 				$('.addGroupItemEdit').on('click',function(){
 					$("#viewmainBody").append(groupbody);
 					$("#viewmainBody select.grpfee").select2();
+					$("#viewmainBody select.grpfee2").select2();
 					
 				});
 				
@@ -383,7 +387,9 @@
 					<td>
          				${groupfirstCol}
 		            </td>
-         		    <td style="font-size:15px" ><center class="prereq"></center></td>		            
+					<td>
+         				${firstCol22}
+		            </td>
 		            <td style="font-size:15px" ><center class="unitText"></center></td>
 		            <td style="font-size:15px" ><center class="labUnitText"></center></td>
 		            <td style="font-size:15px" ><center class="lecUnitText"></center></td>
@@ -481,7 +487,7 @@
 				                                    	</select>       			
 						                            </td>
 										            <td style="font-size:15px">
-										            	<select class="populate SubjectDrp fee" style="width: 290px">
+										            	<select class="populate SubjectDrpprereq fee2" style="width: 290px">
 						                        			<option value='default' >Select Subject</option>
 					                                      	  ${subjectDrp} 
 				                                    	</select>       									                            
@@ -526,11 +532,14 @@
 	                    <h4 class="modal-title" id="curriculumCode" >Sample</h4>
 	                </div>
 	                <div class="modal-body">
+	                	<input type="text" id="prereqcontainer">
+	                	<input type="text" id="curyearPleaseTxt">
+	                	<input type="text" id="coursePleaseTxt">
 	                    <form method="post" id="form-data">
 	                     	<div class="row" style="padding-left:15px;padding-top:10px">
 	                     		<div class="col-lg-12" style="padding-left:15px;">
-	                        			<button class="btn btn-default " type="button" id="btnPrintCurriculum">Print <i class="fa fa-print"></i></button>
-                                  </div> 
+	                        		<button class="btn btn-default " type="button" id="btnPrintCurriculum">Print <i class="fa fa-print"></i></button>
+                                 </div> 
 	                            <div class="col-lg-12" style="padding-top:10px">
 	                             	
 	                            	<div class="col-lg-6">

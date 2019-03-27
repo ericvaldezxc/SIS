@@ -159,7 +159,7 @@
                     </ul>
                 </li>
            		<li>
-	                <a href="Student.jsp" class="" id="StudentBtn">
+	                <a href="Student3.jsp" class="" id="StudentBtn">
 	                    <i class="fa  fa-smile-o"></i>
 	                    <span>Student</span>
 	                </a>
@@ -183,7 +183,7 @@
                     </a>
                     <ul class="sub">
                     	<li class="" id="SubjectBtn2"><a href="Subject.jsp">Subject</a></li>
-                    	<li class="" id="CurriculumBtn"><a href="Curriculum.jsp">Curriculum</a></li>
+                    	<li class="" id="CurriculumBtn"><a href="Curriculum2.jsp">Curriculum</a></li>
                     </ul>
                 </li>
            		<li class="sub-menu">

@@ -65,9 +65,8 @@ public class getEnrolledSubject extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String sql = "SELECT * FROM `t_student_taken_curriculum_subject` inner join r_subject on Student_Taken_Curriculum_Subject_SubjectID = Subject_ID  where Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Student_Taken_Curriculum_Subject_Display_Status = 'Active' and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active' ) and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present' ) and Student_Taken_Curriculum_Subject_StudentAccountID = '"+id+"' ";
+		String sql = "SELECT * FROM `t_student_taken_curriculum_subject` inner join r_subject on Student_Taken_Curriculum_Subject_SubjectID = Subject_ID inner join r_section on Student_Taken_Curriculum_Subject_SectionID = Section_ID where Student_Taken_Curriculum_Subject_Taken_Status = 'true' and Student_Taken_Curriculum_Subject_Display_Status = 'Active' and Student_Taken_Curriculum_Subject_SemesterID = (SELECT Semester_ID FROM `r_semester` where Semester_Active_Flag = 'Active' ) and Student_Taken_Curriculum_Subject_AcademicIYearID = (SELECT Academic_Year_ID FROM `r_academic_year` where Academic_Year_Active_Flag = 'Present' ) and Student_Taken_Curriculum_Subject_StudentAccountID = '"+id+"' ";
 		PrintWriter out = response.getWriter();	
-		
 		
 		
 		try {
@@ -81,6 +80,9 @@ public class getEnrolledSubject extends HttpServlet {
 				String subjectDesc = rs.getString("Subject_Description");
 				String credUnit = rs.getString("Subject_Credited_Units");
 				String takenSubjectId = rs.getString("Student_Taken_Curriculum_Subject_ID");
+				String sectionID = rs.getString("Student_Taken_Curriculum_Subject_SectionID");
+				String sectionCode = rs.getString("Section_Code");
+				
 				
 				subjectCode = ec.decrypt(ec.key, ec.initVector, subjectCode);
 				subjectDesc =  ec.decrypt(ec.key, ec.initVector, subjectDesc);
@@ -88,6 +90,7 @@ public class getEnrolledSubject extends HttpServlet {
 				obj.put("subjectDesc", subjectDesc);
 				obj.put("credUnit", credUnit);
 				obj.put("takenSubjectId", takenSubjectId);
+				obj.put("sectionCode", sectionCode);
 				subjects.add(obj);
 				
 			}

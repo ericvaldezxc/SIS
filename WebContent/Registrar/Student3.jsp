@@ -2244,6 +2244,7 @@
 				 	globstudnum = studentnumber
 					$.ajax({
     					type:'POST',
+    					async:false,
     					data:{studentnumber: studentnumber},
     					url: "Controller/Registrar/Student/Curriculum3",
     					success: function(result){
@@ -2273,11 +2274,12 @@
            					 					i++
            					 				})
            					 				
+           					 				
            					 				$.ajax({
            	                					type:'POST',
            	                					async:false,
            	                					data:{latcode : val2.code, course : courseCodeTo},
-           	                					url:'Controller/Registrar/Curriculum/GetPreqreqPlease',
+           	                					url:'Controller/Registrar/Curriculum/GetPreqreqPlease2',
            	                					success: function(result){
            	                						if(result == 'null' || result == null)
            	                							result = ''
@@ -2336,7 +2338,7 @@
 	           	                					data:{latcode : val3.code, course : courseCodeTo},
 	           	                					url:'Controller/Registrar/Curriculum/GetPreqreqPlease',
 	           	                					success: function(result){
-	           	                						if(result == 'null' || result == null)
+	           	                						if(result == 'null' || result == 'default' )
 	           	                							result = ''
           	                							$('#studentNumberTxtTo').val(result)
 	           	                						

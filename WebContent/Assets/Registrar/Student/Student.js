@@ -89,10 +89,73 @@ var EditableTable = function () {
             jQuery('#editable-sample_wrapper .dataTables_length select').addClass("form-control xsmall"); // modify table per page dropdown
 
             var nEditing = null;
-
+        	$('#studentNumberTxtTo').hide()
+        	$('#tableBodyTo').hide()
+        	
             $('#editable-sample_new').click(function (e) {
 
             });
+            $('#saveSchedTableBtn').click(function (e) {
+            	swal({
+                    title: "Are you sure?",
+                    text: "Do you really want to make this changes",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#DD6B55',
+                    confirmButtonText: 'Yes, do it!',
+                    cancelButtonText: "No!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+	                function (isConfirm) {
+	                    if (isConfirm) {
+	                    	$('#enrolledSubjectTbl tr').each(function(key,val){
+	                    		let perRow = $(this)
+	                    		var sub = $(perRow).closest('tr').children('td:eq(0)').text()
+	                    		var takenID = $(perRow).closest('tr').children('td:eq(0)').data('id')
+	        					var section = $(perRow).find('select.selSubjectDrp option:selected').val();
+	                    		console.log(`${sub}-${section}-${takenID}`)
+	        					$.ajax({
+	            					type:'POST',
+	            					data:{
+	            							takenID:takenID,
+	            							section:section
+	            						
+	            						},
+	            					url:'Controller/Registrar/Student/UpdateSchedule',
+	            					success: function(result2){
+	            						swal({
+		                                    title: "Record Updated!"
+		                                    , text: "The data is successfully Updated!"
+		                                    , type: "success"
+		                                    , confirmButtonColor: '#88A755'
+		                                    , confirmButtonText: 'Okay'
+		                                    , closeOnConfirm: false
+		                                }, function (isConfirm) {
+		                                    if (isConfirm) {
+		                                        window.location.reload();
+		                                    }
+		                                });
+	                                 
+	            					},
+	                                error: function (response2) {
+	                                    swal("Error encountered while adding data", "Please try again", "error");
+	                                    $("#editable-sample_new").click();
+	                                }
+	            				});
+	                        });
+	        					
+
+	                    } else {
+	
+	                        swal("Cancelled", "The transaction is cancelled", "error");
+	                    }
+	
+	                });
+            });
+            
+            
+            
 //            $('#CourseDrp').on('change',function(){
 //            	totunit = 0
 //				$('#mainBody').html('<tr><td style="font-size:15px" ><center class="codeText"></center></td><td style="font-size:15px" ><center class="descText"></center></td><td style="font-size:15px" ><center class="unitText"></center></td><td><center></center></td></tr>')
